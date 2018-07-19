@@ -1116,8 +1116,8 @@ void dsp_host::makeMonoSound(float *_signal)
     m_cabinet.applyCabinet(m_outputmixer.m_sampleL, m_outputmixer.m_sampleR, _signal);
 
     //******************************* Soft Clip ******************************//
-    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
-    //    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
+//    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
+    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
     //    m_mainOut_L *= _signal[MST_VOL];            /// -> reverb output here!
 
     m_mainOut_L *= 0.1588f;
@@ -1138,8 +1138,8 @@ void dsp_host::makeMonoSound(float *_signal)
     float sample_square = m_mainOut_L * m_mainOut_L;
     m_mainOut_L = m_mainOut_L * ((2.26548 * sample_square - 5.13274) * sample_square + 3.14159);
 
-    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
-//    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
+//    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
+    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
 //    m_mainOut_R *= _signal[MST_VOL];            /// -> reverb output here!
     m_mainOut_R *= 0.1588f;
 
