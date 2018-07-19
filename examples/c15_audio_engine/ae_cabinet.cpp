@@ -35,52 +35,96 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
     m_freqClip_min = _samplerate / 24576.f;
 
     //*************************** Biquad Highpass ****************************//
-    m_hpCoeff_b0 = 0.f;
-    m_hpCoeff_b1 = 0.f;
-    m_hpCoeff_b2 = 0.f;
-    m_hpCoeff_a1 = 0.f;
-    m_hpCoeff_a2 = 0.f;
+    m_hp_b0 = 0.f;
+    m_hp_b1 = 0.f;
+    m_hp_b2 = 0.f;
+    m_hp_a1 = 0.f;
+    m_hp_a2 = 0.f;
 
-    m_hpInStateVar_L1 = 0.f;
-    m_hpInStateVar_R1 = 0.f;
-    m_hpInStateVar_L2 = 0.f;
-    m_hpInStateVar_R2 = 0.f;;
-    m_hpOutStateVar_L1 = 0.f;
-    m_hpOutStateVar_R1 = 0.f;
-    m_hpOutStateVar_L2 = 0.f;
-    m_hpOutStateVar_R2 = 0.f;
+    m_hp_stateVar_L1 = 0.f;
+    m_hp_stateVar_L2 = 0.f;
+    m_hp_stateVar_L3 = 0.f;
+    m_hp_stateVar_L4 = 0.f;
+    m_hp_stateVar_R1 = 0.f;
+    m_hp_stateVar_R2 = 0.f;
+    m_hp_stateVar_R3 = 0.f;
+    m_hp_stateVar_R4 = 0.f;
 
     //************************** Biquad Lowpasses ****************************//
-    m_lp1Coeff_b0 = 0.f;
-    m_lp1Coeff_b1 = 0.f;
-    m_lp1Coeff_b2 = 0.f;
-    m_lp1Coeff_a1 = 0.f;
-    m_lp1Coeff_a2 = 0.f;
+    m_lp1_b0 = 0.f;
+    m_lp1_b1 = 0.f;
+    m_lp1_b2 = 0.f;
+    m_lp1_a1 = 0.f;
+    m_lp1_a2 = 0.f;
 
-    m_lp1InStateVar_L1 = 0.f;
-    m_lp1InStateVar_R1 = 0.f;
-    m_lp1InStateVar_L2 = 0.f;
-    m_lp1InStateVar_R2 = 0.f;
-    m_lp1OutStateVar_L1 = 0.f;
-    m_lp1OutStateVar_R1 = 0.f;
-    m_lp1OutStateVar_L2 = 0.f;
-    m_lp1OutStateVar_R2 = 0.f;
+    m_lp1_stateVar_L1 = 0.f;
+    m_lp1_stateVar_L2 = 0.f;
+    m_lp1_stateVar_L3 = 0.f;
+    m_lp1_stateVar_L4 = 0.f;
+    m_lp1_stateVar_R1 = 0.f;
+    m_lp1_stateVar_R2 = 0.f;
+    m_lp1_stateVar_R3 = 0.f;
+    m_lp1_stateVar_R4 = 0.f;
 
-    m_lp2Coeff_b0 = 0.f;
-    m_lp2Coeff_b1 = 0.f;
-    m_lp2Coeff_b2 = 0.f;
-    m_lp2Coeff_a1 = 0.f;
-    m_lp2Coeff_a2 = 0.f;
+    m_lp2_b0 = 0.f;
+    m_lp2_b1 = 0.f;
+    m_lp2_b2 = 0.f;
+    m_lp2_a1 = 0.f;
+    m_lp2_a2 = 0.f;
 
-    m_lp2InStateVar_L1 = 0.f;
-    m_lp2InStateVar_R1 = 0.f;
-    m_lp2InStateVar_L2 = 0.f;
-    m_lp2InStateVar_R2 = 0.f;
-    m_lp2OutStateVar_L1 = 0.f;
-    m_lp2OutStateVar_R1 = 0.f;
-    m_lp2OutStateVar_L2 = 0.f;
-    m_lp2OutStateVar_R2 = 0.f;
+    m_lp2_stateVar_L1 = 0.f;
+    m_lp2_stateVar_R1 = 0.f;
+    m_lp2_stateVar_L2 = 0.f;
+    m_lp2_stateVar_R2 = 0.f;
+    m_lp2_stateVar_L1 = 0.f;
+    m_lp2_stateVar_R1 = 0.f;
+    m_lp2_stateVar_L2 = 0.f;
+    m_lp2_stateVar_R2 = 0.f;
 
+    //*************************** Tilt Lowshelves ****************************//
+    m_tiltOmegaSin = NlToolbox::Math::sin(1200.f * m_warpConst_2PI) * 0.5f;
+    m_tiltOmegaCos = NlToolbox::Math::cos(1200.f * m_warpConst_2PI);
+
+    m_ls1_b0 = 0.f;
+    m_ls1_b1 = 0.f;
+    m_ls1_b2 = 0.f;
+    m_ls1_a1 = 0.f;
+    m_ls1_a2 = 0.f;
+
+    m_ls1_stateVar_L1 = 0.f;
+    m_ls1_StateVar_L2 = 0.f;
+    m_ls1_StateVar_L3 = 0.f;
+    m_ls1_StateVar_L4 = 0.f;
+    m_ls1_stateVar_R1 = 0.f;
+    m_ls1_stateVar_R2 = 0.f;
+    m_ls1_stateVar_R3 = 0.f;
+    m_ls1_stateVar_R4 = 0.f;
+
+    m_ls2_b0 = 0.f;
+    m_ls2_b1 = 0.f;
+    m_ls2_b2 = 0.f;
+    m_ls2_a1 = 0.f;
+    m_ls2_a2 = 0.f;
+
+    m_ls2_stateVar_L1 = 0.f;
+    m_ls2_StateVar_L2 = 0.f;
+    m_ls2_StateVar_L3 = 0.f;
+    m_ls2_stateVar_R1 = 0.f;
+    m_ls2_StateVar_L4 = 0.f;
+    m_ls2_stateVar_R2 = 0.f;
+    m_ls2_stateVar_R3 = 0.f;
+    m_ls2_stateVar_R4 = 0.f;
+
+    //***************************** 30 Hz Highpass ****************************//
+    m_hp30_b0 = 30.f * m_warpConst_2PI;
+
+    if (m_hp30_b0 > 0.8f)
+    {
+        m_hp30_b0 = 0.8f;
+    }
+
+    m_hp30_stateVar_L = 0.f;
+    m_hp30_stateVar_R = 0.f;
 }
 
 
@@ -107,21 +151,22 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     frequency *= m_warpConst_2PI;
     float tmpVar = NlToolbox::Math::cos(frequency);
 
-    m_hpCoeff_a1 = tmpVar * -2.f;
-    m_hpCoeff_b0 = (1.f + tmpVar) / 2.f;
-    m_hpCoeff_b1 = (1.f + tmpVar) * -1.f;
-    m_hpCoeff_b2 = m_hpCoeff_b0;
+    m_hp_a1 = tmpVar * -2.f;
+    m_hp_b0 = (1.f + tmpVar) / 2.f;
+    m_hp_b1 = (1.f + tmpVar) * -1.f;
+    m_hp_b2 = m_hp_b0;
 
     tmpVar = NlToolbox::Math::sin(frequency) * 0.5f;
 
-    m_hpCoeff_a2 = 1.f - tmpVar;
+    m_hp_a2 = 1.f - tmpVar;
     tmpVar = 1.f + tmpVar;
 
-    m_hpCoeff_a1 = m_hpCoeff_a1 * (1.f / tmpVar) * -1.f;
-    m_hpCoeff_a2 = m_hpCoeff_a2 * (1.f / tmpVar) * -1.f;
-    m_hpCoeff_b0 = m_hpCoeff_b0 * (1.f / tmpVar);
-    m_hpCoeff_b1 = m_hpCoeff_b1 * (1.f / tmpVar);
-    m_hpCoeff_b2 = m_hpCoeff_b2 * (1.f / tmpVar);
+    m_hp_a1 = m_hp_a1 * (1.f / tmpVar) * -1.f;
+    m_hp_a2 = m_hp_a2 * (1.f / tmpVar) * -1.f;
+    m_hp_b0 = m_hp_b0 * (1.f / tmpVar);
+    m_hp_b1 = m_hp_b1 * (1.f / tmpVar);
+    m_hp_b2 = m_hp_b2 * (1.f / tmpVar);
+
 
     //*************************** Biquad Lowpass 1 ***************************//
     frequency = _signal[CAB_LPF];
@@ -139,21 +184,22 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     frequency *= m_warpConst_2PI;
     tmpVar = NlToolbox::Math::cos(frequency);
 
-    m_lp1Coeff_a1 = tmpVar * -2.f;
-    m_lp1Coeff_b0 = (1.f - tmpVar) / 2.f;
-    m_lp1Coeff_b1 = 1.f - tmpVar;
-    m_lp1Coeff_b2 = m_lp1Coeff_b0;
+    m_lp1_a1 = tmpVar * -2.f;
+    m_lp1_b0 = (1.f - tmpVar) / 2.f;
+    m_lp1_b1 = 1.f - tmpVar;
+    m_lp1_b2 = m_lp1_b0;
 
     tmpVar = NlToolbox::Math::sin(frequency) * 0.5f;
 
-    m_lp1Coeff_a2 = 1.f - tmpVar;
+    m_lp1_a2 = 1.f - tmpVar;
     tmpVar = 1.f + tmpVar;
 
-    m_lp1Coeff_a1 = m_lp1Coeff_a1 * (1.f / tmpVar) * -1.f;
-    m_lp1Coeff_a2 = m_lp1Coeff_a2 * (1.f / tmpVar) * -1.f;
-    m_lp1Coeff_b0 = m_lp1Coeff_b0 * (1.f / tmpVar);
-    m_lp1Coeff_b1 = m_lp1Coeff_b1 * (1.f / tmpVar);
-    m_lp1Coeff_b2 = m_lp1Coeff_b2 * (1.f / tmpVar);
+    m_lp1_a1 = m_lp1_a1 * (1.f / tmpVar) * -1.f;
+    m_lp1_a2 = m_lp1_a2 * (1.f / tmpVar) * -1.f;
+    m_lp1_b0 = m_lp1_b0 * (1.f / tmpVar);
+    m_lp1_b1 = m_lp1_b1 * (1.f / tmpVar);
+    m_lp1_b2 = m_lp1_b2 * (1.f / tmpVar);
+
 
     //*************************** Biquad Lowpass 2 ***************************//
     frequency = _signal[CAB_LPF] * 1.333f;
@@ -171,22 +217,62 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     frequency *= m_warpConst_2PI;
     tmpVar = NlToolbox::Math::cos(frequency);
 
-    m_lp2Coeff_a1 = tmpVar * -2.f;
-    m_lp2Coeff_b0 = (1.f - tmpVar) / 2.f;
-    m_lp2Coeff_b1 = 1.f - tmpVar;
-    m_lp2Coeff_b2 = m_lp2Coeff_b0;
+    m_lp2_a1 = tmpVar * -2.f;
+    m_lp2_b0 = (1.f - tmpVar) / 2.f;
+    m_lp2_b1 = 1.f - tmpVar;
+    m_lp2_b2 = m_lp2_b0;
 
     tmpVar = NlToolbox::Math::sin(frequency) * 0.5f;
 
-    m_lp2Coeff_a2 = 1.f - tmpVar;
+    m_lp2_a2 = 1.f - tmpVar;
     tmpVar = 1.f + tmpVar;
 
-    m_lp2Coeff_a1 = m_lp2Coeff_a1 * (1.f / tmpVar) * -1.f;
-    m_lp2Coeff_a2 = m_lp2Coeff_a2 * (1.f / tmpVar) * -1.f;
-    m_lp2Coeff_b0 = m_lp2Coeff_b0 * (1.f / tmpVar);
-    m_lp2Coeff_b1 = m_lp2Coeff_b1 * (1.f / tmpVar);
-    m_lp2Coeff_b2 = m_lp2Coeff_b2 * (1.f / tmpVar);
+    m_lp2_a1 = m_lp2_a1 * (1.f / tmpVar) * -1.f;
+    m_lp2_a2 = m_lp2_a2 * (1.f / tmpVar) * -1.f;
+    m_lp2_b0 = m_lp2_b0 * (1.f / tmpVar);
+    m_lp2_b1 = m_lp2_b1 * (1.f / tmpVar);
+    m_lp2_b2 = m_lp2_b2 * (1.f / tmpVar);
 
+
+    //**************************** Tilt Lowshelves ***************************//
+    float tilt = pow(1.059f, _signal[CAB_TILT]);
+
+    tmpVar = (tilt + 1.f / tilt);
+    tmpVar = sqrt(tmpVar + 2.f) * m_tiltOmegaSin;
+    tmpVar = 2.f * sqrt(tilt) * tmpVar;
+
+    float coeff = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar;
+    m_ls1_a1    = ((tilt - 1.f) + (m_tiltOmegaCos * (tilt + 1.f))) * -2.f;
+    m_ls1_a2    = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  - tmpVar;
+    m_ls1_b0    = ((tilt + 1.f) - (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar) * tilt;
+    m_ls1_b1    = ((tilt - 1.f) - (m_tiltOmegaCos * (tilt + 1.f))) * 2.f     * tilt;
+    m_ls1_b2    = ((tilt + 1.f) - (m_tiltOmegaCos * (tilt - 1.f))  - tmpVar) * tilt;
+
+    m_ls1_a1 = m_ls1_a1 * (1.f / coeff) * -1.f;
+    m_ls1_a2 = m_ls1_a2 * (1.f / coeff) * -1.f;
+    m_ls1_b0 = m_ls1_b0 * (1.f / coeff);
+    m_ls1_b1 = m_ls1_b1 * (1.f / coeff);
+    m_ls1_b2 = m_ls1_b2 * (1.f / coeff);
+
+
+    tilt = pow(1.059f, _signal[CAB_TILT] * -1.f);
+
+    tmpVar = (tilt + 1.f / tilt);
+    tmpVar = sqrt(tmpVar + 2.f) * m_tiltOmegaSin;
+    tmpVar = 2.f * sqrt(tilt) * tmpVar;
+
+    coeff    = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar;
+    m_ls2_a1 = ((tilt - 1.f) + (m_tiltOmegaCos * (tilt + 1.f))) * -2.f;
+    m_ls2_a2 = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  - tmpVar;
+    m_ls2_b0 = ((tilt + 1.f) - (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar) * tilt;
+    m_ls2_b1 = ((tilt - 1.f) - (m_tiltOmegaCos * (tilt + 1.f))) * 2.f     * tilt;
+    m_ls2_b2 = ((tilt + 1.f) - (m_tiltOmegaCos * (tilt - 1.f))  - tmpVar) * tilt;
+
+    m_ls2_a1 = m_ls2_a1 * (1.f / coeff) * -1.f;
+    m_ls2_a2 = m_ls2_a2 * (1.f / coeff) * -1.f;
+    m_ls2_b0 = m_ls2_b0 * (1.f / coeff);
+    m_ls2_b1 = m_ls2_b1 * (1.f / coeff);
+    m_ls2_b2 = m_ls2_b2 * (1.f / coeff);
 }
 
 
@@ -205,111 +291,172 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
 
 
     //************************** Biquad Highpass L ***************************//
-    tmpVar  = m_hpCoeff_b0 * sample_L;
-    tmpVar += m_hpCoeff_b1 * m_hpInStateVar_L1;
-    tmpVar += m_hpCoeff_b2 * m_hpInStateVar_L2;
+    tmpVar  = m_hp_b0 * sample_L;
+    tmpVar += m_hp_b1 * m_hp_stateVar_L1;
+    tmpVar += m_hp_b2 * m_hp_stateVar_L2;
+    tmpVar += m_hp_a1 * m_hp_stateVar_L3;
+    tmpVar += m_hp_a2 * m_hp_stateVar_L4;
 
-    tmpVar += m_hpCoeff_a1 * m_hpOutStateVar_L1;
-    tmpVar += m_hpCoeff_a2 * m_hpOutStateVar_L2;
-
-    m_hpInStateVar_L2 = m_hpInStateVar_L1 + DNC_CONST;
-    m_hpInStateVar_L1 = sample_L  + DNC_CONST;
-
-    m_hpOutStateVar_L2 = m_hpOutStateVar_L1 + DNC_CONST;
-    m_hpOutStateVar_L1 = tmpVar + DNC_CONST;
+    m_hp_stateVar_L2 = m_hp_stateVar_L1 + DNC_CONST;
+    m_hp_stateVar_L1 = sample_L + DNC_CONST;
+    m_hp_stateVar_L4 = m_hp_stateVar_L3 + DNC_CONST;
+    m_hp_stateVar_L3 = tmpVar + DNC_CONST;
 
     sample_L = tmpVar;
 
 
     //************************** Biquad Highpass R ***************************//
-    tmpVar  = m_hpCoeff_b0 * sample_R;
-    tmpVar += m_hpCoeff_b1 * m_hpInStateVar_R1;
-    tmpVar += m_hpCoeff_b2 * m_hpInStateVar_R2;
+    tmpVar  = m_hp_b0 * sample_R;
+    tmpVar += m_hp_b1 * m_hp_stateVar_R1;
+    tmpVar += m_hp_b2 * m_hp_stateVar_R2;
+    tmpVar += m_hp_a1 * m_hp_stateVar_R3;
+    tmpVar += m_hp_a2 * m_hp_stateVar_R4;
 
-    tmpVar += m_hpCoeff_a1 * m_hpOutStateVar_R1;
-    tmpVar += m_hpCoeff_a2 * m_hpOutStateVar_R2;
-
-    m_hpInStateVar_R2 = m_hpInStateVar_R1 + DNC_CONST;
-    m_hpInStateVar_R1 = sample_R  + DNC_CONST;
-
-    m_hpOutStateVar_R2 = m_hpOutStateVar_R1 + DNC_CONST;
-    m_hpOutStateVar_R1 = tmpVar + DNC_CONST;
+    m_hp_stateVar_R2 = m_hp_stateVar_R1 + DNC_CONST;
+    m_hp_stateVar_R1 = sample_R + DNC_CONST;
+    m_hp_stateVar_R4 = m_hp_stateVar_R3 + DNC_CONST;
+    m_hp_stateVar_R3 = tmpVar + DNC_CONST;
 
     sample_R = tmpVar;
 
 
     //*************************** Tilt Lowshelf L1 ***************************//
-    //*************************** Tilt Lowshelf R1 ***************************//
+    tmpVar  = m_ls1_b0 * sample_L;
+    tmpVar += m_ls1_b1 * m_ls1_stateVar_L1;
+    tmpVar += m_ls1_b2 * m_ls1_StateVar_L2;
+    tmpVar += m_ls1_a1 * m_ls1_StateVar_L3;
+    tmpVar += m_ls1_a2 * m_ls1_StateVar_L4;
 
-
-    //******************************* Shaper L *******************************//
-
-    //******************************* Shaper R *******************************//
-
-
-    //*************************** Tilt Lowshelf L2 ***************************//
-    //*************************** Tilt Lowshelf R2 ***************************//
-
-
-    //************************* 2 x Biquad Lowpass L *************************//
-    tmpVar  = m_lp1Coeff_b0 * sample_L;
-    tmpVar += m_lp1Coeff_b1 * m_lp1InStateVar_L1;
-    tmpVar += m_lp1Coeff_b2 * m_lp1InStateVar_L2;
-
-    tmpVar += m_lp1Coeff_a1 * m_lp1OutStateVar_L1;
-    tmpVar += m_lp1Coeff_a2 * m_lp1OutStateVar_L2;
-
-    m_lp1InStateVar_L2 = m_lp1InStateVar_L1 + DNC_CONST;
-    m_lp1InStateVar_L1 = sample_L  + DNC_CONST;
-
-    m_lp1OutStateVar_L2 = m_lp1OutStateVar_L1 + DNC_CONST;
-    m_lp1OutStateVar_L1 = tmpVar + DNC_CONST;
+    m_ls1_StateVar_L2 = m_ls1_stateVar_L1 + DNC_CONST;
+    m_ls1_stateVar_L1 = sample_L + DNC_CONST;
+    m_ls1_StateVar_L4 = m_ls1_StateVar_L3 + DNC_CONST;
+    m_ls1_StateVar_L3 = tmpVar + DNC_CONST;
 
     sample_L = tmpVar;
 
-    tmpVar  = m_lp2Coeff_b0 * sample_L;
-    tmpVar += m_lp2Coeff_b1 * m_lp2InStateVar_L1;
-    tmpVar += m_lp2Coeff_b2 * m_lp2InStateVar_L2;
 
-    tmpVar += m_lp2Coeff_a1 * m_lp2OutStateVar_L1;
-    tmpVar += m_lp2Coeff_a2 * m_lp2OutStateVar_L2;
+    //*************************** Tilt Lowshelf R1 ***************************//
+    tmpVar  = m_ls1_b0 * sample_R;
+    tmpVar += m_ls1_b1 * m_ls1_stateVar_R1;
+    tmpVar += m_ls1_b2 * m_ls1_stateVar_R2;
+    tmpVar += m_ls1_a1 * m_ls1_stateVar_R3;
+    tmpVar += m_ls1_a2 * m_ls1_stateVar_R4;
 
-    m_lp2InStateVar_L2 = m_lp2InStateVar_L1 + DNC_CONST;
-    m_lp2InStateVar_L1 = sample_L  + DNC_CONST;
+    m_ls1_stateVar_R2 = m_ls1_stateVar_R1 + DNC_CONST;
+    m_ls1_stateVar_R1 = sample_R + DNC_CONST;
+    m_ls1_stateVar_R4 = m_ls1_stateVar_R3 + DNC_CONST;
+    m_ls1_stateVar_R3 = tmpVar + DNC_CONST;
 
-    m_lp2OutStateVar_L2 = m_lp2OutStateVar_L1 + DNC_CONST;
-    m_lp2OutStateVar_L1 = tmpVar + DNC_CONST;
+    sample_R = tmpVar;
+
+
+    //******************************* Shaper L *******************************//
+    sample_L *= _signal[CAB_PRESAT];
+    tmpVar = sample_L;
+
+    sample_L = NlToolbox::Math::sinP3_wrap(sample_L);
+    sample_L = NlToolbox::Others::threeRanges(sample_L, tmpVar, _signal[CAB_FLD]);
+
+    sample_L = sample_L * sample_L - m_hp30_stateVar_L;
+    m_hp30_stateVar_L = sample_L * m_hp30_b0 + m_hp30_stateVar_L + DNC_CONST;
+
+    sample_L = NlToolbox::Others::parAsym(sample_L, tmpVar, _signal[CAB_ASM]);
+    sample_L *= _signal[CAB_SAT];
+
+
+    //******************************* Shaper R *******************************//
+    sample_R *= _signal[CAB_PRESAT];
+    tmpVar = sample_R;
+
+    sample_R = NlToolbox::Math::sinP3_wrap(sample_R);
+    sample_R = NlToolbox::Others::threeRanges(sample_R, tmpVar, _signal[CAB_FLD]);
+
+    sample_R = sample_R * sample_R - m_hp30_stateVar_R;
+    m_hp30_stateVar_R = sample_R * m_hp30_b0 + m_hp30_stateVar_R + DNC_CONST;
+
+    sample_R = NlToolbox::Others::parAsym(sample_R, tmpVar, _signal[CAB_ASM]);
+    sample_R *= _signal[CAB_SAT];
+
+
+    //*************************** Tilt Lowshelf L2 ***************************//
+    tmpVar  = m_ls2_b0 * sample_L;
+    tmpVar += m_ls2_b1 * m_ls2_stateVar_L1;
+    tmpVar += m_ls2_b2 * m_ls2_StateVar_L2;
+    tmpVar += m_ls2_a1 * m_ls2_StateVar_L3;
+    tmpVar += m_ls2_a2 * m_ls2_StateVar_L4;
+
+    m_ls2_StateVar_L2 = m_ls2_stateVar_L1 + DNC_CONST;
+    m_ls2_stateVar_L1 = sample_L + DNC_CONST;
+    m_ls2_StateVar_L4 = m_ls2_StateVar_L3 + DNC_CONST;
+    m_ls2_StateVar_L3 = tmpVar + DNC_CONST;
+
+    sample_L = tmpVar;
+
+    //*************************** Tilt Lowshelf R2 ***************************//
+    tmpVar  = m_ls2_b0 * sample_R;
+    tmpVar += m_ls2_b1 * m_ls2_stateVar_R1;
+    tmpVar += m_ls2_b2 * m_ls2_stateVar_R2;
+    tmpVar += m_ls2_a1 * m_ls2_stateVar_R3;
+    tmpVar += m_ls2_a2 * m_ls2_stateVar_R4;
+
+    m_ls2_stateVar_R2 = m_ls2_stateVar_R1 + DNC_CONST;
+    m_ls2_stateVar_R1 = sample_R + DNC_CONST;
+    m_ls2_stateVar_R4 = m_ls2_stateVar_R3 + DNC_CONST;
+    m_ls2_stateVar_R3 = tmpVar + DNC_CONST;
+
+    sample_R = tmpVar;
+
+    //************************* 2 x Biquad Lowpass L *************************//
+    tmpVar  = m_lp1_b0 * sample_L;
+    tmpVar += m_lp1_b1 * m_lp1_stateVar_L1;
+    tmpVar += m_lp1_b2 * m_lp1_stateVar_L2;
+    tmpVar += m_lp1_a1 * m_lp1_stateVar_L3;
+    tmpVar += m_lp1_a2 * m_lp1_stateVar_L4;
+
+    m_lp1_stateVar_L2 = m_lp1_stateVar_L1 + DNC_CONST;
+    m_lp1_stateVar_L1 = sample_L  + DNC_CONST;
+    m_lp1_stateVar_L4 = m_lp1_stateVar_L3 + DNC_CONST;
+    m_lp1_stateVar_L3 = tmpVar + DNC_CONST;
+
+    sample_L = tmpVar;
+
+    tmpVar  = m_lp2_b0 * sample_L;
+    tmpVar += m_lp2_b1 * m_lp2_stateVar_L1;
+    tmpVar += m_lp2_b2 * m_lp2_stateVar_L2;
+    tmpVar += m_lp2_a1 * m_lp2_stateVar_L3;
+    tmpVar += m_lp2_a2 * m_lp2_stateVar_L4;
+
+    m_lp2_stateVar_L2 = m_lp2_stateVar_L1 + DNC_CONST;
+    m_lp2_stateVar_L1 = sample_L  + DNC_CONST;
+    m_lp2_stateVar_L4 = m_lp2_stateVar_L3 + DNC_CONST;
+    m_lp2_stateVar_L3 = tmpVar + DNC_CONST;
 
     sample_L = tmpVar;
 
     //************************* 2 x Biquad Lowpass R *************************//
-    tmpVar  = m_lp1Coeff_b0 * sample_R;
-    tmpVar += m_lp1Coeff_b1 * m_lp1InStateVar_R1;
-    tmpVar += m_lp1Coeff_b2 * m_lp1InStateVar_R2;
+    tmpVar  = m_lp1_b0 * sample_R;
+    tmpVar += m_lp1_b1 * m_lp1_stateVar_R1;
+    tmpVar += m_lp1_b2 * m_lp1_stateVar_R2;
+    tmpVar += m_lp1_a1 * m_lp1_stateVar_R3;
+    tmpVar += m_lp1_a2 * m_lp1_stateVar_R4;
 
-    tmpVar += m_lp1Coeff_a1 * m_lp1OutStateVar_R1;
-    tmpVar += m_lp1Coeff_a2 * m_lp1OutStateVar_R2;
-
-    m_lp1InStateVar_R2 = m_lp1InStateVar_R1 + DNC_CONST;
-    m_lp1InStateVar_R1 = sample_R  + DNC_CONST;
-
-    m_lp1OutStateVar_R2 = m_lp1OutStateVar_R1 + DNC_CONST;
-    m_lp1OutStateVar_R1 = tmpVar + DNC_CONST;
+    m_lp1_stateVar_R2 = m_lp1_stateVar_R1 + DNC_CONST;
+    m_lp1_stateVar_R1 = sample_R  + DNC_CONST;
+    m_lp1_stateVar_R4 = m_lp1_stateVar_R3 + DNC_CONST;
+    m_lp1_stateVar_R3 = tmpVar + DNC_CONST;
 
     sample_R = tmpVar;
 
-    tmpVar  = m_lp2Coeff_b0 * sample_R;
-    tmpVar += m_lp2Coeff_b1 * m_lp2InStateVar_R1;
-    tmpVar += m_lp2Coeff_b2 * m_lp2InStateVar_R2;
+    tmpVar  = m_lp2_b0 * sample_R;
+    tmpVar += m_lp2_b1 * m_lp2_stateVar_R1;
+    tmpVar += m_lp2_b2 * m_lp2_stateVar_R2;
+    tmpVar += m_lp2_a1 * m_lp2_stateVar_R3;
+    tmpVar += m_lp2_a2 * m_lp2_stateVar_R4;
 
-    tmpVar += m_lp2Coeff_a1 * m_lp2OutStateVar_R1;
-    tmpVar += m_lp2Coeff_a2 * m_lp2OutStateVar_R2;
-
-    m_lp2InStateVar_R2 = m_lp2InStateVar_R1 + DNC_CONST;
-    m_lp2InStateVar_R1 = sample_R  + DNC_CONST;
-
-    m_lp2OutStateVar_R2 = m_lp2OutStateVar_R1 + DNC_CONST;
-    m_lp2OutStateVar_R1 = tmpVar + DNC_CONST;
+    m_lp2_stateVar_R2 = m_lp2_stateVar_R1 + DNC_CONST;
+    m_lp2_stateVar_R1 = sample_R  + DNC_CONST;
+    m_lp2_stateVar_R4 = m_lp2_stateVar_R3 + DNC_CONST;
+    m_lp2_stateVar_R3 = tmpVar + DNC_CONST;
 
     sample_R = tmpVar;
 

@@ -27,28 +27,53 @@ struct ae_cabinet
 
 
     //**************************** Biquad Highpass ****************************//
-    float m_hpCoeff_b0, m_hpCoeff_b1, m_hpCoeff_b2;
-    float m_hpCoeff_a1, m_hpCoeff_a2;
+    float m_hp_b0, m_hp_b1, m_hp_b2;
+    float m_hp_a1, m_hp_a2;
 
-    float m_hpInStateVar_L1,  m_hpInStateVar_R1;
-    float m_hpInStateVar_L2,  m_hpInStateVar_R2;
-    float m_hpOutStateVar_L1, m_hpOutStateVar_R1;
-    float m_hpOutStateVar_L2, m_hpOutStateVar_R2;
+    float m_hp_stateVar_L1, m_hp_stateVar_R1;
+    float m_hp_stateVar_L2, m_hp_stateVar_R2;
+    float m_hp_stateVar_L3, m_hp_stateVar_R3;
+    float m_hp_stateVar_L4, m_hp_stateVar_R4;
 
     //***************************** Biquad Lowpass ****************************//
-    float m_lp1Coeff_b0, m_lp1Coeff_b1, m_lp1Coeff_b2;
-    float m_lp1Coeff_a1, m_lp1Coeff_a2;
+    float m_lp1_b0, m_lp1_b1, m_lp1_b2;
+    float m_lp1_a1, m_lp1_a2;
 
-    float m_lp1InStateVar_L1,  m_lp1InStateVar_R1;
-    float m_lp1InStateVar_L2,  m_lp1InStateVar_R2;
-    float m_lp1OutStateVar_L1, m_lp1OutStateVar_R1;
-    float m_lp1OutStateVar_L2, m_lp1OutStateVar_R2;
+    float m_lp1_stateVar_L1, m_lp1_stateVar_R1;
+    float m_lp1_stateVar_L2, m_lp1_stateVar_R2;
+    float m_lp1_stateVar_L3, m_lp1_stateVar_R3;
+    float m_lp1_stateVar_L4, m_lp1_stateVar_R4;
 
-    float m_lp2Coeff_b0, m_lp2Coeff_b1, m_lp2Coeff_b2;
-    float m_lp2Coeff_a1, m_lp2Coeff_a2;
+    float m_lp2_b0, m_lp2_b1, m_lp2_b2;
+    float m_lp2_a1, m_lp2_a2;
 
-    float m_lp2InStateVar_L1,  m_lp2InStateVar_R1;
-    float m_lp2InStateVar_L2,  m_lp2InStateVar_R2;
-    float m_lp2OutStateVar_L1, m_lp2OutStateVar_R1;
-    float m_lp2OutStateVar_L2, m_lp2OutStateVar_R2;
+    float m_lp2_stateVar_L1, m_lp2_stateVar_R1;
+    float m_lp2_stateVar_L2, m_lp2_stateVar_R2;
+    float m_lp2_stateVar_L3, m_lp2_stateVar_R3;
+    float m_lp2_stateVar_L4, m_lp2_stateVar_R4;
+
+    //**************************** Tilt Lowshelves ****************************//
+    float m_tiltOmegaSin, m_tiltOmegaCos;
+
+    float m_ls1_b0, m_ls1_b1, m_ls1_b2;
+    float m_ls1_a1, m_ls1_a2;
+
+    float m_ls1_stateVar_L1, m_ls1_stateVar_R1;
+    float m_ls1_StateVar_L2, m_ls1_stateVar_R2;
+    float m_ls1_StateVar_L3, m_ls1_stateVar_R3;
+    float m_ls1_StateVar_L4, m_ls1_stateVar_R4;
+
+    float m_ls2_b0, m_ls2_b1, m_ls2_b2;
+    float m_ls2_a1, m_ls2_a2;
+
+    float m_ls2_stateVar_L1, m_ls2_stateVar_R1;
+    float m_ls2_StateVar_L2, m_ls2_stateVar_R2;
+    float m_ls2_StateVar_L3, m_ls2_stateVar_R3;
+    float m_ls2_StateVar_L4, m_ls2_stateVar_R4;
+
+    //***************************** 30 Hz Highpass ****************************//
+    float m_hp30_b0;
+
+    float m_hp30_stateVar_L, m_hp30_stateVar_R;
+
 };
