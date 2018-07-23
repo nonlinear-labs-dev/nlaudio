@@ -19,10 +19,10 @@ struct ae_outputmixer
 
     float m_sampleL, m_sampleR;
 
-    float m_warpedConst_30hz;
+    float m_hp30_b0;
 
-    std::vector<float> m_stateVarL;
-    std::vector<float> m_stateVarR;
+    std::vector<float> m_hp30_stateVar_L;
+    std::vector<float> m_hp30_stateVar_R;
 
     void init(float _samplerate, uint32_t _numberOfVoices);
     void mixAndShape(float _sampleA, float _sampleB, float _sampleComb, float _sampleSVFilter, float *_signal, uint32_t _voiceID);

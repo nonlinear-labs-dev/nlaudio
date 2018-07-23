@@ -357,8 +357,8 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     sample_L = NlToolbox::Math::sinP3_wrap(sample_L);
     sample_L = NlToolbox::Others::threeRanges(sample_L, tmpVar, _signal[CAB_FLD]);
 
-    sample_L = sample_L * sample_L - m_hp30_stateVar_L;
-    m_hp30_stateVar_L = sample_L * m_hp30_b0 + m_hp30_stateVar_L + DNC_CONST;
+    tmpVar = sample_L * sample_L - m_hp30_stateVar_L;
+    m_hp30_stateVar_L = tmpVar * m_hp30_b0 + m_hp30_stateVar_L + DNC_CONST;
 
     sample_L = NlToolbox::Others::parAsym(sample_L, tmpVar, _signal[CAB_ASM]);
     sample_L *= _signal[CAB_SAT];
@@ -371,8 +371,8 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     sample_R = NlToolbox::Math::sinP3_wrap(sample_R);
     sample_R = NlToolbox::Others::threeRanges(sample_R, tmpVar, _signal[CAB_FLD]);
 
-    sample_R = sample_R * sample_R - m_hp30_stateVar_R;
-    m_hp30_stateVar_R = sample_R * m_hp30_b0 + m_hp30_stateVar_R + DNC_CONST;
+    tmpVar = sample_R * sample_R - m_hp30_stateVar_R;
+    m_hp30_stateVar_R = tmpVar * m_hp30_b0 + m_hp30_stateVar_R + DNC_CONST;
 
     sample_R = NlToolbox::Others::parAsym(sample_R, tmpVar, _signal[CAB_ASM]);
     sample_R *= _signal[CAB_SAT];

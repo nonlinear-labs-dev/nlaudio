@@ -29,10 +29,10 @@ void ae_outputmixer::init(float _samplerate, uint32_t _numberOfVoices)
     m_sampleL = 0.f;
     m_sampleR = 0.f;
 
-    m_warpedConst_30hz = (6.28319f / _samplerate) * 30.f;
+    m_hp30_b0 = (6.28319f / _samplerate) * 30.f;
 
-    m_stateVarL.assign(_numberOfVoices, 0.f);
-    m_stateVarR.assign(_numberOfVoices, 0.f);
+    m_hp30_stateVar_L.assign(_numberOfVoices, 0.f);
+    m_hp30_stateVar_R.assign(_numberOfVoices, 0.f);
 
     m_highpass_L.initFilter(_samplerate, NlToolbox::Conversion::pitch2freq(8.f));
     m_highpass_R.initFilter(_samplerate, NlToolbox::Conversion::pitch2freq(8.f));
@@ -60,8 +60,8 @@ void ae_outputmixer::mixAndShape(float _sampleA, float _sampleB, float _sampleCo
     mainSample = NlToolbox::Others::threeRanges(mainSample, tmpVar, _signal[OUT_FLD]);
 
     tmpVar = mainSample * mainSample;
-    tmpVar = tmpVar - m_stateVarL[_voiceID];
-    m_stateVarL[_voiceID] = tmpVar * m_warpedConst_30hz + m_stateVarL[_voiceID] + DNC_CONST;
+    tmpVar = tmpVar - m_hp30_stateVar_L[_voiceID];
+    m_hp30_stateVar_L[_voiceID] = tmpVar * m_hp30_b0 + m_hp30_stateVar_L[_voiceID] + DNC_CONST;
 
     mainSample = NlToolbox::Others::parAsym(mainSample, tmpVar, _signal[OUT_ASM]);
 
@@ -81,8 +81,8 @@ void ae_outputmixer::mixAndShape(float _sampleA, float _sampleB, float _sampleCo
     mainSample = NlToolbox::Others::threeRanges(mainSample, tmpVar, _signal[OUT_FLD]);
 
     tmpVar = mainSample * mainSample;
-    tmpVar = tmpVar - m_stateVarR[_voiceID];
-    m_stateVarR[_voiceID] = tmpVar * m_warpedConst_30hz + m_stateVarR[_voiceID] + DNC_CONST;
+    tmpVar = tmpVar - m_hp30_stateVar_R[_voiceID];
+    m_hp30_stateVar_R[_voiceID] = tmpVar * m_hp30_b0 + m_hp30_stateVar_R[_voiceID] + DNC_CONST;
 
     mainSample = NlToolbox::Others::parAsym(mainSample, tmpVar, _signal[OUT_ASM]);
 
