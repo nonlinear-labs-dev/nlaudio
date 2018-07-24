@@ -817,8 +817,8 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     testParseDestination(par_key_phaseA);                   // phase a (see pe_defines.config.h)
     testParseDestination(par_key_phaseB);                   // phase b (see pe_defines.config.h)
     testParseDestination(notePitch);                        // note pitch
-    testParseDestination(par_key_pan);                      // key pan (see pe_defines.config.h)
-    evalMidi(5, 0, 0);                                      // env c rate: 0
+    testParseDestination(par_voice_pan);                    // voice pan (see pe_defines.config.h)
+    evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
     evalMidi(5, 0, 0);                                      // voice steal: 0
     evalMidi(23, noteVel >> 7, noteVel & 127);              // key down: velocity
     evalMidi(47, 0, 2);                                     // apply preloaded values

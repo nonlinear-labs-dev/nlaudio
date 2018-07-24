@@ -76,11 +76,11 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     }
     /* initialize envelopes */
     float gateRelease = 1.f / ((env_init_gateRelease * m_millisecond) + 1.f);
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     m_envelopes.init(_voices, gateRelease);
     /* debugging */
     // print segment definitions: (state, next, dx, dest)
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /* initializing and testing new envelopes here... */
     m_new_envelopes.init(_voices, gateRelease);
 #endif
@@ -297,7 +297,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
     const float velocity = m_event.m_poly[_voiceId].m_velocity;
     if(m_event.m_poly[_voiceId].m_type == 0)
     {
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /*
          *      "OLD" ENVELOPES:
          */
@@ -306,7 +306,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
         envUpdateStop(_voiceId, 1, pitch, velocity);            // Envelope B
         envUpdateStop(_voiceId, 2, pitch, velocity);            // Envelope C
         m_envelopes.stopEnvelope(_voiceId, 3);                  // Gate
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /*
          *      "NEW" ENVELOPES:
          */
@@ -316,7 +316,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
     }
     else
     {
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /*
          *      "OLD" ENVELOPES:
          */
@@ -325,7 +325,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
         envUpdateStart(_voiceId, 1, pitch, velocity, 0.f);      // Envelope B
         envUpdateStart(_voiceId, 2, pitch, velocity, 0.f);      // Envelope C (should get retrigger hardness parameter later)
         m_envelopes.startEnvelope(_voiceId, 3, 0.f, 0.f);       // Gate
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /*
          *      "NEW" ENVELOPES:
          */
@@ -338,7 +338,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
 /* TCD Key Events - mono key mechanism */
 void paramengine::keyApplyMono()
 {
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /*
      *      "OLD" ENVELOPES:
      */
@@ -348,7 +348,7 @@ void paramengine::keyApplyMono()
         m_envelopes.setSegmentDest(0, 4, 1, m_event.m_mono.m_velocity);
         m_envelopes.startEnvelope(0, 4, 0.f, 0.f);
     }
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
@@ -360,7 +360,7 @@ void paramengine::keyApplyMono()
 #endif
 }
 
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
 /*
  *      "OLD" ENVELOPES:
  */
@@ -467,7 +467,7 @@ void paramengine::envUpdateLevels(const uint32_t _voiceId, const uint32_t _envId
     /* envelope segment updates (Decay2 - Sustain Level) */
     m_envelopes.setSegmentDest(_voiceId, _envId, 3, peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal);
 }
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
 /*
  *      "NEW" ENVELOPES:
  */
@@ -831,7 +831,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
             //_signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
         //}
     //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /*
      *      "OLD" ENVELOPES:
      */
@@ -840,7 +840,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     envUpdateTimes(_voiceId, 1);    // Envelope B
     envUpdateTimes(_voiceId, 2);    // Envelope C
     /* later: Envelope C trigger at slow clock? */
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
@@ -943,7 +943,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
             //_signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_index].m_signal;
         //}
     //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /*
      *      "OLD" ENVELOPES:
      */
@@ -951,7 +951,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     envUpdateLevels(_voiceId, 0);   // Envelope A
     envUpdateLevels(_voiceId, 1);   // Envelope B
     envUpdateLevels(_voiceId, 2);   // Envelope C
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
@@ -1021,15 +1021,15 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
             //p = m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_postId;
             //_signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
         //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /* "OLD" ENVELOPES: */
         //m_envelopes.tickMono();
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /* "NEW" ENVELOPES: */
         //m_new_envelopes.tickMono();
 #endif
     //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /* "OLD" ENVELOPES: */
     /* poly envelope ticking */
     m_envelopes.tickPoly(_voiceId);
@@ -1040,7 +1040,7 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     _signal[ENV_B_TMB] = _signal[ENV_B_MAG];                                                                                                        // Envelope B Timbre (== Magnitude)
     _signal[ENV_C_SIG] = m_envelopes.m_body[m_envelopes.m_head[2].m_index + _voiceId].m_signal;                                                     // Envelope C
     _signal[ENV_G_SIG] = m_envelopes.m_body[m_envelopes.m_head[3].m_index + _voiceId].m_signal;                                                     // Gate
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /* "NEW" ENVELOPES: */
     /* poly envelope ticking */
     m_new_envelopes.tickPoly(_voiceId);
@@ -1160,10 +1160,10 @@ void paramengine::postProcessMono_audio(float *_signal)
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* mono envelope rendering */
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /* "OLD" ENVELOPES: */
         m_envelopes.tickMono();
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /* "NEW" ENVELOPES: */
         m_new_envelopes.tickMono();
 #endif

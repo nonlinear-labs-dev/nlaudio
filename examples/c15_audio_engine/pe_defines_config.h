@@ -12,12 +12,23 @@
 
 #include <stdint.h>
 
+/* Test Flags */
+
+#define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
+#define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
+#define test_unisonCluster          0               // 0: transmit only played note, 1: transmit played note and second one (one octave apart)
+
+/* Test poly Key Parameters */
+
+#define par_key_phaseA              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
+#define par_key_phaseB              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
+#define par_voice_pan               0               // constant values to be sent during KeyDown sequence, tcd range: [-8000 ... 8000]
+
 /* Main Configuration                               (prepared for maximal 20 Voices) */
 
 #define dsp_poly_types              2               // two polyphony types (mono, poly) - (later, a dual type needs to be implemented)
 #define dsp_clock_types             4               // four different parameter types (sync, audio, fast, slow)
 #define dsp_number_of_voices        20              // maximum allowed number of voices
-#define dsp_take_envelope           1               // specify which env engine should be used: old (0) or new (1)
 
 const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defined in rates (Hz) now
 
@@ -53,12 +64,6 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 #define par_envelopeA               0               // item pointer to (consecutive) envelope parameters A (internal ids)
 #define par_envelopeB               15              // item pointer to (consecutive) envelope parameters B (internal ids)
 #define par_envelopeC               30              // item pointer to (consecutive) envelope parameters C (internal ids)
-
-/* Sender-related Key Event Parameters (raw TCD values, currently constant values) */
-
-#define par_key_phaseA              0               // tcd range: [-7200 ... 7200]
-#define par_key_phaseB              0               // tcd range: [-7200 ... 7200]
-#define par_key_pan                 0               // tcd range: [-8000 ... 8000]
 
 /* DSP Helper Values */
 

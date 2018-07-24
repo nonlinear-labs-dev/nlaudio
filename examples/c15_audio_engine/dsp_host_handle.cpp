@@ -6,9 +6,6 @@
 
 #include <common/stopwatch.h>
 
-/* run the program either in pure TCD mode (0) or test functionality (1) */
-#define testFlag 1
-
 extern std::shared_ptr<Nl::StopWatch> sw;
 
 namespace Nl {
@@ -41,7 +38,8 @@ namespace DSP_HOST_HANDLE {
 
                 // printf("%02X %02X %02X\n", midiByteBuffer[0], midiByteBuffer[1], midiByteBuffer[2]);      // MIDI Value Control Output
 
-#if testFlag
+/* run the program either in pure TCD mode (0) or test functionality (1) - defined by test_inputModeFlag in pe_defines_config.h */
+#if test_inputModeFlag
                 m_host.testMidi(midiByteBuffer[0], midiByteBuffer[1], midiByteBuffer[2]);
 #else
                 m_host.evalMidi(midiByteBuffer[0], midiByteBuffer[1], midiByteBuffer[2]);
