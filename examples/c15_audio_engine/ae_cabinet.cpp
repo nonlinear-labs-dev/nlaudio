@@ -1,4 +1,4 @@
-/******************************************************************************/
+﻿/******************************************************************************/
 /** @file           ae_cabinet.cpp
     @date           2018-07-18
     @version        1.0
@@ -37,7 +37,6 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
     //*************************** Biquad Highpass ****************************//
     m_hp_b0 = 0.f;
     m_hp_b1 = 0.f;
-    m_hp_b2 = 0.f;
     m_hp_a1 = 0.f;
     m_hp_a2 = 0.f;
 
@@ -53,7 +52,6 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
     //************************** Biquad Lowpasses ****************************//
     m_lp1_b0 = 0.f;
     m_lp1_b1 = 0.f;
-    m_lp1_b2 = 0.f;
     m_lp1_a1 = 0.f;
     m_lp1_a2 = 0.f;
 
@@ -68,7 +66,6 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
 
     m_lp2_b0 = 0.f;
     m_lp2_b1 = 0.f;
-    m_lp2_b2 = 0.f;
     m_lp2_a1 = 0.f;
     m_lp2_a2 = 0.f;
 
@@ -82,7 +79,7 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
     m_lp2_stateVar_R2 = 0.f;
 
     //*************************** Tilt Lowshelves ****************************//
-    m_tiltOmegaSin = NlToolbox::Math::sin(1200.f * m_warpConst_2PI) * 0.5f;
+    m_tiltOmegaSin = NlToolbox::Math::sin(1200.f * m_warpConst_2PI);
     m_tiltOmegaCos = NlToolbox::Math::cos(1200.f * m_warpConst_2PI);
 
     m_ls1_b0 = 0.f;
@@ -135,6 +132,8 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
 
 void ae_cabinet::setCabinet(float *_signal, float _samplerate)
 {
+    float tmpVar;
+
     //*************************** Biquad Highpass ****************************//
     float frequency = _signal[CAB_HPF];
 
@@ -149,23 +148,21 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     }
 
     frequency *= m_warpConst_2PI;
-    float tmpVar = NlToolbox::Math::cos(frequency);
+    tmpVar = NlToolbox::Math::cos(frequency);
 
     m_hp_a1 = tmpVar * -2.f;
     m_hp_b0 = (1.f + tmpVar) / 2.f;
     m_hp_b1 = (1.f + tmpVar) * -1.f;
-    m_hp_b2 = m_hp_b0;
 
     tmpVar = NlToolbox::Math::sin(frequency) * 0.5f;
 
     m_hp_a2 = 1.f - tmpVar;
     tmpVar = 1.f + tmpVar;
 
-    m_hp_a1 = m_hp_a1 * (1.f / tmpVar) * -1.f;
-    m_hp_a2 = m_hp_a2 * (1.f / tmpVar) * -1.f;
-    m_hp_b0 = m_hp_b0 * (1.f / tmpVar);
-    m_hp_b1 = m_hp_b1 * (1.f / tmpVar);
-    m_hp_b2 = m_hp_b2 * (1.f / tmpVar);
+    m_hp_a1 = m_hp_a1 / tmpVar * -1.f;
+    m_hp_a2 = m_hp_a2 / tmpVar * -1.f;
+    m_hp_b0 = m_hp_b0 / tmpVar;
+    m_hp_b1 = m_hp_b1 / tmpVar;
 
 
     //*************************** Biquad Lowpass 1 ***************************//
@@ -187,18 +184,16 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     m_lp1_a1 = tmpVar * -2.f;
     m_lp1_b0 = (1.f - tmpVar) / 2.f;
     m_lp1_b1 = 1.f - tmpVar;
-    m_lp1_b2 = m_lp1_b0;
 
     tmpVar = NlToolbox::Math::sin(frequency) * 0.5f;
 
     m_lp1_a2 = 1.f - tmpVar;
     tmpVar = 1.f + tmpVar;
 
-    m_lp1_a1 = m_lp1_a1 * (1.f / tmpVar) * -1.f;
-    m_lp1_a2 = m_lp1_a2 * (1.f / tmpVar) * -1.f;
-    m_lp1_b0 = m_lp1_b0 * (1.f / tmpVar);
-    m_lp1_b1 = m_lp1_b1 * (1.f / tmpVar);
-    m_lp1_b2 = m_lp1_b2 * (1.f / tmpVar);
+    m_lp1_a1 = m_lp1_a1 / tmpVar * -1.f;
+    m_lp1_a2 = m_lp1_a2 / tmpVar * -1.f;
+    m_lp1_b0 = m_lp1_b0 / tmpVar;
+    m_lp1_b1 = m_lp1_b1 / tmpVar;
 
 
     //*************************** Biquad Lowpass 2 ***************************//
@@ -220,26 +215,24 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     m_lp2_a1 = tmpVar * -2.f;
     m_lp2_b0 = (1.f - tmpVar) / 2.f;
     m_lp2_b1 = 1.f - tmpVar;
-    m_lp2_b2 = m_lp2_b0;
 
     tmpVar = NlToolbox::Math::sin(frequency) * 0.5f;
 
     m_lp2_a2 = 1.f - tmpVar;
     tmpVar = 1.f + tmpVar;
 
-    m_lp2_a1 = m_lp2_a1 * (1.f / tmpVar) * -1.f;
-    m_lp2_a2 = m_lp2_a2 * (1.f / tmpVar) * -1.f;
-    m_lp2_b0 = m_lp2_b0 * (1.f / tmpVar);
-    m_lp2_b1 = m_lp2_b1 * (1.f / tmpVar);
-    m_lp2_b2 = m_lp2_b2 * (1.f / tmpVar);
+    m_lp2_a1 = m_lp2_a1 / tmpVar * -1.f;
+    m_lp2_a2 = m_lp2_a2 / tmpVar * -1.f;
+    m_lp2_b0 = m_lp2_b0 / tmpVar;
+    m_lp2_b1 = m_lp2_b1 / tmpVar;
 
 
     //**************************** Tilt Lowshelves ***************************//
-    float tilt = pow(1.059f, _signal[CAB_TILT]);
+    float tilt = pow(10.f, _signal[CAB_TILT] * 0.025f);
+//    float tilt = pow(1.059192f, _signal[CAB_TILT]);       // alternative to pow(10.f, _signal[CAB_TILT] / 40.f)
 
-    tmpVar = (tilt + 1.f / tilt);
-    tmpVar = sqrt(tmpVar + 2.f) * m_tiltOmegaSin;
-    tmpVar = 2.f * sqrt(tilt) * tmpVar;
+    tmpVar = tilt + 1.f / tilt + 2.f;
+    tmpVar = sqrt(tilt * tmpVar) * m_tiltOmegaSin;
 
     float coeff = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar;
     m_ls1_a1    = ((tilt - 1.f) + (m_tiltOmegaCos * (tilt + 1.f))) * -2.f;
@@ -248,18 +241,17 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     m_ls1_b1    = ((tilt - 1.f) - (m_tiltOmegaCos * (tilt + 1.f))) * 2.f     * tilt;
     m_ls1_b2    = ((tilt + 1.f) - (m_tiltOmegaCos * (tilt - 1.f))  - tmpVar) * tilt;
 
-    m_ls1_a1 = m_ls1_a1 * (1.f / coeff) * -1.f;
-    m_ls1_a2 = m_ls1_a2 * (1.f / coeff) * -1.f;
-    m_ls1_b0 = m_ls1_b0 * (1.f / coeff);
-    m_ls1_b1 = m_ls1_b1 * (1.f / coeff);
-    m_ls1_b2 = m_ls1_b2 * (1.f / coeff);
+    m_ls1_a1 = m_ls1_a1 / coeff * -1.f;
+    m_ls1_a2 = m_ls1_a2 / coeff * -1.f;
+    m_ls1_b0 = m_ls1_b0 / coeff;
+    m_ls1_b1 = m_ls1_b1 / coeff;
+    m_ls1_b2 = m_ls1_b2 / coeff;
 
+    tilt = pow(10.f, _signal[CAB_TILT] * -0.025f);
+//    tilt = pow(1.059192f, _signal[CAB_TILT] * -1.f);          // alternative to pow(10.f, _signal[CAB_TILT] / 40.f * -1.f)
 
-    tilt = pow(1.059f, _signal[CAB_TILT] * -1.f);
-
-    tmpVar = (tilt + 1.f / tilt);
-    tmpVar = sqrt(tmpVar + 2.f) * m_tiltOmegaSin;
-    tmpVar = 2.f * sqrt(tilt) * tmpVar;
+    tmpVar = tilt + 1.f / tilt + 2.f;
+    tmpVar = sqrt(tilt * tmpVar) * m_tiltOmegaSin;
 
     coeff    = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar;
     m_ls2_a1 = ((tilt - 1.f) + (m_tiltOmegaCos * (tilt + 1.f))) * -2.f;
@@ -268,11 +260,11 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     m_ls2_b1 = ((tilt - 1.f) - (m_tiltOmegaCos * (tilt + 1.f))) * 2.f     * tilt;
     m_ls2_b2 = ((tilt + 1.f) - (m_tiltOmegaCos * (tilt - 1.f))  - tmpVar) * tilt;
 
-    m_ls2_a1 = m_ls2_a1 * (1.f / coeff) * -1.f;
-    m_ls2_a2 = m_ls2_a2 * (1.f / coeff) * -1.f;
-    m_ls2_b0 = m_ls2_b0 * (1.f / coeff);
-    m_ls2_b1 = m_ls2_b1 * (1.f / coeff);
-    m_ls2_b2 = m_ls2_b2 * (1.f / coeff);
+    m_ls2_a1 = m_ls2_a1 / coeff * -1.f;
+    m_ls2_a2 = m_ls2_a2 / coeff * -1.f;
+    m_ls2_b0 = m_ls2_b0 / coeff;
+    m_ls2_b1 = m_ls2_b1 / coeff;
+    m_ls2_b2 = m_ls2_b2 / coeff;
 }
 
 
@@ -286,14 +278,14 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     float tmpVar;
 
     //********************************* Drive ********************************//
-    float sample_L = _rawSample_L * _signal[CAB_DRV];
+    tmpVar = _signal[CAB_DRV];    float sample_L = _rawSample_L * _signal[CAB_DRV];
     float sample_R = _rawSample_R * _signal[CAB_DRV];
 
 
     //************************** Biquad Highpass L ***************************//
     tmpVar  = m_hp_b0 * sample_L;
     tmpVar += m_hp_b1 * m_hp_stateVar_L1;
-    tmpVar += m_hp_b2 * m_hp_stateVar_L2;
+    tmpVar += m_hp_b0 * m_hp_stateVar_L2;
     tmpVar += m_hp_a1 * m_hp_stateVar_L3;
     tmpVar += m_hp_a2 * m_hp_stateVar_L4;
 
@@ -308,7 +300,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     //************************** Biquad Highpass R ***************************//
     tmpVar  = m_hp_b0 * sample_R;
     tmpVar += m_hp_b1 * m_hp_stateVar_R1;
-    tmpVar += m_hp_b2 * m_hp_stateVar_R2;
+    tmpVar += m_hp_b0 * m_hp_stateVar_R2;
     tmpVar += m_hp_a1 * m_hp_stateVar_R3;
     tmpVar += m_hp_a2 * m_hp_stateVar_R4;
 
@@ -351,6 +343,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
 
 
     //******************************* Shaper L *******************************//
+    tmpVar = _signal[CAB_PRESAT];
     sample_L *= _signal[CAB_PRESAT];
     tmpVar = sample_L;
 
@@ -361,6 +354,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     m_hp30_stateVar_L = tmpVar * m_hp30_b0 + m_hp30_stateVar_L + DNC_CONST;
 
     sample_L = NlToolbox::Others::parAsym(sample_L, tmpVar, _signal[CAB_ASM]);
+    tmpVar = _signal[CAB_SAT];
     sample_L *= _signal[CAB_SAT];
 
 
@@ -409,7 +403,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     //************************* 2 x Biquad Lowpass L *************************//
     tmpVar  = m_lp1_b0 * sample_L;
     tmpVar += m_lp1_b1 * m_lp1_stateVar_L1;
-    tmpVar += m_lp1_b2 * m_lp1_stateVar_L2;
+    tmpVar += m_lp1_b0 * m_lp1_stateVar_L2;
     tmpVar += m_lp1_a1 * m_lp1_stateVar_L3;
     tmpVar += m_lp1_a2 * m_lp1_stateVar_L4;
 
@@ -422,7 +416,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
 
     tmpVar  = m_lp2_b0 * sample_L;
     tmpVar += m_lp2_b1 * m_lp2_stateVar_L1;
-    tmpVar += m_lp2_b2 * m_lp2_stateVar_L2;
+    tmpVar += m_lp2_b0 * m_lp2_stateVar_L2;
     tmpVar += m_lp2_a1 * m_lp2_stateVar_L3;
     tmpVar += m_lp2_a2 * m_lp2_stateVar_L4;
 
@@ -436,7 +430,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     //************************* 2 x Biquad Lowpass R *************************//
     tmpVar  = m_lp1_b0 * sample_R;
     tmpVar += m_lp1_b1 * m_lp1_stateVar_R1;
-    tmpVar += m_lp1_b2 * m_lp1_stateVar_R2;
+    tmpVar += m_lp1_b0 * m_lp1_stateVar_R2;
     tmpVar += m_lp1_a1 * m_lp1_stateVar_R3;
     tmpVar += m_lp1_a2 * m_lp1_stateVar_R4;
 
@@ -449,7 +443,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
 
     tmpVar  = m_lp2_b0 * sample_R;
     tmpVar += m_lp2_b1 * m_lp2_stateVar_R1;
-    tmpVar += m_lp2_b2 * m_lp2_stateVar_R2;
+    tmpVar += m_lp2_b0 * m_lp2_stateVar_R2;
     tmpVar += m_lp2_a1 * m_lp2_stateVar_R3;
     tmpVar += m_lp2_a2 * m_lp2_stateVar_R4;
 
