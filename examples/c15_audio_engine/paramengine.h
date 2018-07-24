@@ -15,9 +15,9 @@
 #include "pe_defines_params.h"
 #include "pe_exponentiator.h"
 
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
 #include "pe_env_engine.h"
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
 #include "pe_env_engine2.h"
 #endif
 
@@ -87,9 +87,9 @@ struct paramengine
     param_body m_body[sig_number_of_param_items];
     exponentiator m_convert;
     param_utility m_utilities[sig_number_of_utilities];
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     env_engine m_envelopes;
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     env_engine2 m_new_envelopes;
 #endif
     poly_key_event m_event;
@@ -97,6 +97,7 @@ struct paramengine
     NlToolbox::Curves::Shaper_1_BP m_svfLBH1Curve;
     NlToolbox::Curves::Shaper_1_BP m_svfLBH2Curve;
     const float m_svfResFactor = 1.f / 60.f;
+    const float m_cabTiltFloor = 2e-20;
     NlToolbox::Curves::Shaper_2_BP m_svfResonanceCurve;
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
@@ -116,13 +117,13 @@ struct paramengine
     void keyUp(const uint32_t _voiceId, float _velocity);                                   // key events: key up (note off) mechanism
     void keyApply(const uint32_t _voiceId);                                                 // key events: apply key event
     void keyApplyMono();                                                                    // key events: apply mono event
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /* OLD envelope updates */
     void envUpdateStart(const uint32_t _voiceId, const uint32_t _envId, const float _pitch, const float _velocity, const float _retriggerHardness);
     void envUpdateStop(const uint32_t _voiceId, const uint32_t _envId, const float _pitch, const float _velocity);
     void envUpdateTimes(const uint32_t _voiceId, const uint32_t _envId);
     void envUpdateLevels(const uint32_t _voiceId, const uint32_t _envId);
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /* NEW envelopes updates */
     void newEnvUpdateStart(const uint32_t _voiceId, const float _pitch, const float _velocity);
     void newEnvUpdateStop(const uint32_t _voiceId, const float _pitch, const float _velocity);

@@ -23,6 +23,7 @@ namespace NlToolbox {
  *  @return   clipped value (currently either unipolar or bipolar)
 ******************************************************************************/
 
+/* Clipping namespace currently kept to prevent compilation errors - removed later */
 namespace Clipping {
 
 /* handle clipping of single floats (fmin, fmax are of type double) */
@@ -30,39 +31,25 @@ namespace Clipping {
 /* return the biggest of two floats */
 inline float floatMax(float _x, float _y)
 {
-    if(_x > _y)
-    {
-        return _x;
-    }
-    else
-    {
-        return _y;
-    }
+    return std::max(_x, _y);
 }
 
 /* return the smallest of two floats */
 inline float floatMin(float _x, float _y)
 {
-    if(_x < _y)
-    {
-        return _x;
-    }
-    else
-    {
-        return _y;
-    }
+    return std::min(_x, _y);
 }
 
 /* clip a float in the normalized unipolar interval [0 ... 1] */
 inline float uniNorm(float _value)
 {
-    return (floatMax(0.f, floatMin(1.f, _value)));
+    return std::clamp(_value, 0.f, 1.f);
 }
 
 /* clip a float in the normalized bipolar interval [-1 ... 1] */
 inline float biNorm(float _value)
 {
-    return (floatMax(-1.f, floatMin(1.f, _value)));
+    return std::clamp(_value, -1.f, 1.f);
 }
 
 } // namespace Clipping
@@ -99,7 +86,7 @@ inline float crossFade(float _sample1, float _sample2, float _gain1, float _gain
 
 inline float bipolarCrossFade(float _sample1, float _sample2, float _mix)
 {
-    _sample1 = (1.f - fabs(_mix)) * _sample1;            // kann fabs() anders gerechnet werden?
+    _sample1 = (1.f - std::abs(_mix)) * _sample1;
     _sample2 = _mix * _sample2;
 
     return _sample1 + _sample2;
@@ -264,7 +251,7 @@ inline float sinP3_wrap(float _x)
     }
 
     _x += _x;
-    _x = fabs(_x);
+    _x = std::abs(_x);
     _x = 0.5f - _x;
 
     float x_square = _x * _x;
@@ -283,7 +270,7 @@ inline float sinP3_wrap(float _x)
 inline float sinP3_noWrap(float _x)
 {
     _x += _x;
-    _x = fabs(_x);
+    _x = std::abs(_x);
     _x = 0.5f - _x;
 
     float x_square = _x * _x;
@@ -323,8 +310,8 @@ inline float interpolRT(float fract, float sample_tm1, float sample_t0, float sa
 ******************************************************************************/
 inline float bell(float _x)
 {
-    _x = fabs(_x - 0.5f) * 4.f - 1.f;
-    return (2.f - fabs(_x)) * _x * -0.5f + 0.5f;
+    _x = std::abs(_x - 0.5f) * 4.f - 1.f;
+    return (2.f - std::abs(_x)) * _x * -0.5f + 0.5f;
 }
 
 
@@ -763,7 +750,7 @@ struct Shaper_2_BP
 
 inline float SquaredCurvature(const float _value, const float _curvature)
 {
-    return(_value * (1.f + (_curvature * (fabs(_value) - 1.f))));
+    return(_value * (1.f + (_curvature * (std::abs(_value) - 1.f))));
 }
 
 } // Namespace Curves

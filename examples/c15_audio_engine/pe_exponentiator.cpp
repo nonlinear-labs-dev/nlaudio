@@ -63,7 +63,7 @@ float exponentiator::hyperfloor(float _value)
 float exponentiator::clip(float _min, float _max, float _value)
 {
     /* clipping of values to ensure that table access does not exceed predefined ranges */
-    return NlToolbox::Clipping::floatMax(_min, NlToolbox::Clipping::floatMin(_max, _value));
+    return std::clamp(_value, _min, _max);
 }
 
 void exponentiator::setTablePos(float _value)

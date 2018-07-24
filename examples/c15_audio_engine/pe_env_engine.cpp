@@ -286,7 +286,7 @@ void env_engine::nextSegment(const uint32_t _voiceId, const uint32_t _envId)
 float env_engine::squaredCurvature(const float _value, const float _curvature)
 {
     /* depending on the curvature [-1 ... 1], values [-1 ... 1] are transformed into a 2nd order polynomial (sign sensitive) */
-    return(_value * (1 + (_curvature * (fabs(_value) - 1))));
+    return(_value * (1 + (_curvature * (std::abs(_value) - 1))));
 }
 
 /* envelope triggers */

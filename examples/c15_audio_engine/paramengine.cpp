@@ -76,11 +76,11 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     }
     /* initialize envelopes */
     float gateRelease = 1.f / ((env_init_gateRelease * m_millisecond) + 1.f);
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     m_envelopes.init(_voices, gateRelease);
     /* debugging */
     // print segment definitions: (state, next, dx, dest)
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /* initializing and testing new envelopes here... */
     m_new_envelopes.init(_voices, gateRelease);
 #endif
@@ -90,7 +90,7 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
 /* helper - nyquist clip */
 float paramengine::evalNyquist(float _freq)
 {
-    return NlToolbox::Clipping::floatMin(m_nyquist_frequency, _freq);
+    return std::min(m_nyquist_frequency, _freq);
 }
 
 /* TCD mechanism - scaling */
@@ -114,11 +114,11 @@ float paramengine::scale(const uint32_t _scaleId, const float _scaleArg, float _
         break;
     case 3:
         /* bipolar, parabolic scaling (argument is offet) */
-        result = (fabs(_value) * _value) + _scaleArg;
+        result = (std::abs(_value) * _value) + _scaleArg;
         break;
     case 4:
         /* bipolar, parabolic scaling (argument is factor) */
-        result = fabs(_value) * _value * _scaleArg;
+        result = std::abs(_value) * _value * _scaleArg;
         break;
     case 5:
         /* bipolar, cubic scaling (argument is offset) */
@@ -169,7 +169,7 @@ void paramengine::setDx(const uint32_t _voiceId, const uint32_t _paramId, float 
     param_head* obj = &m_head[_paramId];
     const uint32_t index = obj->m_index + _voiceId;
     /* handle by clock type and clip to fit [0 ... 1] range */
-    _value = NlToolbox::Clipping::floatMin(_value * m_timeFactors[obj->m_clockType], 1.f);
+    _value = std::min(_value * m_timeFactors[obj->m_clockType], 1.f);
     /* pass value to (rendering) item */
     m_body[index].m_dx[0] = _value;
 }
@@ -297,7 +297,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
     const float velocity = m_event.m_poly[_voiceId].m_velocity;
     if(m_event.m_poly[_voiceId].m_type == 0)
     {
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /*
          *      "OLD" ENVELOPES:
          */
@@ -306,7 +306,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
         envUpdateStop(_voiceId, 1, pitch, velocity);            // Envelope B
         envUpdateStop(_voiceId, 2, pitch, velocity);            // Envelope C
         m_envelopes.stopEnvelope(_voiceId, 3);                  // Gate
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /*
          *      "NEW" ENVELOPES:
          */
@@ -316,7 +316,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
     }
     else
     {
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /*
          *      "OLD" ENVELOPES:
          */
@@ -325,7 +325,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
         envUpdateStart(_voiceId, 1, pitch, velocity, 0.f);      // Envelope B
         envUpdateStart(_voiceId, 2, pitch, velocity, 0.f);      // Envelope C (should get retrigger hardness parameter later)
         m_envelopes.startEnvelope(_voiceId, 3, 0.f, 0.f);       // Gate
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /*
          *      "NEW" ENVELOPES:
          */
@@ -338,7 +338,7 @@ void paramengine::keyApply(const uint32_t _voiceId)
 /* TCD Key Events - mono key mechanism */
 void paramengine::keyApplyMono()
 {
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /*
      *      "OLD" ENVELOPES:
      */
@@ -348,7 +348,7 @@ void paramengine::keyApplyMono()
         m_envelopes.setSegmentDest(0, 4, 1, m_event.m_mono.m_velocity);
         m_envelopes.startEnvelope(0, 4, 0.f, 0.f);
     }
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
@@ -360,7 +360,7 @@ void paramengine::keyApplyMono()
 #endif
 }
 
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
 /*
  *      "OLD" ENVELOPES:
  */
@@ -376,7 +376,7 @@ void paramengine::envUpdateStart(const uint32_t _voiceId, const uint32_t _envId,
     float attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;
     float levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;
     /* determine envelope peak level - clipped to max. +3dB (candidate) */
-    float peak = NlToolbox::Clipping::floatMin(m_convert.eval_level(((1 - _velocity) * levelVel) + levelKT), env_clip_peak);
+    float peak = std::min(m_convert.eval_level(((1 - _velocity) * levelVel) + levelKT), env_clip_peak);
     /* envelope event updates */
     m_event.m_env[_envId].m_levelFactor[_voiceId] = peak;
     m_event.m_env[_envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;
@@ -467,7 +467,7 @@ void paramengine::envUpdateLevels(const uint32_t _voiceId, const uint32_t _envId
     /* envelope segment updates (Decay2 - Sustain Level) */
     m_envelopes.setSegmentDest(_voiceId, _envId, 3, peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal);
 }
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
 /*
  *      "NEW" ENVELOPES:
  */
@@ -489,7 +489,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
-    peak = NlToolbox::Clipping::floatMin(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);// determine peak level according to velocity and level parameters (max +3dB)
+    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
 
     m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
     m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
@@ -523,7 +523,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
-    peak = NlToolbox::Clipping::floatMin(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);// determine peak level according to velocity and level parameters (max +3dB)
+    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
 
     m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
     m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
@@ -557,7 +557,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
-    peak = NlToolbox::Clipping::floatMin(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);// determine peak level according to velocity and level parameters (max +3dB)
+    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
 
     m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
     m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
@@ -831,7 +831,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
             //_signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
         //}
     //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /*
      *      "OLD" ENVELOPES:
      */
@@ -840,7 +840,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     envUpdateTimes(_voiceId, 1);    // Envelope B
     envUpdateTimes(_voiceId, 2);    // Envelope C
     /* later: Envelope C trigger at slow clock? */
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
@@ -882,7 +882,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     /* - Comb Filter Decay Time (Base Pitch, Master Tune, Gate Env, Dec Time, Key Tracking, Gate Amount) */
     keyTracking = m_body[m_head[P_CMB_DKT].m_index].m_signal;
     envMod = 1.f - ((1.f - _signal[ENV_G_SIG]) * m_combDecayCurve.applyCurve(m_body[m_head[P_CMB_DG].m_index].m_signal));
-    unitPitch = (-0.5 * basePitch * keyTracking) + (fabs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
+    unitPitch = (-0.5 * basePitch * keyTracking) + (std::abs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
     unitSign = m_body[m_head[P_CMB_D].m_index].m_signal < 0 ? -1.f : 1.f;
     _signal[CMB_DEC] = 0.001 * m_convert.eval_level(unitPitch) * unitSign;
     /* - Comb Filter Allpass Frequency (Base Pitch, Master Tune, Key Tracking, AP Tune, Env C) */
@@ -913,7 +913,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     keyTracking = m_body[m_head[P_SVF_RKT].m_index].m_signal * m_svfResFactor;
     envMod = _signal[ENV_C_SIG] * m_body[m_head[P_SVF_REC].m_index].m_signal;
     unitPitch = m_body[m_head[P_SVF_RES].m_index].m_signal + envMod + (basePitch * keyTracking);
-    _signal[SVF_RES] = m_svfResonanceCurve.applyCurve(NlToolbox::Clipping::uniNorm(unitPitch));
+    _signal[SVF_RES] = m_svfResonanceCurve.applyCurve(std::clamp(unitPitch, 0.f, 1.f));
 }
 
 /* Poly Post Processing - fast parameters */
@@ -943,7 +943,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
             //_signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_index].m_signal;
         //}
     //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /*
      *      "OLD" ENVELOPES:
      */
@@ -951,7 +951,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     envUpdateLevels(_voiceId, 0);   // Envelope A
     envUpdateLevels(_voiceId, 1);   // Envelope B
     envUpdateLevels(_voiceId, 2);   // Envelope C
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
@@ -966,7 +966,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     _signal[SVF_LBH_2] = m_svfLBH2Curve.applyCurve(tmp_lvl);
     /* - Parallel */
     tmp_lvl = m_body[m_head[P_SVF_PAR].m_index].m_signal;
-    tmp_abs = fabs(tmp_lvl);
+    tmp_abs = std::abs(tmp_lvl);
     _signal[SVF_PAR_1] = 0.7f * tmp_abs;
     _signal[SVF_PAR_2] = (0.7f * tmp_lvl) + (1.f - tmp_abs);
     _signal[SVF_PAR_3] = 1.f - tmp_abs;
@@ -975,22 +975,22 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     const float key_pan = m_body[m_head[P_KEY_VP].m_index + _voiceId].m_signal;
     /* - Branch A */
     tmp_lvl = m_body[m_head[P_OM_AL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_AP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_AP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_A_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_A_R] = tmp_lvl * tmp_pan;
     /* - Branch B */
     tmp_lvl = m_body[m_head[P_OM_BL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_BP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_BP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_B_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_B_R] = tmp_lvl * tmp_pan;
     /* - Comb Filter */
     tmp_lvl = m_body[m_head[P_OM_CL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_CP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_CP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_CMB_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_CMB_R] = tmp_lvl * tmp_pan;
     /* - State Variable Filter */
     tmp_lvl = m_body[m_head[P_OM_SL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_SP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_SP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_SVF_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_SVF_R] = tmp_lvl * tmp_pan;
 }
@@ -1021,15 +1021,15 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
             //p = m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_postId;
             //_signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
         //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /* "OLD" ENVELOPES: */
         //m_envelopes.tickMono();
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /* "NEW" ENVELOPES: */
         //m_new_envelopes.tickMono();
 #endif
     //}
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
     /* "OLD" ENVELOPES: */
     /* poly envelope ticking */
     m_envelopes.tickPoly(_voiceId);
@@ -1040,7 +1040,7 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     _signal[ENV_B_TMB] = _signal[ENV_B_MAG];                                                                                                        // Envelope B Timbre (== Magnitude)
     _signal[ENV_C_SIG] = m_envelopes.m_body[m_envelopes.m_head[2].m_index + _voiceId].m_signal;                                                     // Envelope C
     _signal[ENV_G_SIG] = m_envelopes.m_body[m_envelopes.m_head[3].m_index + _voiceId].m_signal;                                                     // Gate
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
     /* "NEW" ENVELOPES: */
     /* poly envelope ticking */
     m_new_envelopes.tickPoly(_voiceId);
@@ -1140,7 +1140,7 @@ void paramengine::postProcessMono_fast(float *_signal)
     /* Effect Parameter Post Processing */
     /* - Cabinet */
     /*   - Tilt to Saturation Levels (pre, post Shaper) */
-    tmp_val = NlToolbox::Clipping::floatMax(2e-20, m_convert.eval_level(0.5f * m_body[m_head[P_CAB_TILT].m_index].m_signal));
+    tmp_val = std::max(m_cabTiltFloor, m_convert.eval_level(0.5f * m_body[m_head[P_CAB_TILT].m_index].m_signal));
     _signal[CAB_PRESAT] = 0.1588f / tmp_val;
     _signal[CAB_SAT] = tmp_val;
     /*   - Cab Level and Dry/Wet Mix Levels */
@@ -1160,10 +1160,10 @@ void paramengine::postProcessMono_audio(float *_signal)
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* mono envelope rendering */
-#if dsp_take_envelope == 0
+#if test_whichEnvelope == 0
         /* "OLD" ENVELOPES: */
         m_envelopes.tickMono();
-#elif dsp_take_envelope == 1
+#elif test_whichEnvelope == 1
         /* "NEW" ENVELOPES: */
         m_new_envelopes.tickMono();
 #endif
