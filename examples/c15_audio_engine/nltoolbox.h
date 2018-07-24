@@ -86,7 +86,7 @@ inline float crossFade(float _sample1, float _sample2, float _gain1, float _gain
 
 inline float bipolarCrossFade(float _sample1, float _sample2, float _mix)
 {
-    _sample1 = (1.f - fabs(_mix)) * _sample1;            // kann fabs() anders gerechnet werden?
+    _sample1 = (1.f - std::abs(_mix)) * _sample1;
     _sample2 = _mix * _sample2;
 
     return _sample1 + _sample2;
@@ -251,7 +251,7 @@ inline float sinP3_wrap(float _x)
     }
 
     _x += _x;
-    _x = fabs(_x);
+    _x = std::abs(_x);
     _x = 0.5f - _x;
 
     float x_square = _x * _x;
@@ -270,7 +270,7 @@ inline float sinP3_wrap(float _x)
 inline float sinP3_noWrap(float _x)
 {
     _x += _x;
-    _x = fabs(_x);
+    _x = std::abs(_x);
     _x = 0.5f - _x;
 
     float x_square = _x * _x;
@@ -310,8 +310,8 @@ inline float interpolRT(float fract, float sample_tm1, float sample_t0, float sa
 ******************************************************************************/
 inline float bell(float _x)
 {
-    _x = fabs(_x - 0.5f) * 4.f - 1.f;
-    return (2.f - fabs(_x)) * _x * -0.5f + 0.5f;
+    _x = std::abs(_x - 0.5f) * 4.f - 1.f;
+    return (2.f - std::abs(_x)) * _x * -0.5f + 0.5f;
 }
 
 
@@ -750,7 +750,7 @@ struct Shaper_2_BP
 
 inline float SquaredCurvature(const float _value, const float _curvature)
 {
-    return(_value * (1.f + (_curvature * (fabs(_value) - 1.f))));
+    return(_value * (1.f + (_curvature * (std::abs(_value) - 1.f))));
 }
 
 } // Namespace Curves

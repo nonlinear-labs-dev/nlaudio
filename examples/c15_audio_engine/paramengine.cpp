@@ -114,11 +114,11 @@ float paramengine::scale(const uint32_t _scaleId, const float _scaleArg, float _
         break;
     case 3:
         /* bipolar, parabolic scaling (argument is offet) */
-        result = (fabs(_value) * _value) + _scaleArg;
+        result = (std::abs(_value) * _value) + _scaleArg;
         break;
     case 4:
         /* bipolar, parabolic scaling (argument is factor) */
-        result = fabs(_value) * _value * _scaleArg;
+        result = std::abs(_value) * _value * _scaleArg;
         break;
     case 5:
         /* bipolar, cubic scaling (argument is offset) */
@@ -882,7 +882,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     /* - Comb Filter Decay Time (Base Pitch, Master Tune, Gate Env, Dec Time, Key Tracking, Gate Amount) */
     keyTracking = m_body[m_head[P_CMB_DKT].m_index].m_signal;
     envMod = 1.f - ((1.f - _signal[ENV_G_SIG]) * m_combDecayCurve.applyCurve(m_body[m_head[P_CMB_DG].m_index].m_signal));
-    unitPitch = (-0.5 * basePitch * keyTracking) + (fabs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
+    unitPitch = (-0.5 * basePitch * keyTracking) + (std::abs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
     unitSign = m_body[m_head[P_CMB_D].m_index].m_signal < 0 ? -1.f : 1.f;
     _signal[CMB_DEC] = 0.001 * m_convert.eval_level(unitPitch) * unitSign;
     /* - Comb Filter Allpass Frequency (Base Pitch, Master Tune, Key Tracking, AP Tune, Env C) */
@@ -913,7 +913,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     keyTracking = m_body[m_head[P_SVF_RKT].m_index].m_signal * m_svfResFactor;
     envMod = _signal[ENV_C_SIG] * m_body[m_head[P_SVF_REC].m_index].m_signal;
     unitPitch = m_body[m_head[P_SVF_RES].m_index].m_signal + envMod + (basePitch * keyTracking);
-    _signal[SVF_RES] = m_svfResonanceCurve.applyCurve(NlToolbox::Clipping::uniNorm(unitPitch));
+    _signal[SVF_RES] = m_svfResonanceCurve.applyCurve(std::clamp(unitPitch, 0.f, 1.f));
 }
 
 /* Poly Post Processing - fast parameters */
@@ -966,7 +966,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     _signal[SVF_LBH_2] = m_svfLBH2Curve.applyCurve(tmp_lvl);
     /* - Parallel */
     tmp_lvl = m_body[m_head[P_SVF_PAR].m_index].m_signal;
-    tmp_abs = fabs(tmp_lvl);
+    tmp_abs = std::abs(tmp_lvl);
     _signal[SVF_PAR_1] = 0.7f * tmp_abs;
     _signal[SVF_PAR_2] = (0.7f * tmp_lvl) + (1.f - tmp_abs);
     _signal[SVF_PAR_3] = 1.f - tmp_abs;
@@ -975,22 +975,22 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     const float key_pan = m_body[m_head[P_KEY_VP].m_index + _voiceId].m_signal;
     /* - Branch A */
     tmp_lvl = m_body[m_head[P_OM_AL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_AP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_AP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_A_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_A_R] = tmp_lvl * tmp_pan;
     /* - Branch B */
     tmp_lvl = m_body[m_head[P_OM_BL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_BP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_BP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_B_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_B_R] = tmp_lvl * tmp_pan;
     /* - Comb Filter */
     tmp_lvl = m_body[m_head[P_OM_CL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_CP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_CP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_CMB_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_CMB_R] = tmp_lvl * tmp_pan;
     /* - State Variable Filter */
     tmp_lvl = m_body[m_head[P_OM_SL].m_index].m_signal;
-    tmp_pan = NlToolbox::Clipping::uniNorm(m_body[m_head[P_OM_SP].m_index].m_signal + key_pan);
+    tmp_pan = std::clamp(m_body[m_head[P_OM_SP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_SVF_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_SVF_R] = tmp_lvl * tmp_pan;
 }
