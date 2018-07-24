@@ -136,7 +136,7 @@ void ae_combfilter::applyCombfilter(float _sampleA, float _sampleB, float *_sign
             m_sampleComb -= 0.501187f;
             tmpVar = m_sampleComb;
 
-            std::min(m_sampleComb, 2.98815f);
+            m_sampleComb = std::min(m_sampleComb, 2.98815f);
             m_sampleComb *= (1.f - m_sampleComb * 0.167328f);
 
             m_sampleComb *= 0.7488f;
@@ -149,7 +149,7 @@ void ae_combfilter::applyCombfilter(float _sampleA, float _sampleB, float *_sign
             m_sampleComb += 0.501187f;
             tmpVar = m_sampleComb;
 
-            std::max(m_sampleComb, -2.98815f);
+            m_sampleComb = std::max(m_sampleComb, -2.98815f);
             m_sampleComb *= (1.f - std::abs(m_sampleComb) * 0.167328f);
 
             m_sampleComb *= 0.7488f;
@@ -209,7 +209,6 @@ void ae_combfilter::applyCombfilter(float _sampleA, float _sampleB, float *_sign
     m_sampleComb *= m_flushFadePoint;
 
     /// Envelope for voicestealingtmpVar
-
 
     m_delayBufferInd = (m_delayBufferInd + 1) & COMB_BUFFER_SIZE_M1;      // increase index and check boundaries
 
@@ -348,11 +347,7 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
     tmpVar = _signal[CMB_DEC];
     frequency = _signal[CMB_FRQ] * std::abs(tmpVar);
 
-    if (frequency < DNC_CONST)         // Min-Clip
-    {
-        frequency = DNC_CONST;
-    }
-
+    frequency = std::max(frequency, DNC_CONST);
     frequency = (1.f / frequency) * -6.28318f;
 
     if (frequency > 0)                 // Exp Clipped

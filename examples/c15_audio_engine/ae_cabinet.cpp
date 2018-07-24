@@ -114,11 +114,7 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
 
     //***************************** 30 Hz Highpass ****************************//
     m_hp30_b0 = 30.f * m_warpConst_2PI;
-
-    if (m_hp30_b0 > 0.8f)
-    {
-        m_hp30_b0 = 0.8f;
-    }
+    m_hp30_b0 = std::min(m_hp30_b0, 0.8f);
 
     m_hp30_stateVar_L = 0.f;
     m_hp30_stateVar_R = 0.f;
