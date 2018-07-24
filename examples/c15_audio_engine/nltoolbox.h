@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <common/tools.h>
+#include <algorithm>
 #include "nlglobaldefines.h"
 
 
@@ -22,6 +23,7 @@ namespace NlToolbox {
  *  @return   clipped value (currently either unipolar or bipolar)
 ******************************************************************************/
 
+/* Clipping namespace currently kept to prevent compilation errors - removed later */
 namespace Clipping {
 
 /* handle clipping of single floats (fmin, fmax are of type double) */
@@ -29,39 +31,25 @@ namespace Clipping {
 /* return the biggest of two floats */
 inline float floatMax(float _x, float _y)
 {
-    if(_x > _y)
-    {
-        return _x;
-    }
-    else
-    {
-        return _y;
-    }
+    return std::max(_x, _y);
 }
 
 /* return the smallest of two floats */
 inline float floatMin(float _x, float _y)
 {
-    if(_x < _y)
-    {
-        return _x;
-    }
-    else
-    {
-        return _y;
-    }
+    return std::min(_x, _y);
 }
 
 /* clip a float in the normalized unipolar interval [0 ... 1] */
 inline float uniNorm(float _value)
 {
-    return (floatMax(0.f, floatMin(1.f, _value)));
+    return std::clamp(_value, 0.f, 1.f);
 }
 
 /* clip a float in the normalized bipolar interval [-1 ... 1] */
 inline float biNorm(float _value)
 {
-    return (floatMax(-1.f, floatMin(1.f, _value)));
+    return std::clamp(_value, -1.f, 1.f);
 }
 
 } // namespace Clipping

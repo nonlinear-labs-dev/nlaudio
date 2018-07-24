@@ -97,6 +97,7 @@ struct paramengine
     NlToolbox::Curves::Shaper_1_BP m_svfLBH1Curve;
     NlToolbox::Curves::Shaper_1_BP m_svfLBH2Curve;
     const float m_svfResFactor = 1.f / 60.f;
+    const float m_cabTiltFloor = 2e-20;
     NlToolbox::Curves::Shaper_2_BP m_svfResonanceCurve;
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
