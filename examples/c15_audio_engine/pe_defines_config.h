@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-/* Test Flags */
+/* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
 #define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)

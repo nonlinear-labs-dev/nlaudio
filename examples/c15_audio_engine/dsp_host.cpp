@@ -270,12 +270,23 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         /* keyUp */
         f = static_cast<float>(m_decoder.unsigned14(_data0, _data1));
         keyUp(m_decoder.m_voiceFrom, f);
+        /* now part of TCD specs: if the key list was specified by preload, voice automatically increases, further shortening TCD seuquences of Unison clusters */
+        if(m_decoder.m_listId == 2)
+        {
+            m_decoder.m_voiceFrom = (m_decoder.m_voiceFrom + 1) % m_voices;
+            voiceSelectionUpdate();
+        }
         break;
     case 14:
         /* keyDown */
         f = static_cast<float>(m_decoder.unsigned14(_data0, _data1));
         keyDown(m_decoder.m_voiceFrom, f);
-
+        /* now part of TCD specs: if the key list was specified by preload, voice automatically increases, further shortening TCD seuquences of Unison clusters */
+        if(m_decoder.m_listId == 2)
+        {
+            m_decoder.m_voiceFrom = (m_decoder.m_voiceFrom + 1) % m_voices;
+            voiceSelectionUpdate();
+        }
         break;
     case 15:
         /* flush (audio_engine trigger needed) */
@@ -821,9 +832,22 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
     evalMidi(5, 0, 0);                                      // voice steal: 0
     evalMidi(23, noteVel >> 7, noteVel & 127);              // key down: velocity
+#if test_unisonCluster == 0
     evalMidi(47, 0, 2);                                     // apply preloaded values
     /* take current voiceId and increase it (wrapped around polyphony) - sloppy approach */
     m_test_voiceId = (m_test_voiceId + 1) % m_voices;
+#elif test_unisonCluster == 1
+    testParseDestination(par_key_phaseA);                   // phase a (see pe_defines.config.h)
+    testParseDestination(par_key_phaseB);                   // phase b (see pe_defines.config.h)
+    testParseDestination(notePitch + 12000);                // note pitch (one octave apart)
+    testParseDestination(par_voice_pan);                    // voice pan (see pe_defines.config.h)
+    evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
+    evalMidi(5, 0, 0);                                      // voice steal: 0
+    evalMidi(23, noteVel >> 7, noteVel & 127);              // key down: velocity
+    evalMidi(47, 0, 2);                                     // apply preloaded values
+    /* take current voiceId and increase it (wrapped around polyphony) - sloppy approach */
+    m_test_voiceId = (m_test_voiceId + 2) % m_voices;
+#endif
 }
 
 /* test key up */
@@ -843,10 +867,15 @@ void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
         /* prepare velocity */
         uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
         /* key event sequence */
-        evalMidi(47, 0, 1);                                     // enable preload (no list mode)
+        evalMidi(47, 2, 1);                                     // enable preload (key event list mode)
         evalMidi(0, 0, usedVoiceId);                            // select voice: used voice (by note number)
         evalMidi(7, noteVel >> 7, noteVel & 127);               // key up: velocity
+#if test_unisonCluster == 0
         evalMidi(47, 0, 2);                                     // apply preloaded values
+#elif test_unisonCluster == 1
+        evalMidi(7, noteVel >> 7, noteVel & 127);               // key up: velocity
+        evalMidi(47, 0, 2);                                     // apply preloaded values
+#endif
     }
 }
 
