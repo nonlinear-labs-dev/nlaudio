@@ -15,7 +15,6 @@
 
 #define COMB_BUFFER_SIZE    8192
 #define COMB_BUFFER_SIZE_M1 8191
-#define COMB_BUFFER_SIZE_M3 8189
 
 struct ae_combfilter
 {

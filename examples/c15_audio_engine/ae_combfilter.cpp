@@ -129,18 +129,14 @@ void ae_combfilter::applyCombfilter(float _sampleA, float _sampleB, float *_sign
 
 
     //****************************** Para D ********************************//
-    if (fabs(m_sampleComb) > 0.501187f)
+    if (std::abs(m_sampleComb) > 0.501187f)
     {
         if (m_sampleComb > 0.f)
         {
             m_sampleComb -= 0.501187f;
             tmpVar = m_sampleComb;
 
-            if (m_sampleComb > 2.98815f)
-            {
-                m_sampleComb = 2.98815f;
-            }
-
+            std::min(m_sampleComb, 2.98815f);
             m_sampleComb *= (1.f - m_sampleComb * 0.167328f);
 
             m_sampleComb *= 0.7488f;
@@ -153,12 +149,8 @@ void ae_combfilter::applyCombfilter(float _sampleA, float _sampleB, float *_sign
             m_sampleComb += 0.501187f;
             tmpVar = m_sampleComb;
 
-            if (m_sampleComb < -2.98815f)
-            {
-                m_sampleComb = -2.98815f;
-            }
-
-            m_sampleComb *= (1.f - fabs(m_sampleComb) * 0.167328f);
+            std::max(m_sampleComb, -2.98815f);
+            m_sampleComb *= (1.f - std::abs(m_sampleComb) * 0.167328f);
 
             m_sampleComb *= 0.7488f;
             tmpVar *= 0.2512f;
@@ -188,14 +180,7 @@ void ae_combfilter::applyCombfilter(float _sampleA, float _sampleB, float *_sign
     /// hier kommt voicestealing hin!!
 
     tmpVar -= 1.f;
-    if (tmpVar > COMB_BUFFER_SIZE_M3)
-    {
-        tmpVar = COMB_BUFFER_SIZE_M3;
-    }
-    else if (tmpVar < 1.f)
-    {
-        tmpVar = 1.f;
-    }
+    tmpVar = std::clamp(tmpVar, 1.f, 8189.f);
 
     float delaySamples_int = NlToolbox::Conversion::float2int(tmpVar - 0.5f);               // integer and fraction speration
     float delaySamples_fract = tmpVar - delaySamples_int;
@@ -246,15 +231,7 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
     //********************** Highpass Coefficients *************************//
     float frequency = _signal[CMB_FRQ];
     frequency *= 0.125f;
-
-    if (frequency < m_freqClip_24576)
-    {
-        frequency = m_freqClip_24576;
-    }
-    if (frequency > m_freqClip_2)
-    {
-        frequency = m_freqClip_2;
-    }
+    frequency = std::clamp(frequency, m_freqClip_24576, m_freqClip_2);
 
     frequency *= m_warpConst_PI;
     frequency = NlToolbox::Math::tan(frequency);
@@ -266,16 +243,7 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
 
     //*********************** Lowpass Coefficient **************************//
     frequency = _signal[CMB_LPF];
-
-    if (frequency < m_freqClip_24576)
-    {
-        frequency = m_freqClip_24576;
-    }
-    if (frequency > m_freqClip_4)
-    {
-        frequency = m_freqClip_4;
-    }
-
+    frequency = std::clamp(frequency, m_freqClip_24576, m_freqClip_4);
     frequency *= m_warpConst_PI;
 
     frequency *= 0.159155f;                                        // 2Pi wrap
@@ -289,16 +257,7 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
 
     //********************** Allpass Coefficients **************************//
     frequency = _signal[CMB_APF];
-
-    if (frequency < m_freqClip_24576)
-    {
-        frequency = m_freqClip_24576;
-    }
-    if (frequency > m_freqClip_2)
-    {
-        frequency = m_freqClip_2;
-    }
-
+    frequency = std::clamp(frequency, m_freqClip_24576, m_freqClip_2);
     frequency *= m_warpConst_2PI;
 
     float resonance = _signal[CMB_APR] * 1.99f - 1.f;
@@ -344,7 +303,6 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
     float stateVar2_i = NlToolbox::Math::sinP3_wrap(frequency + frequency);
     float stateVar2_r = NlToolbox::Math::sinP3_wrap(frequency + frequency + 0.25f);
 
-
     float var1_i = stateVar_i - stateVar2_i;
     float var2_i = (stateVar_i - (m_apCoeff_2 * stateVar2_i)) * -1.f;
     float var1_r = stateVar_r + stateVar2_r + m_apCoeff_2;
@@ -388,7 +346,7 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
 
     //**************************** Decay Gain ******************************//
     tmpVar = _signal[CMB_DEC];
-    frequency = _signal[CMB_FRQ] * fabs(tmpVar);
+    frequency = _signal[CMB_FRQ] * std::abs(tmpVar);
 
     if (frequency < DNC_CONST)         // Min-Clip
     {
