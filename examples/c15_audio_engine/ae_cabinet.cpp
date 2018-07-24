@@ -136,16 +136,17 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
 
     //*************************** Biquad Highpass ****************************//
     float frequency = _signal[CAB_HPF];
+    frequency = std::clamp(frequency, m_freqClip_min, m_freqClip_max);
 
-    if (frequency < m_freqClip_min)
-    {
-        frequency = m_freqClip_min;
-    }
+//    if (frequency < m_freqClip_min)
+//    {
+//        frequency = m_freqClip_min;
+//    }
 
-    if (frequency > m_freqClip_max)
-    {
-        frequency = m_freqClip_max;
-    }
+//    if (frequency > m_freqClip_max)
+//    {
+//        frequency = m_freqClip_max;
+//    }
 
     frequency *= m_warpConst_2PI;
     tmpVar = NlToolbox::Math::cos(frequency);
@@ -167,16 +168,17 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
 
     //*************************** Biquad Lowpass 1 ***************************//
     frequency = _signal[CAB_LPF];
+    frequency = std::clamp(frequency, m_freqClip_min, m_freqClip_max);
 
-    if (frequency < m_freqClip_min)
-    {
-        frequency = m_freqClip_min;
-    }
+//    if (frequency < m_freqClip_min)
+//    {
+//        frequency = m_freqClip_min;
+//    }
 
-    if (frequency > m_freqClip_max)
-    {
-        frequency = m_freqClip_max;
-    }
+//    if (frequency > m_freqClip_max)
+//    {
+//        frequency = m_freqClip_max;
+//    }
 
     frequency *= m_warpConst_2PI;
     tmpVar = NlToolbox::Math::cos(frequency);
@@ -198,16 +200,17 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
 
     //*************************** Biquad Lowpass 2 ***************************//
     frequency = _signal[CAB_LPF] * 1.333f;
+    frequency = std::clamp(frequency, m_freqClip_min, m_freqClip_max);
 
-    if (frequency < m_freqClip_min)
-    {
-        frequency = m_freqClip_min;
-    }
+//    if (frequency < m_freqClip_min)
+//    {
+//        frequency = m_freqClip_min;
+//    }
 
-    if (frequency > m_freqClip_max)
-    {
-        frequency = m_freqClip_max;
-    }
+//    if (frequency > m_freqClip_max)
+//    {
+//        frequency = m_freqClip_max;
+//    }
 
     frequency *= m_warpConst_2PI;
     tmpVar = NlToolbox::Math::cos(frequency);

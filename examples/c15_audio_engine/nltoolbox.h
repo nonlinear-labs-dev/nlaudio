@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <common/tools.h>
+#include <algorithm>
 #include "nlglobaldefines.h"
 
 
