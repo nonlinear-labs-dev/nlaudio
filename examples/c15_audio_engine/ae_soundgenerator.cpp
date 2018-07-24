@@ -74,7 +74,7 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
     tmpVar += (-0.25f);                                         // Wrap
     tmpVar -= NlToolbox::Conversion::float2int(tmpVar);
 
-    if (fabs(m_oscA_phase_stateVar - tmpVar) > 0.5f)            // Check edge
+    if (std::abs(m_oscA_phase_stateVar - tmpVar) > 0.5f)            // Check edge
     {
         m_OscA_randVal_int = m_OscA_randVal_int * 1103515245 + 12345;
         m_OscA_randVal_float = static_cast<float>(m_OscA_randVal_int) * 4.5657e-10f;
@@ -104,7 +104,7 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
     tmpVar += (-0.25f);                                         // Warp
     tmpVar -= NlToolbox::Conversion::float2int(tmpVar);
 
-    if (fabs(m_oscB_phase_stateVar - tmpVar) > 0.5f)            // Check edge
+    if (std::abs(m_oscB_phase_stateVar - tmpVar) > 0.5f)            // Check edge
     {
         m_OscB_randVal_int = m_OscB_randVal_int * 1103515245 + 12345;
         m_OscB_randVal_float = static_cast<float>(m_OscB_randVal_int) * 4.5657e-10f;
