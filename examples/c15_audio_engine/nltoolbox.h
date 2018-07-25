@@ -18,6 +18,22 @@
 namespace NlToolbox {
 
 /*****************************************************************************/
+/** @brief    Constants
+ *            Provides single precision floats for crucial constants.
+ *            This ensures being independant on math headers, which may
+ *            or may not provide the desired float type.
+******************************************************************************/
+
+namespace Constants {
+
+const float pi = 3.14159265f;                   // PI as a (single precision) float
+const float twopi = 2.f * pi;                   // two PI as a (single precision) float
+const float halfpi = 0.5f * pi;                 // half PI as a (single precision) float
+const float DNC_const = 1.e-18f;                // the DNC contant as a (single precision) float
+
+} // namespace Constants
+
+/*****************************************************************************/
 /** @brief    Clipping Tools
  *  @param    value (normalized, abs(value) <= 1.0)
  *  @return   clipped value (currently either unipolar or bipolar)
@@ -125,7 +141,7 @@ namespace Math {
 
 /*****************************************************************************/
 /** @brief    sine calculation of an incoming value
- *  @param    value
+ *  @param    x (expected range: [-pi ... pi])
  *  @return   sine value
 ******************************************************************************/
 
@@ -133,7 +149,7 @@ inline float sin(float x)
 {
     float x_square = x * x;
 
-    x = (((((x_square * -2.39e-8 + 2.7526e-6)
+    x = (((((x_square * -2.39e-8f + 2.7526e-6f)
             * x_square + (-0.000198409f))
            * x_square + 0.00833333f)
           * x_square + (-0.166667f))
@@ -146,7 +162,7 @@ inline float sin(float x)
 
 /*****************************************************************************/
 /** @brief    cosine calculation of an incoming value
- *  @param    value
+ *  @param    x (expected range: [-pi ... pi])
  *  @return   cosine value
 ******************************************************************************/
 
@@ -154,10 +170,10 @@ inline float cos(float x)
 {
     float x_square = x * x;
 
-    x = (((((x_square * -2.605e-7 + 2.47609e-5)
-            * x_square + (-0.00138884))
-           * x_square + 0.0416666)
-          * x_square + (-0.499923))
+    x = (((((x_square * -2.605e-7f + 2.47609e-5f)
+            * x_square + (-0.00138884f))
+           * x_square + 0.0416666f)
+          * x_square + (-0.499923f))
          * x_square) + 1.f;
 
     return x;
@@ -173,7 +189,7 @@ inline float cos(float x)
 
 inline float tan(float x)
 {
-    x = 0.133333f * pow(x, 5.f) + 0.333333f * pow(x, 3.f) + x;
+    x = 0.133333f * std::pow(x, 5.f) + 0.333333f * std::pow(x, 3.f) + x;
 
     return x;
 }
@@ -255,7 +271,7 @@ inline float sinP3_wrap(float _x)
     _x = 0.5f - _x;
 
     float x_square = _x * _x;
-    return _x * ((2.26548 * x_square - 5.13274) * x_square + 3.14159);
+    return _x * ((2.26548f * x_square - 5.13274f) * x_square + 3.14159f);
 }
 
 
@@ -274,7 +290,7 @@ inline float sinP3_noWrap(float _x)
     _x = 0.5f - _x;
 
     float x_square = _x * _x;
-    return _x * ((2.26548 * x_square - 5.13274) * x_square + 3.14159);
+    return _x * ((2.26548f * x_square - 5.13274f) * x_square + 3.14159f);
 }
 
 
@@ -356,7 +372,7 @@ struct Highpass30Hz
 
     void setOmega()
     {
-        mOmega = 30.f * (2.f * M_PI / mSampleRate);
+        mOmega = 30.f * (Constants::twopi / mSampleRate);
 
         if (mOmega > 0.8f)
         {
@@ -407,7 +423,7 @@ struct Lowpass2Hz
 
     void setOmega()
     {
-        mOmega = 2.f * (2.f * M_PI / mSampleRate);
+        mOmega = 2.f * (Constants::twopi / mSampleRate);
 
         if (mOmega > 1.9f)               //Clip
         {
@@ -464,7 +480,7 @@ struct ChirpFilter
 
     void setFrequency(float _chirpFrequency)
     {
-        mOmega = _chirpFrequency * (M_PI / mSampleRate);
+        mOmega = _chirpFrequency * (Constants::pi / mSampleRate);
         mOmega = NlToolbox::Math::tan(mOmega);
 
         mA0 = 1.f / (mOmega + 1.f);
@@ -507,7 +523,7 @@ namespace Conversion {
 
 inline float db2af(float dbIn)
 {
-    return pow(1.12202f, dbIn);
+    return std::pow(1.12202f, dbIn);
 }
 
 
@@ -521,9 +537,9 @@ inline float db2af(float dbIn)
 inline float af2db(float afIn)
 {
     if (afIn == 0.f)                        // vorsichthalber gegen ne = schützen
-        afIn = 1e15;
+        afIn = 1e15f;
 
-    return 20.f * log10(afIn);      // gibt es eine feine annäherung?
+    return 20.f * std::log10(afIn);      // gibt es eine feine annäherung?
 }
 
 
@@ -540,7 +556,7 @@ inline float pitch2freq(float pitch)
     /// Zur Optimierung sollen diese mit einem Polynom oder
     /// einem Tabellen-Ansatz ersetzt werden!
 
-    return pow(2.f, (pitch - 69.f)/ 12.f) * 440.f;
+    return std::pow(2.f, (pitch - 69.f)/ 12.f) * 440.f;
 
 //    return pow(1.05946309f, pitch) * 8.17579892f;         // alternative
 }
@@ -643,7 +659,7 @@ inline float applySineCurve(float _in)
 {
     _in = (_in * 2.f) + (-1.f);
 
-    return _in * _in * _in * (-0.25f) + (_in * 0.75f) + 0.5;
+    return _in * _in * _in * (-0.25f) + (_in * 0.75f) + 0.5f;
 }
 
 
