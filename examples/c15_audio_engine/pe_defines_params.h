@@ -247,7 +247,7 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        247,    2,      0,      16000,  4,      4,      82,     0,      0,      16000  },         // 176 MASTER_VOLUME
+    {        247,    2,      0,      16000,  4,      4,      92,     0,      0,      16000  },         // 176 MASTER_VOLUME
     {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 177 MASTER_TUNE
 
     // - - - POLY KEY EVENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

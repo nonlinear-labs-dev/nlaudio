@@ -101,4 +101,15 @@
 #define CAB_DRY         80
 #define CAB_WET         81
 
-#define MST_VOL         82
+#define GAP_LFL         82
+#define GAP_HFL         83
+#define GAP_LFR         84
+#define GAP_HFR         85
+#define GAP_RES         86
+#define GAP_HPLP        87
+#define GAP_INLP        88
+#define GAP_HPOUT       89
+#define GAP_LPOUT       90
+#define GAP_INOUT       91
+
+#define MST_VOL         92
