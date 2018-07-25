@@ -27,7 +27,7 @@ struct ae_cabinet
 
 
     //**************************** Biquad Highpass ****************************//
-    float m_hp_b0, m_hp_b1;     // , m_hp_b2;
+    float m_hp_b0, m_hp_b1;
     float m_hp_a1, m_hp_a2;
 
     float m_hp_stateVar_L1, m_hp_stateVar_R1;
@@ -36,7 +36,7 @@ struct ae_cabinet
     float m_hp_stateVar_L4, m_hp_stateVar_R4;
 
     //***************************** Biquad Lowpass ****************************//
-    float m_lp1_b0, m_lp1_b1; // , m_lp1_b2;
+    float m_lp1_b0, m_lp1_b1;
     float m_lp1_a1, m_lp1_a2;
 
     float m_lp1_stateVar_L1, m_lp1_stateVar_R1;
@@ -44,7 +44,7 @@ struct ae_cabinet
     float m_lp1_stateVar_L3, m_lp1_stateVar_R3;
     float m_lp1_stateVar_L4, m_lp1_stateVar_R4;
 
-    float m_lp2_b0, m_lp2_b1; // , m_lp2_b2;
+    float m_lp2_b0, m_lp2_b1;
     float m_lp2_a1, m_lp2_a2;
 
     float m_lp2_stateVar_L1, m_lp2_stateVar_R1;

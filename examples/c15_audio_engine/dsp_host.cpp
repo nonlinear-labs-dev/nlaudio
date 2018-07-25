@@ -1199,8 +1199,7 @@ void dsp_host::makeMonoSound(float *_signal)
 inline void dsp_host::setPolyFilterCoeffs(float *_signal, uint32_t _voiceID)
 {
     //************************ Osciallator Chirp Filter **********************//
-    m_soundgenerator[_voiceID].m_chirpFilter_A.setCoeffs(_signal[OSC_A_CHI]);
-    m_soundgenerator[_voiceID].m_chirpFilter_B.setCoeffs(_signal[OSC_B_CHI]);
+    m_soundgenerator[_voiceID].setSoundGenerator(_signal, m_samplerate);
 
     //****************************** Comb Filter *****************************//
     m_combfilter[_voiceID].setCombfilter(_signal, m_samplerate);

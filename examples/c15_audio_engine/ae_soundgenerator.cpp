@@ -32,13 +32,46 @@ void ae_soundgenerator::init(float _samplerate, uint32_t _vn)
     m_sampleB = 0.f;
 
     m_sample_interval = 1.f / _samplerate;
+    m_warpConst_PI = 3.14159f / _samplerate;
 
-    m_chirpFilter_A.initFilter(_samplerate, 7677.f);
-    m_chirpFilter_B.initFilter(_samplerate, 7677.f);
+    m_chiA_stateVar = 0.f;
+    m_chiB_stateVar = 0.f;
+
+    m_chiA_omega = 0.f;
+    m_chiA_a0 = 0.f;
+    m_chiA_a1 = 0.f;
+    m_chiB_omega = 0.f;
+    m_chiB_a0 = 0.f;
+    m_chiB_a1 = 0.f;
+
+//    m_chirpFilter_A.initFilter(_samplerate, 7677.f);
+//    m_chirpFilter_B.initFilter(_samplerate, 7677.f);
 
     m_OscA_randVal_int = _vn + 1;
     m_OscB_randVal_int = _vn + 1 + 111;
 
+}
+
+
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+void ae_soundgenerator::setSoundGenerator(float *_signal, float _samplerate)
+{
+    //*************************** Chirp Filter A *****************************//
+    m_chiA_omega = _signal[OSC_A_CHI] * m_warpConst_PI;
+    m_chiA_omega = NlToolbox::Math::tan(m_chiA_omega);
+
+    m_chiA_a0 = 1.f / (m_chiA_omega + 1.f);
+    m_chiA_a1 = m_chiA_omega - 1.f;
+
+    //*************************** Chirp Filter B *****************************//
+    m_chiB_omega = _signal[OSC_B_CHI] * m_warpConst_PI;
+    m_chiB_omega = NlToolbox::Math::tan(m_chiB_omega);
+
+    m_chiB_a0 = 1.f / (m_chiB_omega + 1.f);
+    m_chiB_a1 = m_chiB_omega - 1.f;
 }
 
 
@@ -61,20 +94,30 @@ void ae_soundgenerator::resetPhase(float _phaseA, float _phaseB)
 
 void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
 {
+    float tmpVar;
+
     //**************************** Modulation A ******************************//
-    float tmpVar = m_oscA_selfmix * _signal[OSC_A_PMSEA];
-    tmpVar = tmpVar + m_oscB_crossmix * _signal[OSC_A_PMBEB];
-    tmpVar = tmpVar + _feedbackSample * _signal[OSC_A_PMFEC];
+    float oscSampleA = m_oscA_selfmix * _signal[OSC_A_PMSEA];
+    oscSampleA = oscSampleA + m_oscB_crossmix * _signal[OSC_A_PMBEB];
+    oscSampleA = oscSampleA + _feedbackSample * _signal[OSC_A_PMFEC];
 
 
     //**************************** Oscillator A ******************************//
-    tmpVar = m_chirpFilter_A.applyFilter(tmpVar);
-    tmpVar += m_oscA_phase;
+//    oscSampleA = m_chirpFilter_A.applyFilter(oscSampleA);
+    oscSampleA -= (m_chiA_a1 * m_chiA_stateVar);                // Chirp IIR
+    oscSampleA *= m_chiA_a0;
 
-    tmpVar += (-0.25f);                                         // Wrap
-    tmpVar -= NlToolbox::Conversion::float2int(tmpVar);
+    tmpVar = oscSampleA;
 
-    if (std::abs(m_oscA_phase_stateVar - tmpVar) > 0.5f)            // Check edge
+    oscSampleA = (oscSampleA + m_chiA_stateVar) * m_chiA_omega; // Chirp FIR
+    m_chiA_stateVar = tmpVar + DNC_CONST;
+
+    oscSampleA += m_oscA_phase;
+
+    oscSampleA += (-0.25f);                                         // Wrap
+    oscSampleA -= NlToolbox::Conversion::float2int(oscSampleA);
+
+    if (std::abs(m_oscA_phase_stateVar - oscSampleA) > 0.5f)            // Check edge
     {
         m_OscA_randVal_int = m_OscA_randVal_int * 1103515245 + 12345;
         m_OscA_randVal_float = static_cast<float>(m_OscA_randVal_int) * 4.5657e-10f;
@@ -83,28 +126,36 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
     float osc_freq = _signal[OSC_A_FRQ];
     m_oscA_phaseInc = ((m_OscA_randVal_float * _signal[OSC_A_FLUEC] * osc_freq) + osc_freq) * m_sample_interval;
 
-    m_oscA_phase_stateVar = tmpVar;
+    m_oscA_phase_stateVar = oscSampleA;
 
     m_oscA_phase += m_oscA_phaseInc;
     m_oscA_phase -= NlToolbox::Conversion::float2int(m_oscA_phase);
 
-    float oscSampleA = NlToolbox::Math::sinP3_noWrap(tmpVar);
+    oscSampleA = NlToolbox::Math::sinP3_noWrap(oscSampleA);
 
 
     //**************************** Modulation B ******************************//
-    tmpVar = m_oscB_selfmix * _signal[OSC_B_PMSEB];
-    tmpVar = tmpVar + m_oscA_crossmix * _signal[OSC_B_PMAEA];
-    tmpVar = tmpVar + _feedbackSample * _signal[OSC_B_PMFEC];
+    float oscSampleB = m_oscB_selfmix * _signal[OSC_B_PMSEB];
+    oscSampleB = oscSampleB + m_oscA_crossmix * _signal[OSC_B_PMAEA];
+    oscSampleB = oscSampleB + _feedbackSample * _signal[OSC_B_PMFEC];
 
 
     //**************************** Oscillator B ******************************//
-    tmpVar = m_chirpFilter_B.applyFilter(tmpVar);
-    tmpVar += m_oscB_phase;
+//    oscSampleB = m_chirpFilter_B.applyFilter(oscSampleB);
+    oscSampleB -= (m_chiB_a1 * m_chiB_stateVar);                // Chirp IIR
+    oscSampleB *= m_chiB_a0;
 
-    tmpVar += (-0.25f);                                         // Warp
-    tmpVar -= NlToolbox::Conversion::float2int(tmpVar);
+    tmpVar = oscSampleB;
 
-    if (std::abs(m_oscB_phase_stateVar - tmpVar) > 0.5f)            // Check edge
+    oscSampleB = (oscSampleB + m_chiB_stateVar) * m_chiB_omega; // Chirp FIR
+    m_chiB_stateVar = tmpVar + DNC_CONST;
+
+    oscSampleB += m_oscB_phase;
+
+    oscSampleB += (-0.25f);                                     // Warp
+    oscSampleB -= NlToolbox::Conversion::float2int(oscSampleB);
+
+    if (std::abs(m_oscB_phase_stateVar - oscSampleB) > 0.5f)    // Check edge
     {
         m_OscB_randVal_int = m_OscB_randVal_int * 1103515245 + 12345;
         m_OscB_randVal_float = static_cast<float>(m_OscB_randVal_int) * 4.5657e-10f;
@@ -113,12 +164,12 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
     osc_freq = _signal[OSC_B_FRQ];
     m_oscB_phaseInc = ((m_OscB_randVal_float * _signal[OSC_B_FLUEC] * osc_freq) + osc_freq) * m_sample_interval;
 
-    m_oscB_phase_stateVar = tmpVar;
+    m_oscB_phase_stateVar = oscSampleB;
 
     m_oscB_phase += m_oscB_phaseInc;
     m_oscB_phase -=  NlToolbox::Conversion::float2int(m_oscB_phase);
 
-    float oscSampleB = NlToolbox::Math::sinP3_noWrap(tmpVar);
+    oscSampleB = NlToolbox::Math::sinP3_noWrap(oscSampleB);
 
 
     //******************************* Shaper A *******************************//
