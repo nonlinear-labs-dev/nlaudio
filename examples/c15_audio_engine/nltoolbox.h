@@ -33,42 +33,7 @@ const float DNC_const = 1.e-18f;                // the DNC contant as a (single 
 
 } // namespace Constants
 
-/*****************************************************************************/
-/** @brief    Clipping Tools
- *  @param    value (normalized, abs(value) <= 1.0)
- *  @return   clipped value (currently either unipolar or bipolar)
-******************************************************************************/
 
-/* Clipping namespace currently kept to prevent compilation errors - removed later */
-namespace Clipping {
-
-/* handle clipping of single floats (fmin, fmax are of type double) */
-
-/* return the biggest of two floats */
-inline float floatMax(float _x, float _y)
-{
-    return std::max(_x, _y);
-}
-
-/* return the smallest of two floats */
-inline float floatMin(float _x, float _y)
-{
-    return std::min(_x, _y);
-}
-
-/* clip a float in the normalized unipolar interval [0 ... 1] */
-inline float uniNorm(float _value)
-{
-    return std::clamp(_value, 0.f, 1.f);
-}
-
-/* clip a float in the normalized bipolar interval [-1 ... 1] */
-inline float biNorm(float _value)
-{
-    return std::clamp(_value, -1.f, 1.f);
-}
-
-} // namespace Clipping
 
 /*****************************************************************************/
 /** @brief    Crossfade Tools
