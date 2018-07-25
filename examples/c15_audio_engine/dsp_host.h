@@ -24,6 +24,7 @@
 #include "ae_svfilter.h"
 #include "ae_outputmixer.h"
 #include "ae_cabinet.h"
+#include "ae_gapfilter.h"
 
 /* dsp_host: main dsp object, holding TCD Decoder, Parameter Engine, Audio Engine, shared Signal Array, main signal (L, R) */
 class dsp_host
@@ -90,6 +91,7 @@ public:
     ae_svfilter m_svfilter[dsp_number_of_voices];
     ae_outputmixer m_outputmixer;
     ae_cabinet m_cabinet;
+    ae_gapfilter m_gapfilter;
 
     void initAudioEngine(float _samplerate, uint32_t _polyphony);
     void makePolySound(float *_signal, uint32_t _voiceID);

@@ -245,7 +245,7 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     float tmpVar;
 
     //********************************* Drive ********************************//
-    tmpVar = _signal[CAB_DRV];    float sample_L = _rawSample_L * _signal[CAB_DRV];
+    float sample_L = _rawSample_L * _signal[CAB_DRV];
     float sample_R = _rawSample_R * _signal[CAB_DRV];
 
 

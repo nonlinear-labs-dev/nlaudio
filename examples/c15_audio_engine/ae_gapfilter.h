@@ -16,9 +16,9 @@ struct ae_gapfilter
 {
     ae_gapfilter();         // Default Constructor
 
-    float m_gf_out_L, m_gf_out_R;
+    float m_out_L, m_out_R;
 
-    void init(float _samplerate, uint32 _vn);
+    void init(float _samplerate, uint32_t _vn);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal);
     void set(float *_signal, float _samplerate);
 

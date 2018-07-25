@@ -1076,6 +1076,7 @@ void dsp_host::initAudioEngine(float _samplerate, uint32_t _polyphony)
 
     m_outputmixer.init(_samplerate, _polyphony);
     m_cabinet.init(_samplerate, _polyphony);
+    m_gapfilter.init(_samplerate, _polyphony);
 }
 
 
@@ -1143,11 +1144,12 @@ void dsp_host::makeMonoSound(float *_signal)
     //****************************** Mono Modules ****************************//
     m_outputmixer.filterAndLevel(_signal);
     m_cabinet.applyCabinet(m_outputmixer.m_sampleL, m_outputmixer.m_sampleR, _signal);
+    m_gapfilter.apply(m_cabinet.m_sampleCabinet_L, m_cabinet.m_sampleCabinet_R, _signal);
 
     //******************************* Soft Clip ******************************//
-    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
 //    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
-    //    m_mainOut_L *= _signal[MST_VOL];            /// -> reverb output here!
+//    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
+    m_mainOut_L = m_gapfilter.m_out_L * _signal[MST_VOL];
 
     m_mainOut_L *= 0.1588f;
     if (m_mainOut_L > 0.25f)
@@ -1167,9 +1169,10 @@ void dsp_host::makeMonoSound(float *_signal)
     float sample_square = m_mainOut_L * m_mainOut_L;
     m_mainOut_L = m_mainOut_L * ((2.26548 * sample_square - 5.13274) * sample_square + 3.14159);
 
-    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
 //    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
-//    m_mainOut_R *= _signal[MST_VOL];            /// -> reverb output here!
+//    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
+    m_mainOut_R = m_gapfilter.m_out_R * _signal[MST_VOL];
+
     m_mainOut_R *= 0.1588f;
 
     if (m_mainOut_R > 0.25f)
@@ -1218,4 +1221,5 @@ inline void dsp_host::setPolyFilterCoeffs(float *_signal, uint32_t _voiceID)
 inline void dsp_host::setMonoFilterCoeffs(float *_signal)
 {
     m_cabinet.setCabinet(_signal, m_samplerate);
+    m_gapfilter.set(_signal, m_samplerate);
 }
