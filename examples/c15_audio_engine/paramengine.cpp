@@ -97,7 +97,7 @@ float paramengine::evalNyquist(float _freq)
 float paramengine::scale(const uint32_t _scaleId, const float _scaleArg, float _value)
 {
     /* tcd scale methods (currently 13 established scalings), provide result variable */
-    float result;
+    float result = 0.f;
     switch(_scaleId)
     {
     case 0:
@@ -127,7 +127,7 @@ float paramengine::scale(const uint32_t _scaleId, const float _scaleArg, float _
     case 6:
         /* inverted, s-curve scaling (argument is offset) */
         _value = (2.f * (_scaleArg - _value)) - 1.f;
-        result = (_value * _value * _value * -0.25) + (0.75 * _value) + 0.5;
+        result = (_value * _value * _value * -0.25f) + (0.75f * _value) + 0.5f;
         break;
     case 7:
         /* exponential, gain scaling (argument is offset) */
@@ -813,13 +813,13 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     for(i = 0; i < m_postIds.m_data[1].m_data[3].m_data[0].m_length; i++)
     {
         /* spread values of mono parameters to all voices of shared signal array */
-        p = m_head[m_postIds.m_data[1].m_data[3].m_data[0].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[1].m_data[3].m_data[0].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[1].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* automatic poly to poly copy - each voice */
     for(i = 0; i < m_postIds.m_data[0].m_data[3].m_data[1].m_length; i++)
     {
-        p = m_head[m_postIds.m_data[0].m_data[3].m_data[1].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[3].m_data[1].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[1].m_data[i]].m_index + _voiceId].m_signal;
     }
     /* automatic mono to mono copy (effect parameters) - only for voice 0 */
@@ -882,20 +882,20 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     /* - Comb Filter Decay Time (Base Pitch, Master Tune, Gate Env, Dec Time, Key Tracking, Gate Amount) */
     keyTracking = m_body[m_head[P_CMB_DKT].m_index].m_signal;
     envMod = 1.f - ((1.f - _signal[ENV_G_SIG]) * m_combDecayCurve.applyCurve(m_body[m_head[P_CMB_DG].m_index].m_signal));
-    unitPitch = (-0.5 * basePitch * keyTracking) + (std::abs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
+    unitPitch = (-0.5f * basePitch * keyTracking) + (std::abs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
     unitSign = m_body[m_head[P_CMB_D].m_index].m_signal < 0 ? -1.f : 1.f;
-    _signal[CMB_DEC] = 0.001 * m_convert.eval_level(unitPitch) * unitSign;
+    _signal[CMB_DEC] = 0.001f * m_convert.eval_level(unitPitch) * unitSign;
     /* - Comb Filter Allpass Frequency (Base Pitch, Master Tune, Key Tracking, AP Tune, Env C) */
     keyTracking = m_body[m_head[P_CMB_APKT].m_index].m_signal;
     unitPitch = m_body[m_head[P_CMB_APT].m_index].m_signal;
     envMod = _signal[ENV_C_SIG] * m_body[m_head[P_CMB_APEC].m_index].m_signal;
-    _signal[CMB_APF] = evalNyquist(440.f * unitPitch * m_convert.eval_lin_pitch(69 + (basePitch * keyTracking) + envMod));      // not sure if APF needs Nyquist Clipping?
+    _signal[CMB_APF] = evalNyquist(440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod));      // not sure if APF needs Nyquist Clipping?
     //_signal[CMB_APF] = 440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod);                   // currently APF without Nyquist Clipping
     /* - Comb Filter Lowpass ('Hi Cut') Frequency (Base Pitch, Master Tune, Key Tracking, Hi Cut, Env C) */
     keyTracking = m_body[m_head[P_CMB_LPKT].m_index].m_signal;
     unitPitch = m_body[m_head[P_CMB_LP].m_index].m_signal;
     envMod = _signal[ENV_C_SIG] * m_body[m_head[P_CMB_LPEC].m_index].m_signal;
-    _signal[CMB_LPF] = evalNyquist(440.f * unitPitch * m_convert.eval_lin_pitch(69 + (basePitch * keyTracking) + envMod));      // not sure if LPF needs Nyquist Clipping?
+    _signal[CMB_LPF] = evalNyquist(440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod));      // not sure if LPF needs Nyquist Clipping?
     //_signal[CMB_LPF] = 440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod);                   // currently LPF without Nyquist Clipping
     /* State Variable Filter */
     /* - Cutoff Frequencies */
@@ -925,13 +925,13 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     for(i = 0; i < m_postIds.m_data[1].m_data[2].m_data[0].m_length; i++)
     {
         /* spread values of mono parameters to all voices of shared signal array */
-        p = m_head[m_postIds.m_data[1].m_data[2].m_data[0].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[1].m_data[2].m_data[0].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[1].m_data[2].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* automatic poly to poly copy - each voice */
     for(i = 0; i < m_postIds.m_data[0].m_data[2].m_data[1].m_length; i++)
     {
-        p = m_head[m_postIds.m_data[0].m_data[2].m_data[1].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[2].m_data[1].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[2].m_data[1].m_data[i]].m_index + _voiceId].m_signal;
     }
     /* automatic mono to mono copy (effect parameters) - only for voice 0 */
@@ -1004,13 +1004,13 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     for(i = 0; i < m_postIds.m_data[1].m_data[1].m_data[0].m_length; i++)
     {
         /* spread values of mono parameters to all voices of shared signal array */
-        p = m_head[m_postIds.m_data[1].m_data[1].m_data[0].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[1].m_data[1].m_data[0].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[1].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* automatic poly to poly copy - each voice */
     for(i = 0; i < m_postIds.m_data[0].m_data[1].m_data[1].m_length; i++)
     {
-        p = m_head[m_postIds.m_data[0].m_data[1].m_data[1].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[1].m_data[1].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[1].m_data[i]].m_index + _voiceId].m_signal;
     }
     /* automatic mono to mono copy (effect parameters) and mono envelope ticking - only for voice 0 */
@@ -1110,7 +1110,7 @@ void paramengine::postProcessMono_slow(float *_signal)
     /* automatic mono to mono copy (always voice zero) */
     for(i = 0; i < m_postIds.m_data[0].m_data[3].m_data[0].m_length; i++)
     {
-        p = m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* Effect Parameter Post Processing */
@@ -1118,9 +1118,21 @@ void paramengine::postProcessMono_slow(float *_signal)
     /*   - Hi Cut Frequency in Hz (Hi Cut == Lowpass) */
     _signal[CAB_LPF] = evalNyquist(m_body[m_head[P_CAB_LPF].m_index].m_signal * 440.f);
     /*   - Lo Cut Frequency in Hz (Lo Cut == Highpass) */
-    _signal[CAB_HPF] = evalNyquist(m_body[m_head[P_CAB_HPF].m_index].m_signal * 440.f);     // nyquist clipping not necessary...
+    _signal[CAB_HPF] = evalNyquist(m_body[m_head[P_CAB_HPF].m_index].m_signal * 440.f);                 // nyquist clipping not necessary...
     /*   - Tilt to Shelving EQs */
     _signal[CAB_TILT] = m_body[m_head[P_CAB_TILT].m_index].m_signal;
+    /* - Gap Filter */
+    float tmpGap = (m_body[m_head[P_GAP_MIX].m_index].m_signal < 0.f ? -1.f : 1.f) * m_body[m_head[P_GAP_GAP].m_index].m_signal;
+    float tmpCenter = m_body[m_head[P_GAP_CNT].m_index].m_signal;
+    float tmpStereo = m_body[m_head[P_GAP_STE].m_index].m_signal;
+    /*   - Left LP Frequency in Hz */
+    _signal[GAP_LFL] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap - tmpStereo) * 440.f);   // nyquist clipping not necessary...
+    /*   - Left HP Frequency in Hz */
+    _signal[GAP_HFL] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap - tmpStereo) * 440.f);
+    /*   - Right LP Frequency in Hz */
+    _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap + tmpStereo) * 440.f);   // nyquist clipping not necessary...
+    /*   - Right HP Frequency in Hz */
+    _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap + tmpStereo) * 440.f);
 }
 
 /* Mono Post Processing - fast parameters */
@@ -1131,12 +1143,12 @@ void paramengine::postProcessMono_fast(float *_signal)
     /* automatic mono to mono copy (always voice zero) */
     for(i = 0; i < m_postIds.m_data[0].m_data[2].m_data[0].m_length; i++)
     {
-        p = m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* Explicit Post Processing */
     /* provide temporary variables */
-    float tmp_val;
+    float tmp_val, tmp_dry, tmp_wet, tmp_hi_par, tmp_lo_par, tmp_hi_ser, tmp_lo_ser;
     /* Effect Parameter Post Processing */
     /* - Cabinet */
     /*   - Tilt to Saturation Levels (pre, post Shaper) */
@@ -1146,6 +1158,47 @@ void paramengine::postProcessMono_fast(float *_signal)
     /*   - Cab Level and Dry/Wet Mix Levels */
     _signal[CAB_DRY] = 1.f - m_body[m_head[P_CAB_MIX].m_index].m_signal;
     _signal[CAB_WET] = m_body[m_head[P_CAB_LVL].m_index].m_signal * m_body[m_head[P_CAB_MIX].m_index].m_signal;
+    /* - Gap Filter */
+    tmp_val = std::abs(m_body[m_head[P_GAP_MIX].m_index].m_signal);
+    tmp_wet = NlToolbox::Math::sin(NlToolbox::Constants::halfpi * tmp_val);
+    tmp_dry = NlToolbox::Math::sin(NlToolbox::Constants::halfpi * (1.f - tmp_val));
+    tmp_val = m_body[m_head[P_GAP_BAL].m_index].m_signal;
+    tmp_hi_par = 0.5f + (0.5f * tmp_val);
+    tmp_lo_par = 1.f - tmp_hi_par;
+    tmp_hi_par = NlToolbox::Math::sin(NlToolbox::Constants::halfpi * tmp_hi_par) * NlToolbox::Constants::sqrt_two;
+    tmp_lo_par = NlToolbox::Math::sin(NlToolbox::Constants::halfpi * tmp_lo_par) * NlToolbox::Constants::sqrt_two;
+    tmp_val *= tmp_val;
+    tmp_hi_ser = m_body[m_head[P_GAP_BAL].m_index].m_signal > 0.f ? tmp_val : 0.f;
+    tmp_lo_ser = m_body[m_head[P_GAP_BAL].m_index].m_signal > 0.f ? 0.f : tmp_val;
+    if(m_body[m_head[P_GAP_MIX].m_index].m_signal > 0.f)
+    {
+        /* parallel mode */
+        /* - HP to LP input signal */
+        _signal[GAP_HPLP] = 0.f;
+        /* - LP input signal */
+        _signal[GAP_INLP] = 1.f;
+        /* - HP output signal */
+        _signal[GAP_HPOUT] = tmp_wet * tmp_hi_par;
+        /* - LP output signal */
+        _signal[GAP_LPOUT] = tmp_wet * tmp_lo_par;
+        /* - Main output signal */
+        _signal[GAP_INOUT] = tmp_dry;
+    }
+    else
+    {
+        /* serial mode */
+        tmp_val = tmp_wet * tmp_hi_ser;
+        /* - HP to LP input signal */
+        _signal[GAP_HPLP] = 1.f - tmp_lo_ser;
+        /* - LP input signal */
+        _signal[GAP_INLP] = tmp_lo_ser;
+        /* - HP output signal */
+        _signal[GAP_HPOUT] = _signal[GAP_HPLP] * tmp_val;
+        /* - LP output signal */
+        _signal[GAP_LPOUT] = tmp_wet - tmp_val;
+        /* - Main output signal */
+        _signal[GAP_INOUT] = (tmp_val * tmp_lo_ser) + tmp_dry;
+    }
 }
 
 /* Mono Post Processing - audio parameters */
@@ -1156,7 +1209,7 @@ void paramengine::postProcessMono_audio(float *_signal)
     /* automatic mono to mono copy (always voice zero) */
     for(i = 0; i < m_postIds.m_data[0].m_data[1].m_data[0].m_length; i++)
     {
-        p = m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_postId;
+        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_postId);
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* mono envelope rendering */

@@ -46,7 +46,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* TCD List Handling */
 
-#define lst_recall_length           136             // 136 preset-relevant parameters
+#define lst_recall_length           142             // 142 preset-relevant parameters
 #define lst_keyEvent_length         6               // 6 key event parameters
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recal and key event update TCD sequences)
 
@@ -67,7 +67,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* DSP Helper Values */
 
-#define dsp_samples_to_ms           1e-3            // 1000 ms = 1 s, therefore: 1 ms = 1 / 1000 s = 1e-3 s
+#define dsp_samples_to_ms           1e-3f           // 1000 ms = 1 s, therefore: 1 ms = 1 / 1000 s = 1e-3 s
 #define dsp_init_pitch_reference    440.f           // standard Frequency of A3 Note
 #define dsp_expon_osc_pitch_from    -20             // lowest logarithmic Pitch value for Oscillator unit
 #define dsp_expon_osc_pitch_range   150             // range of logarithmic Pitch value for Oscillator unit ([-20 ... 130] ST = 150 ST)
@@ -79,7 +79,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 #define dsp_expon_time_range        110             // range of logarithmic Time value for time conversion ([-20 ... 90] dB = 110 dB)
 #define dsp_expon_time_factor       104.0781f       // measured value to produce exactly time of 16000 (equals highest time)
 #define dsp_comb_max_freqFactor     19.0166f        // measured value of highest frequency factor for the Comb Filter to run without bypass (corresponding to Pitch of 119.99 ST)
-#define dsp_render_min              1e-9            // minimal rendered value for exponential transitions
+#define dsp_render_min              1e-9f           // minimal rendered value for exponential transitions
 #define dsp_initial_time            10              // initial smoothing time (in milliseconds)
 
 #define env_norm_peak               0.023766461f    // equals 1 / 42.0761 (taken from prototype)
