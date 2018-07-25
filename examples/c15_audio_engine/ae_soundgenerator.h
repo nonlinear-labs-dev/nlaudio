@@ -58,42 +58,4 @@ struct ae_soundgenerator
 
     float m_chiA_omega, m_chiA_a0, m_chiA_a1;
     float m_chiB_omega, m_chiB_a0, m_chiB_a1;
-
-
-//    struct ChirpFilter
-//    {
-//        float m_warp_const;
-//        float m_omega;
-//        float m_stateVar;
-//        float m_a0, m_a1;
-
-//        void initFilter(float _samplerate, float _chirpFrequency)
-//        {
-//            m_warp_const = 3.14159f / _samplerate;
-//            m_stateVar = 0.f;
-//            setCoeffs(_chirpFrequency);
-//        }
-
-//        void setCoeffs(float _chirpFrequency)
-//        {
-//            m_omega = _chirpFrequency * m_warp_const;
-//            m_omega = NlToolbox::Math::tan(m_omega);
-
-//            m_a0 = 1.f / (m_omega + 1.f);
-//            m_a1 = m_omega - 1.f;
-//        }
-
-//        float applyFilter(float _sample)
-//        {
-//            _sample = _sample - (m_a1 * m_stateVar);        // IIR
-//            _sample *= m_a0;
-
-//            float tmpVar = _sample;
-
-//            _sample = (_sample + m_stateVar) * m_omega;     // FIR
-//            m_stateVar = tmpVar + DNC_CONST;
-
-//            return _sample;
-//        }
-//    }m_chirpFilter_A, m_chirpFilter_B;
 };

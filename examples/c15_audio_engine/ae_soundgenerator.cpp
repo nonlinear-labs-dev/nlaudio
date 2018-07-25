@@ -44,9 +44,6 @@ void ae_soundgenerator::init(float _samplerate, uint32_t _vn)
     m_chiB_a0 = 0.f;
     m_chiB_a1 = 0.f;
 
-//    m_chirpFilter_A.initFilter(_samplerate, 7677.f);
-//    m_chirpFilter_B.initFilter(_samplerate, 7677.f);
-
     m_OscA_randVal_int = _vn + 1;
     m_OscB_randVal_int = _vn + 1 + 111;
 
@@ -103,7 +100,6 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
 
 
     //**************************** Oscillator A ******************************//
-//    oscSampleA = m_chirpFilter_A.applyFilter(oscSampleA);
     oscSampleA -= (m_chiA_a1 * m_chiA_stateVar);                // Chirp IIR
     oscSampleA *= m_chiA_a0;
 
@@ -141,7 +137,6 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
 
 
     //**************************** Oscillator B ******************************//
-//    oscSampleB = m_chirpFilter_B.applyFilter(oscSampleB);
     oscSampleB -= (m_chiB_a1 * m_chiB_stateVar);                // Chirp IIR
     oscSampleB *= m_chiB_a0;
 
