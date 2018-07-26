@@ -230,12 +230,12 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - ECHO - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 165 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 166 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 167 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 168 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 169 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 170 (PLACEHOLDER)
+    {        225,    3,      0,      16000,  4,      2,      -1,     0,      0,      16000  },         // 165 ECHO_DELAY_TIME
+    {        227,    3,      0,      200,    0,      0,      -1,     0,      1,      6600   },         // 166 ECHO_STEREO
+    {        229,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 167 ECHO_FEEDBACK
+    {        231,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 168 ECHO_CROSS_FEEDBACK
+    {        232,    3,      0,      200,    9,      60,     96,     0,      0,      16000  },         // 169 ECHO_HI_CUT
+    {        233,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 170 ECHO_MIX
 
     // - - - REVERB - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
@@ -247,7 +247,7 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        247,    2,      0,      16000,  4,      4,      92,     0,      0,      16000  },         // 176 MASTER_VOLUME
+    {        247,    2,      0,      16000,  4,      4,      99,     0,      0,      16000  },         // 176 MASTER_VOLUME
     {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 177 MASTER_TUNE
 
     // - - - POLY KEY EVENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
