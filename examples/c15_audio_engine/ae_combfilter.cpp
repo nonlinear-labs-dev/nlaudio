@@ -360,7 +360,7 @@ void ae_combfilter::setCombfilter(float *_signal, float _samplerate)
     }
     else
     {
-        frequency = pow(2.71828f, frequency);
+        frequency = std::pow(2.71828f, frequency);
     }
 
     if (tmpVar < 0.f)

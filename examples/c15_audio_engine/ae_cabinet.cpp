@@ -195,11 +195,11 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
 
 
     //**************************** Tilt Lowshelves ***************************//
-    float tilt = pow(10.f, _signal[CAB_TILT] * 0.025f);
-//    float tilt = pow(1.059192f, _signal[CAB_TILT]);       // alternative to pow(10.f, _signal[CAB_TILT] / 40.f)
+    float tilt = std::pow(10.f, _signal[CAB_TILT] * 0.025f);
+//    float tilt = std::pow(1.059192f, _signal[CAB_TILT]);       // alternative to pow(10.f, _signal[CAB_TILT] / 40.f)
 
     tmpVar = tilt + 1.f / tilt + 2.f;
-    tmpVar = sqrt(tilt * tmpVar) * m_tiltOmegaSin;
+    tmpVar = std::sqrt(tilt * tmpVar) * m_tiltOmegaSin;
 
     float coeff = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar;
     m_ls1_a1    = ((tilt - 1.f) + (m_tiltOmegaCos * (tilt + 1.f))) * -2.f;
@@ -214,11 +214,11 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
     m_ls1_b1 = m_ls1_b1 / coeff;
     m_ls1_b2 = m_ls1_b2 / coeff;
 
-    tilt = pow(10.f, _signal[CAB_TILT] * -0.025f);
-//    tilt = pow(1.059192f, _signal[CAB_TILT] * -1.f);          // alternative to pow(10.f, _signal[CAB_TILT] / 40.f * -1.f)
+    tilt = std::pow(10.f, _signal[CAB_TILT] * -0.025f);
+//    tilt = std::pow(1.059192f, _signal[CAB_TILT] * -1.f);          // alternative to pow(10.f, _signal[CAB_TILT] / 40.f * -1.f)
 
     tmpVar = tilt + 1.f / tilt + 2.f;
-    tmpVar = sqrt(tilt * tmpVar) * m_tiltOmegaSin;
+    tmpVar = std::sqrt(tilt * tmpVar) * m_tiltOmegaSin;
 
     coeff    = (tilt + 1.f)  + (m_tiltOmegaCos * (tilt - 1.f))  + tmpVar;
     m_ls2_a1 = ((tilt - 1.f) + (m_tiltOmegaCos * (tilt + 1.f))) * -2.f;
