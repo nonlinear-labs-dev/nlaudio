@@ -13,6 +13,7 @@
 void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
 {
     /* determine crucial variables */
+    m_samplerate = _sampleRate;
     m_millisecond = dsp_samples_to_ms * static_cast<float>(_sampleRate);        // one millisecond in samples
     m_nyquist_frequency = static_cast<float>(_sampleRate >> 1);                 // nyquist frequency (50% sampleRate)
     m_routePolyphony[1] = _voices;                                              // overwrite polyphony
@@ -1123,6 +1124,7 @@ void paramengine::postProcessMono_slow(float *_signal)
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* Effect Parameter Post Processing */
+    float tmpGap, tmpCenter, tmpStereo;
     /* - Cabinet */
     /*   - Hi Cut Frequency in Hz (Hi Cut == Lowpass) */
     _signal[CAB_LPF] = evalNyquist(m_body[m_head[P_CAB_LPF].m_index].m_signal * 440.f);
@@ -1131,9 +1133,9 @@ void paramengine::postProcessMono_slow(float *_signal)
     /*   - Tilt to Shelving EQs */
     _signal[CAB_TILT] = m_body[m_head[P_CAB_TILT].m_index].m_signal;
     /* - Gap Filter */
-    float tmpGap = (m_body[m_head[P_GAP_MIX].m_index].m_signal < 0.f ? -1.f : 1.f) * m_body[m_head[P_GAP_GAP].m_index].m_signal;
-    float tmpCenter = m_body[m_head[P_GAP_CNT].m_index].m_signal;
-    float tmpStereo = m_body[m_head[P_GAP_STE].m_index].m_signal;
+    tmpGap = (m_body[m_head[P_GAP_MIX].m_index].m_signal < 0.f ? -1.f : 1.f) * m_body[m_head[P_GAP_GAP].m_index].m_signal;
+    tmpCenter = m_body[m_head[P_GAP_CNT].m_index].m_signal;
+    tmpStereo = m_body[m_head[P_GAP_STE].m_index].m_signal;
     /*   - Left LP Frequency in Hz */
     _signal[GAP_LFL] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap - tmpStereo) * 440.f);   // nyquist clipping not necessary...
     /*   - Left HP Frequency in Hz */
@@ -1142,6 +1144,14 @@ void paramengine::postProcessMono_slow(float *_signal)
     _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap + tmpStereo) * 440.f);   // nyquist clipping not necessary...
     /*   - Right HP Frequency in Hz */
     _signal[GAP_HFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap + tmpStereo) * 440.f);
+    /* - Echo */
+    /*   - Time and Stereo */
+    tmpCenter = m_body[m_head[P_DLY_TIME].m_index].m_signal * m_samplerate;                             // time is handled in samples
+    tmpStereo = m_body[m_head[P_DLY_STE].m_index].m_signal * m_dlyNormStereo;
+    _signal[DLY_TL] = tmpCenter * (1.f + tmpStereo);
+    _signal[DLY_TR] = tmpCenter * (1.f - tmpStereo);
+    /*   - High Cut Frequency */
+    _signal[DLY_LPF] = evalNyquist(m_body[m_head[P_DLY_LPF].m_index].m_signal * 440.f);
 }
 
 /* Mono Post Processing - fast parameters */
@@ -1157,7 +1167,7 @@ void paramengine::postProcessMono_fast(float *_signal)
     }
     /* Explicit Post Processing */
     /* provide temporary variables */
-    float tmp_val, tmp_dry, tmp_wet, tmp_hi_par, tmp_lo_par, tmp_hi_ser, tmp_lo_ser;
+    float tmp_val, tmp_dry, tmp_wet, tmp_hi_par, tmp_lo_par, tmp_hi_ser, tmp_lo_ser, tmp_fb;
     /* Effect Parameter Post Processing */
     /* - Cabinet */
     /*   - Tilt to Saturation Levels (pre, post Shaper) */
@@ -1208,6 +1218,17 @@ void paramengine::postProcessMono_fast(float *_signal)
         /* - Main output signal */
         _signal[GAP_INOUT] = (tmp_val * tmp_lo_ser) + tmp_dry;
     }
+    /* - Echo */
+    /*   - Feedback and Cross Feedback */
+    tmp_fb = m_body[m_head[P_DLY_FB].m_index].m_signal;
+    tmp_val = m_body[m_head[P_DLY_CFB].m_index].m_signal;
+    _signal[DLY_FB_LOC] = tmp_fb * (1.f - tmp_val);
+    _signal[DLY_FB_CR] = tmp_fb * tmp_val;
+    /*   - Dry and Wet Mix Amounts */
+    tmp_val = m_body[m_head[P_DLY_MIX].m_index].m_signal;
+    _signal[DLY_WET] = (2.f * tmp_val) - (tmp_val * tmp_val);
+    tmp_val = 1.f - tmp_val;
+    _signal[DLY_DRY] = (2.f * tmp_val) - (tmp_val * tmp_val);
 }
 
 /* Mono Post Processing - audio parameters */

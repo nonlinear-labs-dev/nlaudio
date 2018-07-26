@@ -69,6 +69,7 @@ struct param_utility
 struct paramengine
 {
     /* local variables */
+    uint32_t m_samplerate;
     uint32_t m_preload = 0;
     /* pitch reference (A3 = 440.0 Hz) */
     float m_pitch_reference = dsp_init_pitch_reference;
@@ -99,6 +100,7 @@ struct paramengine
     const float m_svfResFactor = 1.f / 60.f;
     const float m_cabTiltFloor = 2e-20f;
     NlToolbox::Curves::Shaper_2_BP m_svfResonanceCurve;
+    const float m_dlyNormStereo = 1.f / 99.f;
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */
