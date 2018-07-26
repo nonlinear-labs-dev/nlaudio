@@ -9,9 +9,13 @@
 
 #pragma once
 
-#include "nltoolbox.h"
 #include "dsp_defines_signallabels.h"
+#include "nltoolbox.h"
+using namespace NlToolbox::Constants;
 
+#include <vector>
+
+#define ECHO_BUFFER_SIZE 131072
 
 struct ae_echo
 {
@@ -19,22 +23,36 @@ struct ae_echo
 
     float m_out_L, m_out_R;
 
-    void init(float _samplerate);
+    void init(uint32_t _samplerate, uint32_t _upsampleFactor);
     void apply(float _rawSsample_L, float _rawSsample_R, float *_signal);
     void set(float *_signal);
 
+    float m_warpConst_PI;
+    float m_freqClip_min, m_freqClip_max;
+
 
     //*************************** 1 pole Highpass ****************************//
+    float m_hp_b0, m_hp_b1, m_hp_a1;
 
+    float m_hp_stateVar_L1, m_hp_stateVar_L2;
+    float m_hp_stateVar_R1, m_hp_stateVar_R2;
 
     //**************************** 1 pole Lowpass ****************************//
+    float m_lp_b0, m_lp_b1, m_lp_a1;
+
+    float m_lp_stateVar_L1, m_lp_stateVar_L2;
+    float m_lp_stateVar_R1, m_lp_stateVar_R2;
+
 
     //****************************** 2Hz Lowpass *****************************//
+    float m_lp2hz_b0;
+    float m_lp2hz_stateVar_L, m_lp2hz_stateVar_R;
 
 
+    //***************************** Delay Buffer *****************************//
+    float m_stateVar_L, m_stateVar_R;
 
-
-
+    uint32_t m_buffer_indx;
+    std::vector<float> m_buffer_L;
+    std::vector<float> m_buffer_R;
 };
-
-#endif // AE_ECHO_H
