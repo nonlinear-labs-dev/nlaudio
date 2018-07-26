@@ -31,13 +31,13 @@
 struct param_head
 {
     /* */
-    int32_t m_id;
+    uint32_t m_id;
     uint32_t m_index;
     uint32_t m_size;
     uint32_t m_clockType;
     uint32_t m_polyType;
     uint32_t m_scaleId;
-    int32_t m_postId;
+    uint32_t m_postId;
     float m_normalize;
     float m_scaleArg;
 };

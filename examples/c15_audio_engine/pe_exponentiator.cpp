@@ -69,7 +69,7 @@ float exponentiator::clip(float _min, float _max, float _value)
 void exponentiator::setTablePos(float _value)
 {
     /* convert floating point table position into integer and fractional parts */
-    m_position_step = static_cast<int>(floor(_value));
+    m_position_step = static_cast<uint32_t>(floor(_value));
     m_position_fine = _value - static_cast<float>(m_position_step);
 }
 

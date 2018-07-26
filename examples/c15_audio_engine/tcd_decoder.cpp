@@ -32,7 +32,8 @@ uint32_t decoder::unsigned14(const uint32_t _data0, const uint32_t _data1)
 
 int32_t decoder::signed14(const uint32_t _data0, const uint32_t _data1)
 {
-    return(m_getSign[_data0 >> 6] * unsigned14((_data0 & 63), _data1)); // parse and return a signed 14-bit value according to MIDI DATA bytes
+    return(m_getSign[_data0 >> 6] * static_cast<int32_t>(
+           unsigned14((_data0 & 63), _data1)));                         // parse and return a signed 14-bit value according to MIDI DATA bytes
 }
 
 void decoder::unsigned28upper(const uint32_t _data0, const uint32_t _data1)
@@ -50,15 +51,15 @@ void decoder::signed28upper(const uint32_t _data0, const uint32_t _data1)
 int32_t decoder::apply28lower(const uint32_t _data0, const uint32_t _data1)
 {
     m_value += unsigned14(_data0, _data1);                              // parse an unsigned 14-bit value according to MIDI DATA bytes and add it to current value
-    return(m_sign * m_value);                                           // parse resulting value (sign * magnitude) and return it
+    return(m_sign * static_cast<int32_t>(m_value));                     // parse resulting value (sign * magnitude) and return it
 }
 
 /* handle TCD selection by event-based evaluation (check ID against FROM, TO) */
 
-uint32_t decoder::selectionEvent(const uint32_t _from, const uint32_t _to, const int32_t _id)
+uint32_t decoder::selectionEvent(const uint32_t _from, const uint32_t _to, const uint32_t _id)
 {
-    m_event[1] = _id - _from;
-    m_event[2] = _to - _id;
+    m_event[1] = static_cast<int32_t>(_id) - static_cast<int32_t>(_from);
+    m_event[2] = static_cast<int32_t>(_to) - static_cast<int32_t>(_id);
     m_event[3] = m_event[1] | m_event[2];
     m_event[4] = m_event[1] & m_event[2];
     return(0 > m_event[3 + m_event[0]] ? 0 : 1);

@@ -165,10 +165,10 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 1:
         /* selectVoice - rigorous safety mechanism */
-        i = m_decoder.unsigned14(_data0, _data1);
+        i = static_cast<int32_t>(m_decoder.unsigned14(_data0, _data1));
         if(((i > -1) && (i < v)) || (i == 16383))
         {
-            m_decoder.m_voiceFrom = m_decoder.m_voiceTo = i;
+            m_decoder.m_voiceFrom = m_decoder.m_voiceTo = static_cast<uint32_t>(i);
             voiceSelectionUpdate();
         }
         else
@@ -178,10 +178,10 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 2:
         /* selectMultipleVoices - rigorous safety mechanism */
-        i = m_decoder.unsigned14(_data0, _data1);
+        i = static_cast<int32_t>(m_decoder.unsigned14(_data0, _data1));
         if(((i > -1) && (i < v)) || (i == 16383))
         {
-            m_decoder.m_voiceTo = i;
+            m_decoder.m_voiceTo = static_cast<uint32_t>(i);
             voiceSelectionUpdate();
         }
         else
@@ -210,7 +210,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 7:
         /* setTimeLower */
-        f = 1.f / static_cast<float>((m_upsampleFactor * m_decoder.apply28lower(_data0, _data1)) + 1);
+        f = 1.f / static_cast<float>((static_cast<int32_t>(m_upsampleFactor) * m_decoder.apply28lower(_data0, _data1)) + 1);
         timeUpdate(f);
         break;
     case 8:
@@ -343,8 +343,8 @@ void dsp_host::paramSelectionUpdate()
     uint32_t s;
     for(uint32_t p = 0; p < sig_number_of_params; p++)
     {
-        /* only TRUE TCD IDs (> -1) */
-        if(m_params.m_head[p].m_id > -1)
+        /* only TRUE TCD IDs (< 16383) */
+        if(m_params.m_head[p].m_id < 16383)
         {
             s = m_decoder.selectionEvent(m_decoder.m_paramFrom, m_decoder.m_paramTo, m_params.m_head[p].m_id);
             m_decoder.m_selectedParams.add(m_params.m_head[p].m_polyType, s, p);
@@ -542,7 +542,7 @@ void dsp_host::keyApply(uint32_t _voiceId)
         m_combfilter[_voiceId].setDelaySmoother();
 
         /* determine note steal */
-        if(m_params.m_body[m_params.m_head[P_KEY_VS].m_index].m_signal == 1)
+        if(static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_KEY_VS].m_index].m_signal) == 1)
         {
             /* AUDIO_ENGINE: trigger voice-steal */
         }
@@ -637,14 +637,15 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             {
                 if(m_test_selectedParam > -1)
                 {
-                        /* NULL selected param */
-                        std::cout << "NULL Param (" << m_test_selectedParam << ")" << std::endl;
-
-                        evalMidi(0, 127, 127);                                                  // select all voices
-                        evalMidi(1, m_test_selectedParam >> 7, m_test_selectedParam & 127);     // select corresponding param
-                        evalMidi(5, 0, 0);                                                      // send zero destination
-                        evalMidi(0, 0, 0);                                                      // select voice 0
-                        evalMidi(1, 0, 0);                                                      // select param 0
+                    /* NULL selected param */
+                    uint32_t tmp_p = static_cast<uint32_t>(m_test_selectedParam);       // cast as unsigned int
+                    std::cout << "NULL Param (" << tmp_p << ")" << std::endl;           // print to terminal
+                    /* TCD instructions */
+                    evalMidi(0, 127, 127);                                              // select all voices
+                    evalMidi(1, tmp_p >> 7, tmp_p & 127);                               // select corresponding param
+                    evalMidi(5, 0, 0);                                                  // send zero destination
+                    evalMidi(0, 0, 0);                                                  // select voice 0
+                    evalMidi(1, 0, 0);                                                  // select param 0
                 }
             }
             else
@@ -780,9 +781,9 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             if(pId > 0)
             {
                 pId--;
-                uint32_t tcdId = param_definition[pId][0];
-                uint32_t rng = param_definition[pId][9];
-                uint32_t pol = param_definition[pId][8];
+                uint32_t tcdId = static_cast<uint32_t>(param_definition[pId][0]);
+                uint32_t rng = static_cast<uint32_t>(param_definition[pId][9]);
+                uint32_t pol = static_cast<uint32_t>(param_definition[pId][8]);
                 float val = _value * m_test_normalizeMidi;
                 if(pol > 0)
                 {
@@ -792,7 +793,7 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
                 evalMidi(1, tcdId >> 7, tcdId & 127);
                 testParseDestination(static_cast<int32_t>(val));
                 std::cout << "edit PARAM " << tcdId << " (" << val << ")" << std::endl;
-                m_test_selectedParam = tcdId;
+                m_test_selectedParam = static_cast<int32_t>(tcdId);
             }
         }
         else
@@ -820,7 +821,7 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     /* get current voiceId and trigger list sequence for key event */
     m_test_noteId[_pitch] = m_test_voiceId + 1;             // (plus one in order to distinguish from zero)
     /* prepare pitch and velocity */
-    int32_t notePitch = (_pitch - 60) * 1000;
+    int32_t notePitch = (static_cast<int32_t>(_pitch) - 60) * 1000;
     uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
     /* key event sequence */
     evalMidi(47, 2, 1);                                     // enable preload (key event list mode)
@@ -854,27 +855,27 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
 void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
 {
     /* rigorous safety mechanism */
-    int32_t checkVoiceId = m_test_noteId[_pitch] - 1;           // (subtract one in order to get real id)
-    int32_t v = static_cast<int32_t>(m_voices);                 // number of voices represented as signed integer (for correct comparisons)
+    int32_t checkVoiceId = static_cast<int32_t>(m_test_noteId[_pitch]) - 1;     // (subtract one in order to get real id)
+    int32_t v = static_cast<int32_t>(m_voices);                                 // number of voices represented as signed integer (for correct comparisons)
     if((checkVoiceId < 0) || (checkVoiceId >= v))
     {
         std::cout << "detected Note Off that shouldn't have happened..." << std::endl;
     }
     else
     {
-        uint32_t usedVoiceId = checkVoiceId;                    // copy valid voiceId
-        m_test_noteId[_pitch] = 0;                              // clear voiceId assignment
+        uint32_t usedVoiceId = static_cast<uint32_t>(checkVoiceId);             // copy valid voiceId
+        m_test_noteId[_pitch] = 0;                                              // clear voiceId assignment
         /* prepare velocity */
         uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
         /* key event sequence */
-        evalMidi(47, 2, 1);                                     // enable preload (key event list mode)
-        evalMidi(0, 0, usedVoiceId);                            // select voice: used voice (by note number)
-        evalMidi(7, noteVel >> 7, noteVel & 127);               // key up: velocity
+        evalMidi(47, 2, 1);                                                     // enable preload (key event list mode)
+        evalMidi(0, 0, usedVoiceId);                                            // select voice: used voice (by note number)
+        evalMidi(7, noteVel >> 7, noteVel & 127);                               // key up: velocity
 #if test_unisonCluster == 0
-        evalMidi(47, 0, 2);                                     // apply preloaded values
+        evalMidi(47, 0, 2);                                                     // apply preloaded values
 #elif test_unisonCluster == 1
-        evalMidi(7, noteVel >> 7, noteVel & 127);               // key up: velocity
-        evalMidi(47, 0, 2);                                     // apply preloaded values
+        evalMidi(7, noteVel >> 7, noteVel & 127);                               // key up: velocity
+        evalMidi(47, 0, 2);                                                     // apply preloaded values
 #endif
     }
 }
@@ -1002,7 +1003,7 @@ void dsp_host::testGetParamRenderData()
 void dsp_host::testParseDestination(int32_t _value)
 {
     /* prepare value */
-    int32_t val = abs(_value);
+    uint32_t val = static_cast<uint32_t>(std::abs(_value));
     uint32_t upper = val >> 14;
     /* determine fitting destina)tion format */
     if(_value < -8191)
@@ -1019,7 +1020,7 @@ void dsp_host::testParseDestination(int32_t _value)
     else if(_value < 16384)
     {
         /* D */
-        evalMidi(5, _value >> 7, _value & 127);
+        evalMidi(5, val >> 7, val & 127);
     }
     else
     {
@@ -1056,14 +1057,14 @@ void dsp_host::initAudioEngine(float _samplerate, uint32_t _polyphony)
     //******************************** Flushing ******************************//
     float fade_time = 0.003f;
     float sample_interval = 1.f / _samplerate;
-    m_fadeSamples = fade_time * _samplerate * 2 + 1;
-    m_flushIndex = fade_time * _samplerate;
+    m_fadeSamples = static_cast<uint32_t>(fade_time * _samplerate * 2 + 1);
+    m_flushIndex = static_cast<uint32_t>(fade_time * _samplerate);
     m_raised_cos_table.resize(m_fadeSamples);
 
     for (uint32_t ind = 0; ind < m_raised_cos_table.size(); ind++)
     {
         float x = 1.5708f * sample_interval * ind / fade_time;
-        m_raised_cos_table[ind] = pow(cos(x), 2);
+        m_raised_cos_table[ind] = std::pow(std::cos(x), 2.f);
     }
 
     //****************************** DSP Modules *****************************//
@@ -1167,7 +1168,7 @@ void dsp_host::makeMonoSound(float *_signal)
     m_mainOut_L = 0.5f - std::abs(m_mainOut_L);
 
     float sample_square = m_mainOut_L * m_mainOut_L;
-    m_mainOut_L = m_mainOut_L * ((2.26548 * sample_square - 5.13274) * sample_square + 3.14159);
+    m_mainOut_L = m_mainOut_L * ((2.26548f * sample_square - 5.13274f) * sample_square + 3.14159f);
 
 //    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
 //    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
@@ -1190,7 +1191,7 @@ void dsp_host::makeMonoSound(float *_signal)
     m_mainOut_R = 0.5f - std::abs(m_mainOut_R);
 
     sample_square = m_mainOut_R * m_mainOut_R;
-    m_mainOut_R = m_mainOut_R * ((2.26548 * sample_square - 5.13274) * sample_square + 3.14159);
+    m_mainOut_R = m_mainOut_R * ((2.26548f * sample_square - 5.13274f) * sample_square + 3.14159f);
 }
 
 

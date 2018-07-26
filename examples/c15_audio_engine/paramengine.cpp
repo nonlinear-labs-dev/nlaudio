@@ -45,24 +45,33 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
         param_head* obj = &m_head[p];
         /* declarations according to parameter definition */
         obj->m_index = i;                                                       // index points to first voice/item in (rendering) array
-        obj->m_id = static_cast<int32_t>(param_definition[p][0]);               // TCD id
         obj->m_clockType = static_cast<uint32_t>(param_definition[p][1]);       // clock type (sync/audio/fast/slow)
         obj->m_polyType = static_cast<uint32_t>(param_definition[p][2]);        // poly type (mono/poly)
         obj->m_size = m_routePolyphony[obj->m_polyType];                        // determine (rendering) size
         obj->m_normalize = 1.f / param_definition[p][3];                        // TCD range
         obj->m_scaleId = static_cast<uint32_t>(param_definition[p][4]);         // TCD scale id
         obj->m_scaleArg = param_definition[p][5];                               // TCD scale argument
-        obj->m_postId = static_cast<int32_t>(param_definition[p][6]);           // post processing id
+
         /* valid parameters are added to internal id lists, placeholders are ignored */
-        if(obj->m_id > -1)
+        if(param_definition[p][0] > -1)
         {
+            obj->m_id = static_cast<uint32_t>(param_definition[p][0]);          // TCD id
             /* declare parameter according to clock type - crucial for rendering */
             m_clockIds.add(obj->m_clockType, obj->m_polyType, p);
-            if(obj->m_postId > -1)
+            if(param_definition[p][6] > -1)
             {
+                obj->m_postId = static_cast<uint32_t>(param_definition[p][6]);  // post processing id
                 /* determine automatic post processing (copy, distribution) */
                 m_postIds.add(static_cast<uint32_t>(param_definition[p][7]), obj->m_clockType, obj->m_polyType, p);
             }
+            else
+            {
+                obj->m_postId = 16383;
+            }
+        }
+        else
+        {
+            obj->m_id = 16383;
         }
         /* update item pointer */
         i += obj->m_size;
@@ -813,13 +822,13 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     for(i = 0; i < m_postIds.m_data[1].m_data[3].m_data[0].m_length; i++)
     {
         /* spread values of mono parameters to all voices of shared signal array */
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[1].m_data[3].m_data[0].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[1].m_data[3].m_data[0].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[1].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* automatic poly to poly copy - each voice */
     for(i = 0; i < m_postIds.m_data[0].m_data[3].m_data[1].m_length; i++)
     {
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[3].m_data[1].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[0].m_data[3].m_data[1].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[1].m_data[i]].m_index + _voiceId].m_signal;
     }
     /* automatic mono to mono copy (effect parameters) - only for voice 0 */
@@ -925,13 +934,13 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     for(i = 0; i < m_postIds.m_data[1].m_data[2].m_data[0].m_length; i++)
     {
         /* spread values of mono parameters to all voices of shared signal array */
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[1].m_data[2].m_data[0].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[1].m_data[2].m_data[0].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[1].m_data[2].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* automatic poly to poly copy - each voice */
     for(i = 0; i < m_postIds.m_data[0].m_data[2].m_data[1].m_length; i++)
     {
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[2].m_data[1].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[0].m_data[2].m_data[1].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[2].m_data[1].m_data[i]].m_index + _voiceId].m_signal;
     }
     /* automatic mono to mono copy (effect parameters) - only for voice 0 */
@@ -1004,13 +1013,13 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     for(i = 0; i < m_postIds.m_data[1].m_data[1].m_data[0].m_length; i++)
     {
         /* spread values of mono parameters to all voices of shared signal array */
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[1].m_data[1].m_data[0].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[1].m_data[1].m_data[0].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[1].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* automatic poly to poly copy - each voice */
     for(i = 0; i < m_postIds.m_data[0].m_data[1].m_data[1].m_length; i++)
     {
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[1].m_data[1].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[0].m_data[1].m_data[1].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[1].m_data[i]].m_index + _voiceId].m_signal;
     }
     /* automatic mono to mono copy (effect parameters) and mono envelope ticking - only for voice 0 */
@@ -1110,7 +1119,7 @@ void paramengine::postProcessMono_slow(float *_signal)
     /* automatic mono to mono copy (always voice zero) */
     for(i = 0; i < m_postIds.m_data[0].m_data[3].m_data[0].m_length; i++)
     {
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* Effect Parameter Post Processing */
@@ -1143,7 +1152,7 @@ void paramengine::postProcessMono_fast(float *_signal)
     /* automatic mono to mono copy (always voice zero) */
     for(i = 0; i < m_postIds.m_data[0].m_data[2].m_data[0].m_length; i++)
     {
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[2].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* Explicit Post Processing */
@@ -1209,7 +1218,7 @@ void paramengine::postProcessMono_audio(float *_signal)
     /* automatic mono to mono copy (always voice zero) */
     for(i = 0; i < m_postIds.m_data[0].m_data[1].m_data[0].m_length; i++)
     {
-        p = static_cast<uint32_t>(m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_postId);
+        p = m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_postId;
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* mono envelope rendering */
