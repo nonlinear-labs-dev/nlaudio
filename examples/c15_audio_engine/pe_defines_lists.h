@@ -32,7 +32,7 @@ const uint32_t paramIds_recall[lst_recall_length] = {
     139, 140, 141, 142, 143, 144, 145, 146,                                             // Cabinet (all params)
     147, 148, 149, 150, 151, 152,                                                       // Gap Filter
                                                                                         // (later: Flanger)
-                                                                                        // (later: Echo)
+    165, 166, 167, 168, 169, 170,                                                       // Echo
                                                                                         // (later: Reverb)
     176, 177                                                                            // Master (Vol, Tune)
 };

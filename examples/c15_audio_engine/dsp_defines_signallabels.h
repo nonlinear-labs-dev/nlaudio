@@ -112,4 +112,12 @@
 #define GAP_LPOUT       90
 #define GAP_INOUT       91
 
-#define MST_VOL         92
+#define DLY_TL          92
+#define DLY_TR          93
+#define DLY_FB_LOC      94
+#define DLY_FB_CR       95
+#define DLY_LPF         96
+#define DLY_DRY         97
+#define DLY_WET         98
+
+#define MST_VOL         99
