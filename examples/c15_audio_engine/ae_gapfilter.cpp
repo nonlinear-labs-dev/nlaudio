@@ -342,7 +342,7 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_hp_l2_stateVar_4 = m_hp_l2_stateVar_3 + DNC_CONST;
     m_hp_l2_stateVar_3 = tmpVar + DNC_CONST;
 
-    hp_sample = tmpVar * _signal[GAP_HPOUT];
+    hp_sample = tmpVar;
 
 
     //****************************** Lowpass L ******************************//
@@ -370,8 +370,8 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_lp_l2_stateVar_4 = m_lp_l2_stateVar_3 + DNC_CONST;
     m_lp_l2_stateVar_3 = tmpVar + DNC_CONST;
 
-
     lp_sample  = tmpVar * _signal[GAP_LPOUT];
+    hp_sample *= _signal[GAP_HPOUT];
     m_out_L = hp_sample + lp_sample + (_rawSample_L * _signal[GAP_INOUT]);
 
 
@@ -398,7 +398,7 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_hp_r2_stateVar_4 = m_hp_r2_stateVar_3 + DNC_CONST;
     m_hp_r2_stateVar_3 = tmpVar + DNC_CONST;
 
-    hp_sample = tmpVar * _signal[GAP_HPOUT];
+    hp_sample = tmpVar;
 
 
     //****************************** Lowpass R ******************************//
@@ -427,6 +427,7 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_lp_r2_stateVar_3 = tmpVar + DNC_CONST;
 
     lp_sample  = tmpVar * _signal[GAP_LPOUT];
+    hp_sample *= _signal[GAP_HPOUT];
     m_out_R = hp_sample + lp_sample + (_rawSample_R * _signal[GAP_INOUT]);
 }
 

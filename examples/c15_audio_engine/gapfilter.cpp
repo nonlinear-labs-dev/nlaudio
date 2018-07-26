@@ -167,28 +167,28 @@ void GapFilter::applyGapFilter(float _rawSample_L, float _rawSample_R)
     //*************************** Left Highpass *****************************//
     float highpassSample = pHighpass_L1->applyFilter(_rawSample_L);
     highpassSample = pHighpass_L2->applyFilter(highpassSample);
-    highpassSample *= mHpOutMix;
+//    highpassSample *= mHpOutMix;
 
     //**************************** Left Lowpass *****************************//
     float lowpassSample = pLowpass_L1->applyFilter(highpassSample * mHpLpMix + _rawSample_L * mInLpMix);
     lowpassSample = pLowpass_L2->applyFilter(lowpassSample);
-    lowpassSample *= mLpOutMix;
 
+    lowpassSample  *= mLpOutMix;
+    highpassSample *= mHpOutMix;
     mGapFilterOut_L = highpassSample + lowpassSample + (_rawSample_L * mInOutMix);
 
 
     //*************************** Right Highpass ****************************//
     highpassSample = pHighpass_R1->applyFilter(_rawSample_R);
     highpassSample = pHighpass_R2->applyFilter(highpassSample);
-
-    highpassSample *= mHpOutMix;
+//    highpassSample *= mHpOutMix;
 
     //**************************** Right Lowpass ****************************//
     lowpassSample = pLowpass_R1->applyFilter(highpassSample * mHpLpMix + _rawSample_R * mInLpMix);
     lowpassSample = pLowpass_R2->applyFilter(lowpassSample);
 
     lowpassSample *= mLpOutMix;
-
+    highpassSample *= mHpOutMix;
     mGapFilterOut_R = highpassSample + lowpassSample + (_rawSample_R * mInOutMix);
 }
 
