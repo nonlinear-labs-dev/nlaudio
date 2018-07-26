@@ -1132,7 +1132,7 @@ void paramengine::postProcessMono_slow(float *_signal)
     /*   - Right LP Frequency in Hz */
     _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap + tmpStereo) * 440.f);   // nyquist clipping not necessary...
     /*   - Right HP Frequency in Hz */
-    _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap + tmpStereo) * 440.f);
+    _signal[GAP_HFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap + tmpStereo) * 440.f);
 }
 
 /* Mono Post Processing - fast parameters */
