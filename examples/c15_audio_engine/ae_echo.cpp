@@ -153,7 +153,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, floa
     m_hp_stateVar_L1 = m_out_L + DNC_const;
     m_hp_stateVar_L2 = m_stateVar_L + DNC_const;
 
-//    m_stateVar_L += DNC_const;        /// Brauchen wir das wirklich?
+    m_stateVar_L += DNC_const;        /// Brauchen wir das wirklich?
 
     m_out_L = NlToolbox::Crossfades::crossFade(_rawSample_L, m_out_L, _signal[DLY_DRY], _signal[DLY_WET]);
 
@@ -208,7 +208,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, floa
     m_hp_stateVar_R1 = m_out_R + DNC_const;
     m_hp_stateVar_R2 = m_stateVar_R + DNC_const;
 
-//    m_stateVar_R += DNC_const;        /// Brauchen wir das wirklich?
+    m_stateVar_R += DNC_const;        /// Brauchen wir das wirklich?
 
     m_out_R = NlToolbox::Crossfades::crossFade(_rawSample_R, m_out_R, _signal[DLY_DRY], _signal[DLY_WET]);
 
