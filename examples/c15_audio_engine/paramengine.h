@@ -22,6 +22,7 @@
 #endif
 
 #include "pe_key_event.h"
+#include "pe_lfo_engine.h"
 #include "pe_utilities.h"
 #include "pe_defines_labels.h"
 #include "dsp_defines_signallabels.h"
@@ -76,6 +77,7 @@ struct paramengine
     /* samplerate dependant parameters */
     float m_nyquist_frequency;
     float m_millisecond;
+    float m_reciprocal_samplerate;
     /* clock and polyphony definitions */
     float m_timeFactors[dsp_clock_types];
     uint32_t m_routePolyphony[dsp_poly_types] = {1, dsp_number_of_voices};
@@ -98,9 +100,13 @@ struct paramengine
     NlToolbox::Curves::Shaper_1_BP m_svfLBH1Curve;
     NlToolbox::Curves::Shaper_1_BP m_svfLBH2Curve;
     const float m_svfResFactor = 1.f / 60.f;
-    const float m_cabTiltFloor = 2e-20f;
+    const float m_cabTiltFloor = 2.e-20f;
     NlToolbox::Curves::Shaper_2_BP m_svfResonanceCurve;
     const float m_dlyNormStereo = 1.f / 99.f;
+    NlToolbox::Curves::Shaper_2_BP m_flaFeedbackCurve;
+    const float m_flaNormPhase = 1.f / 360.f;
+    stereo_lfo m_flangerLFO;
+    float m_flangerRateToDecay = 0.55f;
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */

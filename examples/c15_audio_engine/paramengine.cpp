@@ -14,6 +14,7 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
 {
     /* determine crucial variables */
     m_samplerate = _sampleRate;
+    m_reciprocal_samplerate = 1.f / static_cast<float>(_sampleRate);            // keep reciprocal frequency (1 / sampleRate)
     m_millisecond = dsp_samples_to_ms * static_cast<float>(_sampleRate);        // one millisecond in samples
     m_nyquist_frequency = static_cast<float>(_sampleRate >> 1);                 // nyquist frequency (50% sampleRate)
     m_routePolyphony[1] = _voices;                                              // overwrite polyphony
@@ -31,6 +32,8 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     m_svfLBH1Curve.setCurve(-1.f, -1.f, 1.f);                                   // initialize control shaper for the LBH parameter (upper crossmix)
     m_svfLBH2Curve.setCurve(-1.f, 1.f, 1.f);                                    // initialize control shaper for the LBH parameter (lower crossmix)
     m_svfResonanceCurve.setCurve(0.f, 0.49f, 0.79f, 0.94f);                     // initialize control shaper for the svf resonance parameter (later, test4)
+    m_flaFeedbackCurve.setCurve(-1.f, -0.5f, 0.5f, 1.f);                        // initialize control shaper for the flanger feedback curve
+    m_flangerRateToDecay *= NlToolbox::Constants::twopi * m_reciprocal_samplerate;
     /* provide indices for further definitions */
     uint32_t i, p;
     /* initialize envelope events */
@@ -1124,7 +1127,26 @@ void paramengine::postProcessMono_slow(float *_signal)
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[3].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* Effect Parameter Post Processing */
-    float tmpGap, tmpCenter, tmpStereo;
+    float tmp_Gap, tmp_Center, tmp_Stereo, tmp_Rate;
+    const float tmp_SR = static_cast<float>(m_samplerate);
+    /* - Flanger */
+    /*   - LFO/Envelope Rate, Phase */
+    m_flangerLFO.m_phaseOffset = m_flaNormPhase * m_body[m_head[P_FLA_PHS].m_index].m_signal;
+    tmp_Rate = m_body[m_head[P_FLA_RTE].m_index].m_signal;
+    m_flangerLFO.m_increment = m_reciprocal_samplerate * tmp_Rate;
+    tmp_Rate *= m_flangerRateToDecay;
+#if test_whichEnvelope == 0
+    m_envelopes.setSegmentDx(0, 4, 2, 1.f - tmp_Rate);  // not sure here
+#elif test_whichEnvelope == 1
+    m_new_envelopes.m_env_f.setSegmentDx(0, 2, 1.f - tmp_Rate);
+#endif
+    /*   - Stereo Time */
+    tmp_Center = m_body[m_head[P_FLA_TIME].m_index].m_signal * dsp_samples_to_ms * tmp_SR;  // time (in ms) is handled in samples
+    tmp_Stereo = m_body[m_head[P_FLA_STE].m_index].m_signal * 0.01f;
+    _signal[FLA_TL] = tmp_Center * (1.f + tmp_Stereo);
+    _signal[FLA_TR] = tmp_Center * (1.f - tmp_Stereo);
+    /*   - Hi Cut Frequency */
+    _signal[FLA_LPF] = evalNyquist(m_body[m_head[P_FLA_LPF].m_index].m_signal * 440.f);
     /* - Cabinet */
     /*   - Hi Cut Frequency in Hz (Hi Cut == Lowpass) */
     _signal[CAB_LPF] = evalNyquist(m_body[m_head[P_CAB_LPF].m_index].m_signal * 440.f);
@@ -1133,23 +1155,23 @@ void paramengine::postProcessMono_slow(float *_signal)
     /*   - Tilt to Shelving EQs */
     _signal[CAB_TILT] = m_body[m_head[P_CAB_TILT].m_index].m_signal;
     /* - Gap Filter */
-    tmpGap = (m_body[m_head[P_GAP_MIX].m_index].m_signal < 0.f ? -1.f : 1.f) * m_body[m_head[P_GAP_GAP].m_index].m_signal;
-    tmpCenter = m_body[m_head[P_GAP_CNT].m_index].m_signal;
-    tmpStereo = m_body[m_head[P_GAP_STE].m_index].m_signal;
+    tmp_Gap = (m_body[m_head[P_GAP_MIX].m_index].m_signal < 0.f ? -1.f : 1.f) * m_body[m_head[P_GAP_GAP].m_index].m_signal;
+    tmp_Center = m_body[m_head[P_GAP_CNT].m_index].m_signal;
+    tmp_Stereo = m_body[m_head[P_GAP_STE].m_index].m_signal;
     /*   - Left LP Frequency in Hz */
-    _signal[GAP_LFL] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap - tmpStereo) * 440.f);   // nyquist clipping not necessary...
+    _signal[GAP_LFL] = evalNyquist(m_convert.eval_lin_pitch(tmp_Center - tmp_Gap - tmp_Stereo) * 440.f);   // nyquist clipping not necessary...
     /*   - Left HP Frequency in Hz */
-    _signal[GAP_HFL] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap - tmpStereo) * 440.f);
+    _signal[GAP_HFL] = evalNyquist(m_convert.eval_lin_pitch(tmp_Center + tmp_Gap - tmp_Stereo) * 440.f);
     /*   - Right LP Frequency in Hz */
-    _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter - tmpGap + tmpStereo) * 440.f);   // nyquist clipping not necessary...
+    _signal[GAP_LFR] = evalNyquist(m_convert.eval_lin_pitch(tmp_Center - tmp_Gap + tmp_Stereo) * 440.f);   // nyquist clipping not necessary...
     /*   - Right HP Frequency in Hz */
-    _signal[GAP_HFR] = evalNyquist(m_convert.eval_lin_pitch(tmpCenter + tmpGap + tmpStereo) * 440.f);
+    _signal[GAP_HFR] = evalNyquist(m_convert.eval_lin_pitch(tmp_Center + tmp_Gap + tmp_Stereo) * 440.f);
     /* - Echo */
     /*   - Time and Stereo */
-    tmpCenter = m_body[m_head[P_DLY_TIME].m_index].m_signal * m_samplerate;                             // time is handled in samples
-    tmpStereo = m_body[m_head[P_DLY_STE].m_index].m_signal * m_dlyNormStereo;
-    _signal[DLY_TL] = tmpCenter * (1.f + tmpStereo);
-    _signal[DLY_TR] = tmpCenter * (1.f - tmpStereo);
+    tmp_Center = m_body[m_head[P_DLY_TIME].m_index].m_signal * tmp_SR;                             // time is handled in samples
+    tmp_Stereo = m_body[m_head[P_DLY_STE].m_index].m_signal * m_dlyNormStereo;
+    _signal[DLY_TL] = tmp_Center * (1.f + tmp_Stereo);
+    _signal[DLY_TR] = tmp_Center * (1.f - tmp_Stereo);
     /*   - High Cut Frequency */
     _signal[DLY_LPF] = evalNyquist(m_body[m_head[P_DLY_LPF].m_index].m_signal * 440.f);
 }
@@ -1169,6 +1191,10 @@ void paramengine::postProcessMono_fast(float *_signal)
     /* provide temporary variables */
     float tmp_val, tmp_dry, tmp_wet, tmp_hi_par, tmp_lo_par, tmp_hi_ser, tmp_lo_ser, tmp_fb;
     /* Effect Parameter Post Processing */
+    /* - Flanger */
+    /*   - Feedback and Cross Feedback */
+    /*   - Dry and Wet Amounts */
+    /*   - Allpass Frequencies */
     /* - Cabinet */
     /*   - Tilt to Saturation Levels (pre, post Shaper) */
     tmp_val = std::max(m_cabTiltFloor, m_convert.eval_level(0.5f * m_body[m_head[P_CAB_TILT].m_index].m_signal));
@@ -1243,11 +1269,21 @@ void paramengine::postProcessMono_audio(float *_signal)
         _signal[p] = m_body[m_head[m_postIds.m_data[0].m_data[1].m_data[0].m_data[i]].m_index].m_signal;
     }
     /* mono envelope rendering */
+    float tmp_env;
 #if test_whichEnvelope == 0
-        /* "OLD" ENVELOPES: */
-        m_envelopes.tickMono();
+    /* "OLD" ENVELOPES: */
+    m_envelopes.tickMono();
+    tmp_env = m_envelopes.m_body[80].m_signal; // not sure about that
 #elif test_whichEnvelope == 1
-        /* "NEW" ENVELOPES: */
-        m_new_envelopes.tickMono();
+    /* "NEW" ENVELOPES: */
+    m_new_envelopes.tickMono();
+    tmp_env = (m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude * 2.f) - 1.f;
 #endif
+    /* - Flanger */
+    /*   - render LFO, crossfade flanger envelope and pass left and right signals to array */
+    m_flangerLFO.tick();
+    float tmp_wet = m_body[m_head[P_FLA_ENV].m_index].m_signal;
+    float tmp_dry = 1.f - tmp_wet;
+    _signal[FLA_LFO_L] = (tmp_dry * m_flangerLFO.m_left) + (tmp_wet * tmp_env);
+    _signal[FLA_LFO_R] = (tmp_dry * m_flangerLFO.m_right) + (tmp_wet * tmp_env);
 }

@@ -766,6 +766,10 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             /* Cabinet & Gap Filter */
             std::cout << "selected CABINET_&_GAP_FILTER" << std::endl;
             break;
+        case 12:
+            /* Flanger */
+            std::cout << "selected FLANGER" << std::endl;
+            break;
         case 13:
             /* Echo (later: Reverb) */
             std::cout << "selected ECHO_&_REVERB" << std::endl;
