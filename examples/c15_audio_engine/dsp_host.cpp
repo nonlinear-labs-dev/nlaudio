@@ -1055,7 +1055,7 @@ void dsp_host::initAudioEngine()
     float sample_interval = 1.f / m_samplerate;
 
     m_table_indx = 0;
-    m_raised_cos_table.resize(fade_time * m_samplerate * m_upsampleFactor * 2 + 1);
+    m_raised_cos_table.resize(static_cast<uint32_t>(fade_time * static_cast<float>(m_samplerate)) * 2 + 1);
 
     for (uint32_t ind = 0; ind < m_raised_cos_table.size(); ind++)
     {
@@ -1064,7 +1064,7 @@ void dsp_host::initAudioEngine()
     }
 
     m_flush = false;
-    m_flush_indx = (m_raised_cos_table.size() - 1) / 2;
+    m_flush_indx = static_cast<uint32_t>((m_raised_cos_table.size() - 1) / 2);
 
     //****************************** DSP Modules *****************************//
     for (uint32_t p = 0; p < m_voices; p++)
