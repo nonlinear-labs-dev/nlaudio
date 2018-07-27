@@ -24,12 +24,11 @@ ae_echo::ae_echo()
 /******************************************************************************/
 /** @brief
 *******************************************************************************/
+
 void ae_echo::init(float _samplerate, uint32_t _upsampleFactor)
 {
     m_out_L = 0.f;
     m_out_R = 0.f;
-
-//    m_flushPoint = 1.f;
 
     m_warpConst_PI = pi / static_cast<float>(_samplerate);
     m_freqClip_min = static_cast<float>(_samplerate) / 24000.f;
