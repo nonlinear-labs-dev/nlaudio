@@ -24,15 +24,17 @@ ae_outputmixer::ae_outputmixer()
 /** @brief
 *******************************************************************************/
 
-void ae_outputmixer::init(float _samplerate, uint32_t _numberOfVoices)
+void ae_outputmixer::init(float _samplerate, uint32_t _numOfVoices)
 {
-    m_sampleL = 0.f;
-    m_sampleR = 0.f;
+    m_out_L = 0.f;
+    m_out_R = 0.f;
 
     m_hp30_b0 = (6.28319f / _samplerate) * 30.f;
 
-    m_hp30_stateVar_L.assign(_numberOfVoices, 0.f);
-    m_hp30_stateVar_R.assign(_numberOfVoices, 0.f);
+    m_hp30_stateVar_L.resize(_numOfVoices);
+    std::fill(m_hp30_stateVar_L.begin(), m_hp30_stateVar_L.end(), 0.f);
+    m_hp30_stateVar_R.resize(_numOfVoices);
+    std::fill(m_hp30_stateVar_R.begin(), m_hp30_stateVar_R.end(), 0.f);
 
     m_highpass_L.initFilter(_samplerate, NlToolbox::Conversion::pitch2freq(8.f));
     m_highpass_R.initFilter(_samplerate, NlToolbox::Conversion::pitch2freq(8.f));
@@ -44,7 +46,7 @@ void ae_outputmixer::init(float _samplerate, uint32_t _numberOfVoices)
 /** @brief
 *******************************************************************************/
 
-void ae_outputmixer::mixAndShape(float _sampleA, float _sampleB, float _sampleComb, float _sampleSVFilter, float *_signal, uint32_t _voiceID)
+void ae_outputmixer::combine(float _sampleA, float _sampleB, float _sampleComb, float _sampleSVFilter, float *_signal, uint32_t _voiceID)
 {
     //******************************* Left Mix *******************************//
     float mainSample = _signal[OUT_A_L] * _sampleA
@@ -65,7 +67,7 @@ void ae_outputmixer::mixAndShape(float _sampleA, float _sampleB, float _sampleCo
 
     mainSample = NlToolbox::Others::parAsym(mainSample, tmpVar, _signal[OUT_ASM]);
 
-    m_sampleL += mainSample;
+    m_out_L += mainSample;
 
     //****************************** Right Mix *******************************//
     mainSample = _signal[OUT_A_R] * _sampleA
@@ -86,7 +88,7 @@ void ae_outputmixer::mixAndShape(float _sampleA, float _sampleB, float _sampleCo
 
     mainSample = NlToolbox::Others::parAsym(mainSample, tmpVar, _signal[OUT_ASM]);
 
-    m_sampleR += mainSample;
+    m_out_R += mainSample;
 }
 
 
@@ -95,11 +97,11 @@ void ae_outputmixer::mixAndShape(float _sampleA, float _sampleB, float _sampleCo
 /** @brief
 *******************************************************************************/
 
-void ae_outputmixer::filterAndLevel(float *_signal)
+void ae_outputmixer::filter_level(float *_signal)
 {
-    m_sampleL = m_highpass_L.applyFilter(m_sampleL);
-    m_sampleR = m_highpass_R.applyFilter(m_sampleR);
+    m_out_L = m_highpass_L.applyFilter(m_out_L);
+    m_out_R = m_highpass_R.applyFilter(m_out_R);
 
-    m_sampleL *= _signal[OUT_LVL];
-    m_sampleR *= _signal[OUT_LVL];
+    m_out_L *= _signal[OUT_LVL];
+    m_out_R *= _signal[OUT_LVL];
 }

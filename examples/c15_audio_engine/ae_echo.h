@@ -23,8 +23,8 @@ struct ae_echo
 
     float m_out_L, m_out_R;
 
-    void init(uint32_t _samplerate, uint32_t _upsampleFactor);
-    void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _flushPoint);
+    void init(float _samplerate, uint32_t _upsampleFactor);
+    void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint);
     void set(float *_signal);
 
     float m_warpConst_PI;

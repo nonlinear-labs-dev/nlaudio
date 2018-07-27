@@ -9,20 +9,18 @@
 
 #pragma once
 
-#include <array>
+#include <vector>
 #include "nltoolbox.h"
 #include "dsp_defines_signallabels.h"
 
 #define COMB_BUFFER_SIZE    8192
-#define COMB_BUFFER_SIZE_M1 8191
 
 struct ae_combfilter
 {
     ae_combfilter();        // Default Contructor
 
-    float m_sampleComb;     // Generated Sample
-    float m_decayStateVar;    
-    float m_flushFadePoint;
+    float m_out;     // Generated Sample
+    float m_decayStateVar;
 
     float m_sampleInterval;
     float m_warpConst_PI;
@@ -31,9 +29,9 @@ struct ae_combfilter
     float m_freqClip_4;
     float m_freqClip_24576;
 
-    void init(float _samplerate, uint32_t _vn);
-    void applyCombfilter(float _sampleA, float _sampleB, float *_signal);
-    void setCombfilter(float *_signal, float _samplerate);
+    void init(float _samplerate, uint32_t _upsampleFactor);
+    void apply(float _sampleA, float _sampleB, float *_signal, float _fadePoint);
+    void set(float *_signal, float _samplerate);
     void setDelaySmoother();
 
     //**************************** Highpass Filter ****************************//
@@ -52,8 +50,9 @@ struct ae_combfilter
     float m_apStateVar_4;
 
     //****************************** Delay/ Decay *****************************//
-    uint32_t m_delayBufferInd;
-    std::array<float, COMB_BUFFER_SIZE> m_delayBuffer;
+    int32_t m_buffer_indx;
+    int32_t m_buffer_sz_m1;
+    std::vector<float> m_buffer;
 
     float m_delaySamples;
     float m_delayFreqClip;

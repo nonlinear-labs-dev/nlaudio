@@ -4,7 +4,7 @@
     @version        1.0
     @author         Anton Schmied
     @brief          Outputmixer
-    @todo
+    @todo           Filter auflösen!
 *******************************************************************************/
 
 #pragma once
@@ -17,16 +17,16 @@ struct ae_outputmixer
 {
     ae_outputmixer();       // Default Constructor
 
-    float m_sampleL, m_sampleR;
+    float m_out_L, m_out_R;
 
     float m_hp30_b0;
 
     std::vector<float> m_hp30_stateVar_L;
     std::vector<float> m_hp30_stateVar_R;
 
-    void init(float _samplerate, uint32_t _numberOfVoices);
-    void mixAndShape(float _sampleA, float _sampleB, float _sampleComb, float _sampleSVFilter, float *_signal, uint32_t _voiceID);
-    void filterAndLevel(float *_signal);
+    void init(float _samplerate, uint32_t _numOfVoices);
+    void combine(float _sampleA, float _sampleB, float _sampleComb, float _sampleSVFilter, float *_signal, uint32_t _voiceID);
+    void filter_level(float *_signal);
 
 
     //*************************** Highpass Filters ****************************//

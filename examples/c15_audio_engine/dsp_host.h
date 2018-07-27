@@ -95,17 +95,15 @@ public:
     ae_gapfilter m_gapfilter;
     ae_echo m_echo;
 
-    void initAudioEngine(float _samplerate, uint32_t _polyphony);
-    void makePolySound(float *_signal, uint32_t _voiceID);
-    void makeMonoSound(float *_signal);
+    void initAudioEngine();
+    void makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint);
+    void makeMonoSound(float *_signal, float _fadePoint);
 
     inline void setPolyFilterCoeffs(float *_signal, uint32_t _voiceID);
     inline void setMonoFilterCoeffs(float *_signal);
 
-    bool m_flushnow;
-    float m_fadepoint;
-    uint32_t m_tableCounter;
-    uint32_t m_fadeSamples;
-    uint32_t m_flushIndex;
+    bool m_flush;
+    uint32_t m_table_indx;
+    uint32_t m_flush_indx;
     std::vector<float> m_raised_cos_table;
 };

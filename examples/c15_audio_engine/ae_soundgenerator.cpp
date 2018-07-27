@@ -28,8 +28,8 @@ ae_soundgenerator::ae_soundgenerator()
 
 void ae_soundgenerator::init(float _samplerate, uint32_t _vn)
 {
-    m_sampleA = 0.f;
-    m_sampleB = 0.f;
+    m_out_A = 0.f;
+    m_out_B = 0.f;
 
     m_sample_interval = 1.f / _samplerate;
     m_warpConst_PI = 3.14159f / _samplerate;
@@ -54,7 +54,7 @@ void ae_soundgenerator::init(float _samplerate, uint32_t _vn)
 /******************************************************************************/
 /** @brief
 *******************************************************************************/
-void ae_soundgenerator::setSoundGenerator(float *_signal, float _samplerate)
+void ae_soundgenerator::set(float *_signal)
 {
     //*************************** Chirp Filter A *****************************//
     m_chiA_omega = _signal[OSC_A_CHI] * m_warpConst_PI;
@@ -89,7 +89,7 @@ void ae_soundgenerator::resetPhase(float _phaseA, float _phaseB)
 /** @brief
 *******************************************************************************/
 
-void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
+void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 {
     float tmpVar;
 
@@ -197,29 +197,29 @@ void ae_soundgenerator::generateSound(float _feedbackSample, float *_signal)
     m_oscB_selfmix  = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[OSC_B_PMSSH]);
     m_oscB_crossmix = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[OSC_A_PMBSH]);
 
-    m_sampleA = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shaperSampleA, _signal[SHP_A_MIX]);
-    m_sampleB = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[SHP_B_MIX]);
+    m_out_A = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shaperSampleA, _signal[SHP_A_MIX]);
+    m_out_B = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[SHP_B_MIX]);
 
 
     //******************* Envelope Influence (Magnitudes) ********************//
-    m_sampleA *= _signal[ENV_A_MAG];
-    m_sampleB *= _signal[ENV_B_MAG];
+    m_out_A *= _signal[ENV_A_MAG];
+    m_out_B *= _signal[ENV_B_MAG];
 
 
     //**************************** Feedback Mix ******************************//
     /// -> the crossfade for ENV_G_SIG, ENV_C_SIG and SHP_A_FBEC/SHP_B_FBEC will soon be part of processing
     tmpVar    = NlToolbox::Crossfades::unipolarCrossFade(_signal[ENV_G_SIG], _signal[ENV_C_SIG], _signal[SHP_A_FBEC]);
     tmpVar   *= _feedbackSample;
-    m_sampleA = NlToolbox::Crossfades::unipolarCrossFade(m_sampleA, tmpVar, _signal[SHP_A_FBM]);
+    m_out_A = NlToolbox::Crossfades::unipolarCrossFade(m_out_A, tmpVar, _signal[SHP_A_FBM]);
 
     tmpVar    = NlToolbox::Crossfades::unipolarCrossFade(_signal[ENV_G_SIG], _signal[ENV_C_SIG], _signal[SHP_B_FBEC]);
     tmpVar   *= _feedbackSample;
-    m_sampleB = NlToolbox::Crossfades::unipolarCrossFade(m_sampleB, tmpVar, _signal[SHP_B_FBM]);
+    m_out_B = NlToolbox::Crossfades::unipolarCrossFade(m_out_B, tmpVar, _signal[SHP_B_FBM]);
 
 
     //************************** Ring Modulation *****************************//
-    tmpVar = m_sampleA * m_sampleB;
+    tmpVar = m_out_A * m_out_B;
 
-    m_sampleA = NlToolbox::Crossfades::unipolarCrossFade(m_sampleA, tmpVar, _signal[SHP_A_RM]);
-    m_sampleB = NlToolbox::Crossfades::unipolarCrossFade(m_sampleB, tmpVar, _signal[SHP_B_RM]);
+    m_out_A = NlToolbox::Crossfades::unipolarCrossFade(m_out_A, tmpVar, _signal[SHP_A_RM]);
+    m_out_B = NlToolbox::Crossfades::unipolarCrossFade(m_out_B, tmpVar, _signal[SHP_B_RM]);
 }

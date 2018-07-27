@@ -16,12 +16,12 @@ struct ae_svfilter
 {
     ae_svfilter();      // Default Constructor
 
-    float m_sampleSVF;
+    float m_out;
     float m_warpConst_2PI;
 
-    void init(float _samplerate, uint32_t _vn);
-    void applySVFilter(float _sampleA, float _sampleB, float _sampleComb, float *_signal);
-    void setSVFilter(float *_signal, float _samplerate);
+    void init(float _samplerate);
+    void apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal);
+    void set(float *_signal);
 
     float m_first_attenuation, m_second_attenuation;
 

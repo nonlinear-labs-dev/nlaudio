@@ -30,7 +30,7 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     std::cout << "DSP_HOST::upsampleFactor: " << m_upsampleFactor << std::endl;
 
     /* Audio Engine */
-    initAudioEngine(static_cast<float>(_samplerate), _polyphony);
+    initAudioEngine();
 
     /* Load Initial Preset (TCD zero for every Parameter) */
     loadInitialPreset();
@@ -118,13 +118,11 @@ void dsp_host::tickMain()
     m_params.postProcessMono_audio(m_paramsignaldata[0]);
 
     /* Reset Outputmixer Sum Samples */
-    m_outputmixer.m_sampleL = 0.f;
-    m_outputmixer.m_sampleR = 0.f;
-//    m_mainOut_L = 0.f;
-//    m_mainOut_R = 0.f;
+    m_outputmixer.m_out_L = 0.f;
+    m_outputmixer.m_out_R = 0.f;
 
     /*set the current fadepoint*/
-    float flushFadePoint = m_raised_cos_table[m_tableCounter];
+    float fadePoint = m_raised_cos_table[m_table_indx];
 
     for(v = 0; v < m_voices; v++)
     {
@@ -139,12 +137,11 @@ void dsp_host::tickMain()
         m_params.postProcessPoly_audio(m_paramsignaldata[v], v);
 
         /* AUDIO_ENGINE: poly dsp phase */
-        m_combfilter[v].m_flushFadePoint = flushFadePoint;
-        makePolySound(m_paramsignaldata[v], v);
+        makePolySound(m_paramsignaldata[v], v, fadePoint);
     }
 
     /* AUDIO_ENGINE: mono dsp phase */
-    makeMonoSound(m_paramsignaldata[0]);
+    makeMonoSound(m_paramsignaldata[0], fadePoint);
 
     /* finally: update (fast and slow) clock positions */
     m_clockPosition[2] = (m_clockPosition[2] + 1) % m_clockDivision[2];
@@ -290,7 +287,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 15:
         /* flush (audio_engine trigger needed) */
-        m_flushnow = true;
+        m_flush = true;
         break;
     case 16:
         /* selectUtility */
@@ -1051,19 +1048,14 @@ void dsp_host::testInit()
 /**
 *******************************************************************************/
 
-void dsp_host::initAudioEngine(float _samplerate, uint32_t _polyphony)
+void dsp_host::initAudioEngine()
 {
-    //****************************** Fade n Flush ****************************//
-    m_flushnow = false;
-    m_tableCounter = 0;
-
-
     //******************************** Flushing ******************************//
     float fade_time = 0.003f;
-    float sample_interval = 1.f / _samplerate;
-    m_fadeSamples = static_cast<uint32_t>(fade_time * _samplerate * 2 + 1);
-    m_flushIndex = static_cast<uint32_t>(fade_time * _samplerate);
-    m_raised_cos_table.resize(m_fadeSamples);
+    float sample_interval = 1.f / m_samplerate;
+
+    m_table_indx = 0;
+    m_raised_cos_table.resize(fade_time * m_samplerate * m_upsampleFactor * 2 + 1);
 
     for (uint32_t ind = 0; ind < m_raised_cos_table.size(); ind++)
     {
@@ -1071,18 +1063,21 @@ void dsp_host::initAudioEngine(float _samplerate, uint32_t _polyphony)
         m_raised_cos_table[ind] = std::pow(std::cos(x), 2.f);
     }
 
+    m_flush = false;
+    m_flush_indx = (m_raised_cos_table.size() - 1) / 2;
+
     //****************************** DSP Modules *****************************//
-    for (uint32_t p = 0; p < _polyphony; p++)
+    for (uint32_t p = 0; p < m_voices; p++)
     {
-        m_soundgenerator[p].init(_samplerate, p);
-        m_combfilter[p].init(_samplerate, p);
-        m_svfilter[p].init(_samplerate, p);
+        m_soundgenerator[p].init(static_cast<float>(m_samplerate), p);
+        m_combfilter[p].init(static_cast<float>(m_samplerate), m_upsampleFactor);
+        m_svfilter[p].init(static_cast<float>(m_samplerate));
     }
 
-    m_outputmixer.init(_samplerate, _polyphony);
-    m_cabinet.init(_samplerate, _polyphony);
-    m_gapfilter.init(_samplerate, _polyphony);
-    m_echo.init(m_samplerate, m_upsampleFactor);
+    m_outputmixer.init(static_cast<float>(m_samplerate), m_voices);
+    m_cabinet.init(static_cast<float>(m_samplerate));
+    m_gapfilter.init(static_cast<float>(m_samplerate));
+    m_echo.init(static_cast<float>(m_samplerate), m_upsampleFactor);
 }
 
 
@@ -1091,30 +1086,30 @@ void dsp_host::initAudioEngine(float _samplerate, uint32_t _polyphony)
 /**
 *******************************************************************************/
 
-void dsp_host::makePolySound(float *_signal, uint32_t _voiceID)
+void dsp_host::makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint)
 {
     //***************************** Soundgenerator ***************************//
     //************************* Oscillators n Shapers ************************//
-    m_soundgenerator[_voiceID].generateSound(0.f, _signal);             /// _feedbackSample
+    m_soundgenerator[_voiceID].generate(0.f, _signal);             /// _feedbackSample
 
 
     //****************************** Comb Filter *****************************//
-    m_combfilter[_voiceID].applyCombfilter(m_soundgenerator[_voiceID].m_sampleA,
-                                           m_soundgenerator[_voiceID].m_sampleB,
-                                           _signal);
+    m_combfilter[_voiceID].apply(m_soundgenerator[_voiceID].m_out_A,
+                                 m_soundgenerator[_voiceID].m_out_B,
+                                 _signal, _fadePoint);
 
     //************************* State Variable Filter ************************//
-    m_svfilter[_voiceID].applySVFilter(m_soundgenerator[_voiceID].m_sampleA,
-                                       m_soundgenerator[_voiceID].m_sampleB,
-                                       m_combfilter[_voiceID].m_sampleComb,
-                                       _signal);
+    m_svfilter[_voiceID].apply(m_soundgenerator[_voiceID].m_out_A,
+                               m_soundgenerator[_voiceID].m_out_B,
+                               m_combfilter[_voiceID].m_out,
+                               _signal);
 
     //****************************** Outputmixer *****************************//
-    m_outputmixer.mixAndShape(m_soundgenerator[_voiceID].m_sampleA,
-                              m_soundgenerator[_voiceID].m_sampleB,
-                              m_combfilter[_voiceID].m_sampleComb,
-                              m_svfilter[_voiceID].m_sampleSVF,
-                              _signal, _voiceID);
+    m_outputmixer.combine(m_soundgenerator[_voiceID].m_out_A,
+                          m_soundgenerator[_voiceID].m_out_B,
+                          m_combfilter[_voiceID].m_out,
+                          m_svfilter[_voiceID].m_out,
+                          _signal, _voiceID);
 }
 
 
@@ -1123,40 +1118,37 @@ void dsp_host::makePolySound(float *_signal, uint32_t _voiceID)
 /**
 *******************************************************************************/
 
-void dsp_host::makeMonoSound(float *_signal)
+void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
 {
     //****************************** Fade n Flush ****************************//
-    float flushPoint = m_raised_cos_table[m_tableCounter];
-
-    if (m_flushnow)
+    if (m_flush)
     {
-        if (m_tableCounter == m_flushIndex)
+        if (m_table_indx == m_flush_indx)
         {
-            printf("flushing all buffers ... \n");
             for (uint32_t voiceNumber = 0; voiceNumber < dsp_number_of_voices; voiceNumber++)
             {
-                m_combfilter[voiceNumber].m_delayBuffer.fill(0.f);
+                std::fill(m_combfilter[voiceNumber].m_buffer.begin(), m_combfilter[voiceNumber].m_buffer.end(), 0.f);
             }
 
             std::fill(m_echo.m_buffer_L.begin(), m_echo.m_buffer_L.end(), 0.f);
             std::fill(m_echo.m_buffer_R.begin(), m_echo.m_buffer_R.end(), 0.f);
         }
 
-        if (m_tableCounter > m_fadeSamples)
+        if (m_table_indx > m_raised_cos_table.size())
         {
-            m_tableCounter = 0;
-            m_flushnow = false;
+            m_table_indx = 0;
+            m_flush = false;
         }
         else
         {
-            m_tableCounter++;
+            m_table_indx++;
         }
     }
     //****************************** Mono Modules ****************************//
-    m_outputmixer.filterAndLevel(_signal);
-    m_cabinet.applyCabinet(m_outputmixer.m_sampleL, m_outputmixer.m_sampleR, _signal);
-    m_gapfilter.apply(m_cabinet.m_sampleCabinet_L, m_cabinet.m_sampleCabinet_R, _signal);
-    m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal, flushPoint);
+    m_outputmixer.filter_level(_signal);
+    m_cabinet.apply(m_outputmixer.m_out_L, m_outputmixer.m_out_R, _signal);
+    m_gapfilter.apply(m_cabinet.m_out_L, m_cabinet.m_out_R, _signal);
+    m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal, _fadePoint);
 
     //******************************* Soft Clip ******************************//
 //    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
@@ -1165,14 +1157,7 @@ void dsp_host::makeMonoSound(float *_signal)
     m_mainOut_L = m_echo.m_out_L * _signal[MST_VOL];
 
     m_mainOut_L *= 0.1588f;
-    if (m_mainOut_L > 0.25f)
-    {
-        m_mainOut_L = 0.25f;
-    }
-    if (m_mainOut_L < -0.25f)
-    {
-        m_mainOut_L = -0.25f;
-    }
+    m_mainOut_L = std::clamp(m_mainOut_L, -0.25f, 0.25f);
 
     m_mainOut_L += -0.25f;
     m_mainOut_L += m_mainOut_L;
@@ -1188,15 +1173,7 @@ void dsp_host::makeMonoSound(float *_signal)
     m_mainOut_R = m_echo.m_out_R * _signal[MST_VOL];
 
     m_mainOut_R *= 0.1588f;
-
-    if (m_mainOut_R > 0.25f)
-    {
-        m_mainOut_R = 0.25f;
-    }
-    if (m_mainOut_R < -0.25f)
-    {
-        m_mainOut_R = -0.25f;
-    }
+    m_mainOut_R = std::clamp(m_mainOut_R, -0.25f, 0.25f);
 
     m_mainOut_R += -0.25f;
     m_mainOut_R += m_mainOut_R;
@@ -1216,13 +1193,13 @@ void dsp_host::makeMonoSound(float *_signal)
 inline void dsp_host::setPolyFilterCoeffs(float *_signal, uint32_t _voiceID)
 {
     //************************ Osciallator Chirp Filter **********************//
-    m_soundgenerator[_voiceID].setSoundGenerator(_signal, m_samplerate);
+    m_soundgenerator[_voiceID].set(_signal);
 
     //****************************** Comb Filter *****************************//
-    m_combfilter[_voiceID].setCombfilter(_signal, m_samplerate);
+    m_combfilter[_voiceID].set(_signal, static_cast<float>(m_samplerate));
 
     //************************* State Variable Filter ************************//
-    m_svfilter[_voiceID].setSVFilter(_signal, m_samplerate);
+    m_svfilter[_voiceID].set(_signal);
 }
 
 
@@ -1234,7 +1211,7 @@ inline void dsp_host::setPolyFilterCoeffs(float *_signal, uint32_t _voiceID)
 
 inline void dsp_host::setMonoFilterCoeffs(float *_signal)
 {
-    m_cabinet.setCabinet(_signal, m_samplerate);
-    m_gapfilter.set(_signal, m_samplerate);
+    m_cabinet.set(_signal);
+    m_gapfilter.set(_signal);
     m_echo.set(_signal);
 }

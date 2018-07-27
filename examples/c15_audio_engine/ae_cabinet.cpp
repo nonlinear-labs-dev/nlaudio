@@ -24,10 +24,10 @@ ae_cabinet::ae_cabinet()
 /** @brief
 *******************************************************************************/
 
-void ae_cabinet::init(float _samplerate, uint32_t _vn)
+void ae_cabinet::init(float _samplerate)
 {
-    m_sampleCabinet_L = 0.f;
-    m_sampleCabinet_R = 0.f;
+    m_out_L = 0.f;
+    m_out_R = 0.f;
 
     m_warpConst_2PI = 6.28319f / _samplerate;
     m_freqClip_max = _samplerate / 2.125f;
@@ -125,7 +125,7 @@ void ae_cabinet::init(float _samplerate, uint32_t _vn)
 /** @brief
 *******************************************************************************/
 
-void ae_cabinet::setCabinet(float *_signal, float _samplerate)
+void ae_cabinet::set(float *_signal)
 {
     float tmpVar;
 
@@ -240,7 +240,7 @@ void ae_cabinet::setCabinet(float *_signal, float _samplerate)
 /** @brief
 *******************************************************************************/
 
-void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_signal)
+void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 {
     float tmpVar;
 
@@ -420,6 +420,6 @@ void ae_cabinet::applyCabinet(float _rawSample_L, float _rawSample_R, float *_si
     sample_R = tmpVar;
 
     //******************************* Crossfade ******************************//
-    m_sampleCabinet_L = NlToolbox::Crossfades::crossFade(_rawSample_L, sample_L, _signal[CAB_DRY], _signal[CAB_WET]);
-    m_sampleCabinet_R = NlToolbox::Crossfades::crossFade(_rawSample_R, sample_R, _signal[CAB_DRY], _signal[CAB_WET]);
+    m_out_L = NlToolbox::Crossfades::crossFade(_rawSample_L, sample_L, _signal[CAB_DRY], _signal[CAB_WET]);
+    m_out_R = NlToolbox::Crossfades::crossFade(_rawSample_R, sample_R, _signal[CAB_DRY], _signal[CAB_WET]);
 }

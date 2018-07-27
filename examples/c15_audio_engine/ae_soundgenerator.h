@@ -19,11 +19,11 @@ struct ae_soundgenerator
 {
     ae_soundgenerator();            // Default Constructor
 
-    float m_sampleA, m_sampleB;       // Generated Samples
+    float m_out_A, m_out_B;       // Generated Samples
 
     void init(float _samplerate, uint32_t _vn);
-    void generateSound(float _feedbackSample, float *_signal);
-    void setSoundGenerator(float *_signal, float _samplerate);
+    void generate(float _feedbackSample, float *_signal);
+    void set(float *_signal);
     void resetPhase(float _phaseA, float _phaseB);
 
     //************************** Shared Variables *****************************//

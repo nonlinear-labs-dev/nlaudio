@@ -16,14 +16,14 @@ struct ae_cabinet
 {
     ae_cabinet();           // Default Constructor
 
-    float m_sampleCabinet_L, m_sampleCabinet_R;
+    float m_out_L, m_out_R;
 
     float m_warpConst_2PI;
     float m_freqClip_max, m_freqClip_min;
 
-    void init(float _samplerate, uint32_t _vn);
-    void applyCabinet(float _rawSample_L, float _rawSample_R, float *_signal);
-    void setCabinet(float *_signal, float _samplerate);
+    void init(float _samplerate);
+    void apply(float _rawSample_L, float _rawSample_R, float *_signal);
+    void set(float *_signal);
 
 
     //**************************** Biquad Highpass ****************************//

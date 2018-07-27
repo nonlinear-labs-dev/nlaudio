@@ -24,7 +24,7 @@ ae_echo::ae_echo()
 /******************************************************************************/
 /** @brief
 *******************************************************************************/
-void ae_echo::init(uint32_t _samplerate, uint32_t _upsampleFactor)
+void ae_echo::init(float _samplerate, uint32_t _upsampleFactor)
 {
     m_out_L = 0.f;
     m_out_R = 0.f;
@@ -99,13 +99,13 @@ void ae_echo::set(float *_signal)
 /** @brief
 *******************************************************************************/
 
-void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, float _flushPoint)
+void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint)
 {
     float tmpVar;
 
     //***************************** Left Channel *****************************//
     tmpVar = _rawSample_L + (m_stateVar_L * _signal[DLY_FB_LOC]) + (m_stateVar_R * _signal[DLY_FB_CR]);
-    tmpVar *= _flushPoint;
+    tmpVar *= _fadePoint;
 
     m_buffer_L[m_buffer_indx] = tmpVar;
 
@@ -137,7 +137,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, floa
                                          m_buffer_L[ind_tp1],
                                          m_buffer_L[ind_tp2]);
 
-    tmpVar *= _flushPoint;
+    tmpVar *= _fadePoint;
 
     m_out_L  = m_lp_b0 * tmpVar;                        // LP
     m_out_L += m_lp_b1 * m_lp_stateVar_L1;
@@ -160,7 +160,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, floa
 
     //**************************** Right Channel *****************************//
     tmpVar = _rawSample_R + (m_stateVar_R * _signal[DLY_FB_LOC]) + (m_stateVar_L * _signal[DLY_FB_CR]);
-    tmpVar *= _flushPoint;
+    tmpVar *= _fadePoint;
 
     m_buffer_R[m_buffer_indx] = tmpVar;
 
@@ -192,7 +192,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, floa
                                          m_buffer_R[ind_tp1],
                                          m_buffer_R[ind_tp2]);
 
-    tmpVar *= _flushPoint;
+    tmpVar *= _fadePoint;
 
     m_out_R  = m_lp_b0 * tmpVar;                        // LP
     m_out_R += m_lp_b1 * m_lp_stateVar_R1;

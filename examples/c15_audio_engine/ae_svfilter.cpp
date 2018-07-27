@@ -25,9 +25,9 @@ ae_svfilter::ae_svfilter()
 /** @brief
 *******************************************************************************/
 
-void ae_svfilter::init(float _samplerate, uint32_t _vn)
+void ae_svfilter::init(float _samplerate)
 {
-    m_sampleSVF = 0.f;
+    m_out = 0.f;
 
     m_warpConst_2PI = 6.28319f / _samplerate;
 
@@ -53,7 +53,7 @@ void ae_svfilter::init(float _samplerate, uint32_t _vn)
 /** @brief
 *******************************************************************************/
 
-void ae_svfilter::applySVFilter(float _sampleA, float _sampleB, float _sampleComb, float *_signal)
+void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal)
 {
     //******************************** Sample Mix ****************************//
     float tmpVar = _signal[SVF_AB];
@@ -131,8 +131,8 @@ void ae_svfilter::applySVFilter(float _sampleA, float _sampleB, float _sampleCom
 
 
     //****************************** Crossfades ******************************//
-    m_sampleSVF  = m_first_sv_sample * _signal[SVF_PAR_1];
-    m_sampleSVF += (tmpVar * _signal[SVF_PAR_2]);
+    m_out  = m_first_sv_sample * _signal[SVF_PAR_1];
+    m_out += (tmpVar * _signal[SVF_PAR_2]);
 }
 
 
@@ -141,7 +141,7 @@ void ae_svfilter::applySVFilter(float _sampleA, float _sampleB, float _sampleCom
 /** @brief
 *******************************************************************************/
 
-void ae_svfilter::setSVFilter(float *_signal, float _samplerate)
+void ae_svfilter::set(float *_signal)
 {
     float resonance = _signal[SVF_RES];
     resonance = 1.f - resonance;
