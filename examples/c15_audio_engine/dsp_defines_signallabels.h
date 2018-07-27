@@ -112,12 +112,25 @@
 #define GAP_LPOUT       90
 #define GAP_INOUT       91
 
-#define DLY_TL          92
-#define DLY_TR          93
-#define DLY_FB_LOC      94
-#define DLY_FB_CR       95
-#define DLY_LPF         96
-#define DLY_DRY         97
-#define DLY_WET         98
+#define FLA_TMOD        92
+#define FLA_LFO_L       93
+#define FLA_LFO_R       94
+#define FLA_TL          95
+#define FLA_TR          96
+#define FLA_FB_LOC      97
+#define FLA_FB_CR       98
+#define FLA_LPF         99
+#define FLA_DRY         100
+#define FLA_WET         101
+#define FLA_APF_L       102
+#define FLA_APF_R       103
 
-#define MST_VOL         99
+#define DLY_TL          104
+#define DLY_TR          105
+#define DLY_FB_LOC      106
+#define DLY_FB_CR       107
+#define DLY_LPF         108
+#define DLY_DRY         109
+#define DLY_WET         110
+
+#define MST_VOL         111
