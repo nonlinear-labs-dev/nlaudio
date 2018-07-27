@@ -1082,6 +1082,7 @@ void dsp_host::initAudioEngine(float _samplerate, uint32_t _polyphony)
     m_outputmixer.init(_samplerate, _polyphony);
     m_cabinet.init(_samplerate, _polyphony);
     m_gapfilter.init(_samplerate, _polyphony);
+    m_echo.init(m_samplerate, m_upsampleFactor);
 }
 
 
@@ -1125,6 +1126,8 @@ void dsp_host::makePolySound(float *_signal, uint32_t _voiceID)
 void dsp_host::makeMonoSound(float *_signal)
 {
     //****************************** Fade n Flush ****************************//
+    float flushPoint = m_raised_cos_table[m_tableCounter];
+
     if (m_flushnow)
     {
         if (m_tableCounter == m_flushIndex)
@@ -1134,6 +1137,9 @@ void dsp_host::makeMonoSound(float *_signal)
             {
                 m_combfilter[voiceNumber].m_delayBuffer.fill(0.f);
             }
+
+            std::fill(m_echo.m_buffer_L.begin(), m_echo.m_buffer_L.end(), 0.f);
+            std::fill(m_echo.m_buffer_R.begin(), m_echo.m_buffer_R.end(), 0.f);
         }
 
         if (m_tableCounter > m_fadeSamples)
@@ -1150,11 +1156,13 @@ void dsp_host::makeMonoSound(float *_signal)
     m_outputmixer.filterAndLevel(_signal);
     m_cabinet.applyCabinet(m_outputmixer.m_sampleL, m_outputmixer.m_sampleR, _signal);
     m_gapfilter.apply(m_cabinet.m_sampleCabinet_L, m_cabinet.m_sampleCabinet_R, _signal);
+    m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal, flushPoint);
 
     //******************************* Soft Clip ******************************//
 //    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
 //    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
-    m_mainOut_L = m_gapfilter.m_out_L * _signal[MST_VOL];
+//    m_mainOut_L = m_gapfilter.m_out_L * _signal[MST_VOL];
+    m_mainOut_L = m_echo.m_out_L * _signal[MST_VOL];
 
     m_mainOut_L *= 0.1588f;
     if (m_mainOut_L > 0.25f)
@@ -1176,7 +1184,8 @@ void dsp_host::makeMonoSound(float *_signal)
 
 //    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
 //    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
-    m_mainOut_R = m_gapfilter.m_out_R * _signal[MST_VOL];
+//    m_mainOut_R = m_gapfilter.m_out_R * _signal[MST_VOL];
+    m_mainOut_R = m_echo.m_out_R * _signal[MST_VOL];
 
     m_mainOut_R *= 0.1588f;
 
@@ -1227,4 +1236,5 @@ inline void dsp_host::setMonoFilterCoeffs(float *_signal)
 {
     m_cabinet.setCabinet(_signal, m_samplerate);
     m_gapfilter.set(_signal, m_samplerate);
+    m_echo.set(_signal);
 }

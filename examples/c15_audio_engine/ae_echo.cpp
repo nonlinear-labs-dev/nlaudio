@@ -29,6 +29,8 @@ void ae_echo::init(uint32_t _samplerate, uint32_t _upsampleFactor)
     m_out_L = 0.f;
     m_out_R = 0.f;
 
+//    m_flushPoint = 1.f;
+
     m_warpConst_PI = pi / static_cast<float>(_samplerate);
     m_freqClip_min = static_cast<float>(_samplerate) / 24000.f;
     m_freqClip_max = static_cast<float>(_samplerate) / 2.18f;
@@ -69,10 +71,11 @@ void ae_echo::init(uint32_t _samplerate, uint32_t _upsampleFactor)
     m_stateVar_R = 0.f;
 
     m_buffer_indx = 0;
+    m_buffer_sz_m1 = ECHO_BUFFER_SIZE * _upsampleFactor - 1;
     m_buffer_L.resize(ECHO_BUFFER_SIZE * _upsampleFactor);
-    m_buffer_L = {0.f};
+    std::fill(m_buffer_L.begin(), m_buffer_L.end(), 0.f);
     m_buffer_R.resize(ECHO_BUFFER_SIZE * _upsampleFactor);
-    m_buffer_R = {0.f};
+    std::fill(m_buffer_R.begin(), m_buffer_R.end(), 0.f);
 }
 
 
@@ -82,8 +85,12 @@ void ae_echo::init(uint32_t _samplerate, uint32_t _upsampleFactor)
 *******************************************************************************/
 void ae_echo::set(float *_signal)
 {
+    float omega = std::clamp(_signal[DLY_LPF], m_freqClip_min, m_freqClip_max);
+    omega = NlToolbox::Math::tan(omega * m_warpConst_PI);
 
-
+    m_lp_a1 = (1.f - omega) / (1.f + omega);
+    m_lp_b0 = omega / (1.f + omega);
+    m_lp_b1 = omega / (1.f + omega);
 }
 
 
@@ -91,8 +98,119 @@ void ae_echo::set(float *_signal)
 /******************************************************************************/
 /** @brief
 *******************************************************************************/
-void ae_echo::apply(float _rawSsample_L, float _rawSsample_R, float *_signal)
+
+void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, float _flushPoint)
 {
+    float tmpVar;
+
+    //***************************** Left Channel *****************************//
+    tmpVar = _rawSample_L + (m_stateVar_L * _signal[DLY_FB_LOC]) + (m_stateVar_R * _signal[DLY_FB_CR]);
+    tmpVar *= _flushPoint;
+
+    m_buffer_L[m_buffer_indx] = tmpVar;
+
+    tmpVar = _signal[DLY_TL] - m_lp2hz_stateVar_L;                      // 2Hz LP
+    tmpVar = tmpVar * m_lp2hz_b0 + m_lp2hz_stateVar_L;
+
+    m_lp2hz_stateVar_L = tmpVar + DNC_const;
+
+    int32_t ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
+    tmpVar = tmpVar - static_cast<float>(ind_t0);
+
+    int32_t ind_tm1 = ind_t0 - 1;
+    int32_t ind_tp1 = ind_t0 + 1;
+    int32_t ind_tp2 = ind_t0 + 2;
+
+    ind_tm1 = m_buffer_indx - ind_tm1;
+    ind_t0  = m_buffer_indx - ind_t0;
+    ind_tp1 = m_buffer_indx - ind_tp1;
+    ind_tp2 = m_buffer_indx - ind_tp2;
+
+    ind_tm1 &= m_buffer_sz_m1;
+    ind_t0  &= m_buffer_sz_m1;
+    ind_tp1 &= m_buffer_sz_m1;
+    ind_tp2 &= m_buffer_sz_m1;
+
+    tmpVar = NlToolbox::Math::interpolRT(tmpVar,
+                                         m_buffer_L[ind_tm1],
+                                         m_buffer_L[ind_t0],
+                                         m_buffer_L[ind_tp1],
+                                         m_buffer_L[ind_tp2]);
+
+    tmpVar *= _flushPoint;
+
+    m_out_L  = m_lp_b0 * tmpVar;                        // LP
+    m_out_L += m_lp_b1 * m_lp_stateVar_L1;
+    m_out_L += m_lp_a1 * m_lp_stateVar_L2;
+
+    m_lp_stateVar_L1 = tmpVar + DNC_const;
+    m_lp_stateVar_L2 = m_out_L + DNC_const;
+
+    m_stateVar_L  = m_hp_b0 * m_out_L;                  // HP
+    m_stateVar_L += m_hp_b1 * m_hp_stateVar_L1;
+    m_stateVar_L += m_hp_a1 * m_hp_stateVar_L2;
+
+    m_hp_stateVar_L1 = m_out_L + DNC_const;
+    m_hp_stateVar_L2 = m_stateVar_L + DNC_const;
+
+//    m_stateVar_L += DNC_const;        /// Brauchen wir das wirklich?
+
+    m_out_L = NlToolbox::Crossfades::crossFade(_rawSample_L, m_out_L, _signal[DLY_DRY], _signal[DLY_WET]);
 
 
+    //**************************** Right Channel *****************************//
+    tmpVar = _rawSample_R + (m_stateVar_R * _signal[DLY_FB_LOC]) + (m_stateVar_L * _signal[DLY_FB_CR]);
+    tmpVar *= _flushPoint;
+
+    m_buffer_R[m_buffer_indx] = tmpVar;
+
+    tmpVar = _signal[DLY_TR] - m_lp2hz_stateVar_R;                      // 2Hz LP
+    tmpVar = tmpVar * m_lp2hz_b0 + m_lp2hz_stateVar_R;
+
+    m_lp2hz_stateVar_R = tmpVar + DNC_const;
+
+    ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
+    tmpVar = tmpVar - static_cast<float>(ind_t0);
+
+    ind_tm1 = ind_t0 - 1;
+    ind_tp1 = ind_t0 + 1;
+    ind_tp2 = ind_t0 + 2;
+
+    ind_tm1 = m_buffer_indx - ind_tm1;
+    ind_t0  = m_buffer_indx - ind_t0;
+    ind_tp1 = m_buffer_indx - ind_tp1;
+    ind_tp2 = m_buffer_indx - ind_tp2;
+
+    ind_tm1 &= m_buffer_sz_m1;
+    ind_t0  &= m_buffer_sz_m1;
+    ind_tp1 &= m_buffer_sz_m1;
+    ind_tp2 &= m_buffer_sz_m1;
+
+    tmpVar = NlToolbox::Math::interpolRT(tmpVar,
+                                         m_buffer_R[ind_tm1],
+                                         m_buffer_R[ind_t0],
+                                         m_buffer_R[ind_tp1],
+                                         m_buffer_R[ind_tp2]);
+
+    tmpVar *= _flushPoint;
+
+    m_out_R  = m_lp_b0 * tmpVar;                        // LP
+    m_out_R += m_lp_b1 * m_lp_stateVar_R1;
+    m_out_R += m_lp_a1 * m_lp_stateVar_R2;
+
+    m_lp_stateVar_R1 = tmpVar + DNC_const;
+    m_lp_stateVar_R2 = m_out_R + DNC_const;
+
+    m_stateVar_R  = m_hp_b0 * m_out_R;                  // HP
+    m_stateVar_R += m_hp_b1 * m_hp_stateVar_R1;
+    m_stateVar_R += m_hp_a1 * m_hp_stateVar_R2;
+
+    m_hp_stateVar_R1 = m_out_R + DNC_const;
+    m_hp_stateVar_R2 = m_stateVar_R + DNC_const;
+
+//    m_stateVar_R += DNC_const;        /// Brauchen wir das wirklich?
+
+    m_out_R = NlToolbox::Crossfades::crossFade(_rawSample_R, m_out_R, _signal[DLY_DRY], _signal[DLY_WET]);
+
+    m_buffer_indx = (m_buffer_indx + 1) & m_buffer_sz_m1;
 }

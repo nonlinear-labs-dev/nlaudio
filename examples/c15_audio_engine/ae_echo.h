@@ -24,7 +24,7 @@ struct ae_echo
     float m_out_L, m_out_R;
 
     void init(uint32_t _samplerate, uint32_t _upsampleFactor);
-    void apply(float _rawSsample_L, float _rawSsample_R, float *_signal);
+    void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _flushPoint);
     void set(float *_signal);
 
     float m_warpConst_PI;
@@ -52,7 +52,8 @@ struct ae_echo
     //***************************** Delay Buffer *****************************//
     float m_stateVar_L, m_stateVar_R;
 
-    uint32_t m_buffer_indx;
+    int32_t m_buffer_indx;
+    int32_t m_buffer_sz_m1;
     std::vector<float> m_buffer_L;
     std::vector<float> m_buffer_R;
 };
