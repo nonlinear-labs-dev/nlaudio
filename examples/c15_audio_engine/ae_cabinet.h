@@ -12,6 +12,8 @@
 #include "nltoolbox.h"
 #include "dsp_defines_signallabels.h"
 
+using namespace NlToolbox::Constants;
+
 struct ae_cabinet
 {
     ae_cabinet();           // Default Constructor

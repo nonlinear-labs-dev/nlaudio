@@ -13,6 +13,8 @@
 #include "nltoolbox.h"
 #include "dsp_defines_signallabels.h"
 
+using namespace NlToolbox::Constants;
+
 #define COMB_BUFFER_SIZE    8192
 
 struct ae_combfilter

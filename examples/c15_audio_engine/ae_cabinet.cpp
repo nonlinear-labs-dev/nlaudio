@@ -256,10 +256,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_hp_a1 * m_hp_stateVar_L3;
     tmpVar += m_hp_a2 * m_hp_stateVar_L4;
 
-    m_hp_stateVar_L2 = m_hp_stateVar_L1 + DNC_CONST;
-    m_hp_stateVar_L1 = sample_L + DNC_CONST;
-    m_hp_stateVar_L4 = m_hp_stateVar_L3 + DNC_CONST;
-    m_hp_stateVar_L3 = tmpVar + DNC_CONST;
+    m_hp_stateVar_L2 = m_hp_stateVar_L1 + DNC_const;
+    m_hp_stateVar_L1 = sample_L + DNC_const;
+    m_hp_stateVar_L4 = m_hp_stateVar_L3 + DNC_const;
+    m_hp_stateVar_L3 = tmpVar + DNC_const;
 
     sample_L = tmpVar;
 
@@ -271,10 +271,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_hp_a1 * m_hp_stateVar_R3;
     tmpVar += m_hp_a2 * m_hp_stateVar_R4;
 
-    m_hp_stateVar_R2 = m_hp_stateVar_R1 + DNC_CONST;
-    m_hp_stateVar_R1 = sample_R + DNC_CONST;
-    m_hp_stateVar_R4 = m_hp_stateVar_R3 + DNC_CONST;
-    m_hp_stateVar_R3 = tmpVar + DNC_CONST;
+    m_hp_stateVar_R2 = m_hp_stateVar_R1 + DNC_const;
+    m_hp_stateVar_R1 = sample_R + DNC_const;
+    m_hp_stateVar_R4 = m_hp_stateVar_R3 + DNC_const;
+    m_hp_stateVar_R3 = tmpVar + DNC_const;
 
     sample_R = tmpVar;
 
@@ -286,10 +286,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_ls1_a1 * m_ls1_StateVar_L3;
     tmpVar += m_ls1_a2 * m_ls1_StateVar_L4;
 
-    m_ls1_StateVar_L2 = m_ls1_stateVar_L1 + DNC_CONST;
-    m_ls1_stateVar_L1 = sample_L + DNC_CONST;
-    m_ls1_StateVar_L4 = m_ls1_StateVar_L3 + DNC_CONST;
-    m_ls1_StateVar_L3 = tmpVar + DNC_CONST;
+    m_ls1_StateVar_L2 = m_ls1_stateVar_L1 + DNC_const;
+    m_ls1_stateVar_L1 = sample_L + DNC_const;
+    m_ls1_StateVar_L4 = m_ls1_StateVar_L3 + DNC_const;
+    m_ls1_StateVar_L3 = tmpVar + DNC_const;
 
     sample_L = tmpVar;
 
@@ -301,10 +301,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_ls1_a1 * m_ls1_stateVar_R3;
     tmpVar += m_ls1_a2 * m_ls1_stateVar_R4;
 
-    m_ls1_stateVar_R2 = m_ls1_stateVar_R1 + DNC_CONST;
-    m_ls1_stateVar_R1 = sample_R + DNC_CONST;
-    m_ls1_stateVar_R4 = m_ls1_stateVar_R3 + DNC_CONST;
-    m_ls1_stateVar_R3 = tmpVar + DNC_CONST;
+    m_ls1_stateVar_R2 = m_ls1_stateVar_R1 + DNC_const;
+    m_ls1_stateVar_R1 = sample_R + DNC_const;
+    m_ls1_stateVar_R4 = m_ls1_stateVar_R3 + DNC_const;
+    m_ls1_stateVar_R3 = tmpVar + DNC_const;
 
     sample_R = tmpVar;
 
@@ -317,7 +317,7 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     sample_L = NlToolbox::Others::threeRanges(sample_L, tmpVar, _signal[CAB_FLD]);
 
     tmpVar = sample_L * sample_L - m_hp30_stateVar_L;
-    m_hp30_stateVar_L = tmpVar * m_hp30_b0 + m_hp30_stateVar_L + DNC_CONST;
+    m_hp30_stateVar_L = tmpVar * m_hp30_b0 + m_hp30_stateVar_L + DNC_const;
 
     sample_L = NlToolbox::Others::parAsym(sample_L, tmpVar, _signal[CAB_ASM]);
     sample_L *= _signal[CAB_SAT];
@@ -331,7 +331,7 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     sample_R = NlToolbox::Others::threeRanges(sample_R, tmpVar, _signal[CAB_FLD]);
 
     tmpVar = sample_R * sample_R - m_hp30_stateVar_R;
-    m_hp30_stateVar_R = tmpVar * m_hp30_b0 + m_hp30_stateVar_R + DNC_CONST;
+    m_hp30_stateVar_R = tmpVar * m_hp30_b0 + m_hp30_stateVar_R + DNC_const;
 
     sample_R = NlToolbox::Others::parAsym(sample_R, tmpVar, _signal[CAB_ASM]);
     sample_R *= _signal[CAB_SAT];
@@ -344,10 +344,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_ls2_a1 * m_ls2_StateVar_L3;
     tmpVar += m_ls2_a2 * m_ls2_StateVar_L4;
 
-    m_ls2_StateVar_L2 = m_ls2_stateVar_L1 + DNC_CONST;
-    m_ls2_stateVar_L1 = sample_L + DNC_CONST;
-    m_ls2_StateVar_L4 = m_ls2_StateVar_L3 + DNC_CONST;
-    m_ls2_StateVar_L3 = tmpVar + DNC_CONST;
+    m_ls2_StateVar_L2 = m_ls2_stateVar_L1 + DNC_const;
+    m_ls2_stateVar_L1 = sample_L + DNC_const;
+    m_ls2_StateVar_L4 = m_ls2_StateVar_L3 + DNC_const;
+    m_ls2_StateVar_L3 = tmpVar + DNC_const;
 
     sample_L = tmpVar;
 
@@ -358,10 +358,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_ls2_a1 * m_ls2_stateVar_R3;
     tmpVar += m_ls2_a2 * m_ls2_stateVar_R4;
 
-    m_ls2_stateVar_R2 = m_ls2_stateVar_R1 + DNC_CONST;
-    m_ls2_stateVar_R1 = sample_R + DNC_CONST;
-    m_ls2_stateVar_R4 = m_ls2_stateVar_R3 + DNC_CONST;
-    m_ls2_stateVar_R3 = tmpVar + DNC_CONST;
+    m_ls2_stateVar_R2 = m_ls2_stateVar_R1 + DNC_const;
+    m_ls2_stateVar_R1 = sample_R + DNC_const;
+    m_ls2_stateVar_R4 = m_ls2_stateVar_R3 + DNC_const;
+    m_ls2_stateVar_R3 = tmpVar + DNC_const;
 
     sample_R = tmpVar;
 
@@ -372,10 +372,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_lp1_a1 * m_lp1_stateVar_L3;
     tmpVar += m_lp1_a2 * m_lp1_stateVar_L4;
 
-    m_lp1_stateVar_L2 = m_lp1_stateVar_L1 + DNC_CONST;
-    m_lp1_stateVar_L1 = sample_L  + DNC_CONST;
-    m_lp1_stateVar_L4 = m_lp1_stateVar_L3 + DNC_CONST;
-    m_lp1_stateVar_L3 = tmpVar + DNC_CONST;
+    m_lp1_stateVar_L2 = m_lp1_stateVar_L1 + DNC_const;
+    m_lp1_stateVar_L1 = sample_L  + DNC_const;
+    m_lp1_stateVar_L4 = m_lp1_stateVar_L3 + DNC_const;
+    m_lp1_stateVar_L3 = tmpVar + DNC_const;
 
     sample_L = tmpVar;
 
@@ -385,10 +385,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_lp2_a1 * m_lp2_stateVar_L3;
     tmpVar += m_lp2_a2 * m_lp2_stateVar_L4;
 
-    m_lp2_stateVar_L2 = m_lp2_stateVar_L1 + DNC_CONST;
-    m_lp2_stateVar_L1 = sample_L  + DNC_CONST;
-    m_lp2_stateVar_L4 = m_lp2_stateVar_L3 + DNC_CONST;
-    m_lp2_stateVar_L3 = tmpVar + DNC_CONST;
+    m_lp2_stateVar_L2 = m_lp2_stateVar_L1 + DNC_const;
+    m_lp2_stateVar_L1 = sample_L  + DNC_const;
+    m_lp2_stateVar_L4 = m_lp2_stateVar_L3 + DNC_const;
+    m_lp2_stateVar_L3 = tmpVar + DNC_const;
 
     sample_L = tmpVar;
 
@@ -399,10 +399,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_lp1_a1 * m_lp1_stateVar_R3;
     tmpVar += m_lp1_a2 * m_lp1_stateVar_R4;
 
-    m_lp1_stateVar_R2 = m_lp1_stateVar_R1 + DNC_CONST;
-    m_lp1_stateVar_R1 = sample_R  + DNC_CONST;
-    m_lp1_stateVar_R4 = m_lp1_stateVar_R3 + DNC_CONST;
-    m_lp1_stateVar_R3 = tmpVar + DNC_CONST;
+    m_lp1_stateVar_R2 = m_lp1_stateVar_R1 + DNC_const;
+    m_lp1_stateVar_R1 = sample_R  + DNC_const;
+    m_lp1_stateVar_R4 = m_lp1_stateVar_R3 + DNC_const;
+    m_lp1_stateVar_R3 = tmpVar + DNC_const;
 
     sample_R = tmpVar;
 
@@ -412,10 +412,10 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_lp2_a1 * m_lp2_stateVar_R3;
     tmpVar += m_lp2_a2 * m_lp2_stateVar_R4;
 
-    m_lp2_stateVar_R2 = m_lp2_stateVar_R1 + DNC_CONST;
-    m_lp2_stateVar_R1 = sample_R  + DNC_CONST;
-    m_lp2_stateVar_R4 = m_lp2_stateVar_R3 + DNC_CONST;
-    m_lp2_stateVar_R3 = tmpVar + DNC_CONST;
+    m_lp2_stateVar_R2 = m_lp2_stateVar_R1 + DNC_const;
+    m_lp2_stateVar_R1 = sample_R  + DNC_const;
+    m_lp2_stateVar_R4 = m_lp2_stateVar_R3 + DNC_const;
+    m_lp2_stateVar_R3 = tmpVar + DNC_const;
 
     sample_R = tmpVar;
 

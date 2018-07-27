@@ -98,8 +98,8 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal, float 
     tmpVar += (m_hpCoeff_b1 * m_hpInStateVar);
     tmpVar += (m_hpCoeff_a1 * m_hpOutStateVar);
 
-    m_hpInStateVar  = m_out + DNC_CONST;
-    m_hpOutStateVar = tmpVar + DNC_CONST;
+    m_hpInStateVar  = m_out + DNC_const;
+    m_hpOutStateVar = tmpVar + DNC_const;
 
     m_out = tmpVar;
     m_out += m_decayStateVar;
@@ -107,7 +107,7 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal, float 
     //*************************** 1-Pole Lowpass ****************************//
     m_out *= (1.f - m_lpCoeff);
     m_out += (m_lpCoeff * m_lpStateVar);
-    m_out += DNC_CONST;
+    m_out += DNC_const;
     m_lpStateVar = m_out;
 
 
@@ -121,7 +121,7 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal, float 
     m_out -= (m_apStateVar_3 * m_apCoeff_1);
     m_out -= (m_apStateVar_4 * m_apCoeff_2);
 
-    m_out += DNC_CONST;
+    m_out += DNC_const;
 
     m_apStateVar_2 = m_apStateVar_1;
     m_apStateVar_1 = tmpVar;
@@ -348,7 +348,7 @@ void ae_combfilter::set(float *_signal, float _samplerate)
     tmpVar = _signal[CMB_DEC];
     frequency = _signal[CMB_FRQ] * std::abs(tmpVar);
 
-    frequency = std::max(frequency, DNC_CONST);
+    frequency = std::max(frequency, DNC_const);
     frequency = (1.f / frequency) * -6.28318f;
 
     if (frequency > 0)                 // Exp Clipped
