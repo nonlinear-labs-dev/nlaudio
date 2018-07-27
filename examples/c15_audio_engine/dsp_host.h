@@ -26,6 +26,7 @@
 #include "ae_cabinet.h"
 #include "ae_gapfilter.h"
 #include "ae_echo.h"
+#include "ae_flanger.h"
 
 /* dsp_host: main dsp object, holding TCD Decoder, Parameter Engine, Audio Engine, shared Signal Array, main signal (L, R) */
 class dsp_host
@@ -94,13 +95,15 @@ public:
     ae_cabinet m_cabinet;
     ae_gapfilter m_gapfilter;
     ae_echo m_echo;
+    ae_flanger m_flanger;
 
     void initAudioEngine();
     void makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint);
     void makeMonoSound(float *_signal, float _fadePoint);
 
-    inline void setPolyFilterCoeffs(float *_signal, uint32_t _voiceID);
-    inline void setMonoFilterCoeffs(float *_signal);
+    inline void setPolySlowFilterCoeffs(float *_signal, uint32_t _voiceID);
+    inline void setMonoSlowFilterCoeffs(float *_signal);
+    inline void setMonoFastFilterCoeffs(float *_signal);
 
     bool m_flush;
     uint32_t m_table_indx;

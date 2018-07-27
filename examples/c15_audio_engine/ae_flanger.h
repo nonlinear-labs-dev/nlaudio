@@ -15,7 +15,7 @@
 
 using namespace NlToolbox::Constants;
 
-#define FLANGER_BUFFER_SIZE 8192;
+#define FLANGER_BUFFER_SIZE 8192
 
 struct ae_flanger
 {
@@ -28,7 +28,7 @@ struct ae_flanger
     void set_fast(float *_signal);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint);
 
-    float m_warpConst_PI;
+    float m_warpConst_PI, m_warpConst_2PI;
     float m_freqClip_min;
     float m_freqClip_max;
 
