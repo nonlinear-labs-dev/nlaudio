@@ -1193,8 +1193,19 @@ void paramengine::postProcessMono_fast(float *_signal)
     /* Effect Parameter Post Processing */
     /* - Flanger */
     /*   - Feedback and Cross Feedback */
+    tmp_fb = m_body[m_head[P_FLA_FB].m_index].m_signal;
+    tmp_val = m_body[m_head[P_FLA_CFB].m_index].m_signal;
+    _signal[FLA_FB_LOC] = tmp_fb * (1.f - std::abs(tmp_val));
+    _signal[FLA_FB_CR] = tmp_fb * tmp_val;
     /*   - Dry and Wet Amounts */
+    tmp_val = m_body[m_head[P_FLA_MIX].m_index].m_signal;
+    _signal[FLA_DRY] = 1.f - std::abs(tmp_val);
+    _signal[FLA_WET] = tmp_val;
     /*   - Allpass Frequencies */
+    tmp_val = m_body[m_head[P_FLA_APM].m_index].m_signal;
+    tmp_dry = m_body[m_head[P_FLA_APT].m_index].m_signal;
+    _signal[FLA_APF_L] = evalNyquist(m_convert.eval_lin_pitch((_signal[FLA_LFO_L] * tmp_val) + tmp_dry) * 440.f);
+    _signal[FLA_APF_R] = evalNyquist(m_convert.eval_lin_pitch((_signal[FLA_LFO_R] * tmp_val) + tmp_dry) * 440.f);
     /* - Cabinet */
     /*   - Tilt to Saturation Levels (pre, post Shaper) */
     tmp_val = std::max(m_cabTiltFloor, m_convert.eval_level(0.5f * m_body[m_head[P_CAB_TILT].m_index].m_signal));
