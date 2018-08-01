@@ -107,6 +107,7 @@ struct paramengine
     const float m_flaNormPhase = 1.f / 360.f;
     stereo_lfo m_flangerLFO;
     float m_flangerRateToDecay = 0.55f;
+    float m_flangerEnv[10];
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */

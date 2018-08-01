@@ -1136,9 +1136,9 @@ void paramengine::postProcessMono_slow(float *_signal)
     m_flangerLFO.m_increment = m_reciprocal_samplerate * tmp_Rate;
     tmp_Rate *= m_flangerRateToDecay;
 #if test_whichEnvelope == 0
-    m_envelopes.setSegmentDx(0, 4, 2, 1.f - tmp_Rate);  // not sure here
+    m_envelopes.setSegmentDx(0, 4, 2, tmp_Rate);  // not sure here
 #elif test_whichEnvelope == 1
-    m_new_envelopes.m_env_f.setSegmentDx(0, 2, 1.f - tmp_Rate);
+    m_new_envelopes.m_env_f.setSegmentDx(0, 2, tmp_Rate);
 #endif
     /*   - Stereo Time */
     tmp_Center = m_body[m_head[P_FLA_TIME].m_index].m_signal * dsp_samples_to_ms * tmp_SR;  // time (in ms) is handled in samples
@@ -1193,7 +1193,7 @@ void paramengine::postProcessMono_fast(float *_signal)
     /* Effect Parameter Post Processing */
     /* - Flanger */
     /*   - Feedback and Cross Feedback */
-    tmp_fb = m_body[m_head[P_FLA_FB].m_index].m_signal;
+    tmp_fb = m_flaFeedbackCurve.applyCurve(m_body[m_head[P_FLA_FB].m_index].m_signal);
     tmp_val = m_body[m_head[P_FLA_CFB].m_index].m_signal;
     _signal[FLA_FB_LOC] = tmp_fb * (1.f - std::abs(tmp_val));
     _signal[FLA_FB_CR] = tmp_fb * tmp_val;
@@ -1284,7 +1284,8 @@ void paramengine::postProcessMono_audio(float *_signal)
 #if test_whichEnvelope == 0
     /* "OLD" ENVELOPES: */
     m_envelopes.tickMono();
-    tmp_env = m_envelopes.m_body[80].m_signal; // not sure about that
+    const uint32_t idx = m_envelopes.m_head[4].m_index;
+    tmp_env = (m_envelopes.m_body[idx].m_signal * 2.f) - 1.f;
 #elif test_whichEnvelope == 1
     /* "NEW" ENVELOPES: */
     m_new_envelopes.tickMono();

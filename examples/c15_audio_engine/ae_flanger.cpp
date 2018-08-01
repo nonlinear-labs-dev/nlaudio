@@ -191,7 +191,7 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, f
 
     m_buffer_L[m_buffer_indx] = tmpVar_2;
 
-    tmpVar_1 = _signal[DLY_TL] - m_lp2hz_stateVar_TL;                   // 2Hz LP TL
+    tmpVar_1 = _signal[FLA_TL] - m_lp2hz_stateVar_TL;                   // 2Hz LP TL
     tmpVar_1 = tmpVar_1 * m_lp2hz_b0 + m_lp2hz_stateVar_TL;
 
     m_lp2hz_stateVar_TL = tmpVar_1 + DNC_const;
@@ -273,7 +273,7 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, f
 
     m_buffer_R[m_buffer_indx] = tmpVar_2;
 
-    tmpVar_1 = _signal[DLY_TR] - m_lp2hz_stateVar_TR;                   // 2Hz LP TR
+    tmpVar_1 = _signal[FLA_TR] - m_lp2hz_stateVar_TR;                   // 2Hz LP TR
     tmpVar_1 = tmpVar_1 * m_lp2hz_b0 + m_lp2hz_stateVar_TR;
 
     m_lp2hz_stateVar_TR = tmpVar_1 + DNC_const;
