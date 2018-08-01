@@ -298,8 +298,8 @@ void env_engine::startEnvelope(const uint32_t _voiceId, const uint32_t _envId, c
     /* update attack curvature */
     obj->m_attackCurve = _attackCurve;
     /* update rendering variables */
-    item->m_x = item->m_segment[item->m_next].m_dx;
-    item->m_y = 1 - item->m_segment[item->m_next].m_dx;
+    item->m_x = item->m_segment[obj->m_startIndex].m_dx;
+    item->m_y = 1 - item->m_segment[obj->m_startIndex].m_dx;
     item->m_start = (1.f - _retriggerHardness) * item->m_signal;
     /* update segment/state variables */
     item->m_state = obj->m_state[obj->m_startIndex];
@@ -313,8 +313,8 @@ void env_engine::stopEnvelope(const uint32_t _voiceId, const uint32_t _envId)
     env_head* obj = &m_head[_envId];
     env_body* item = &m_body[obj->m_index + _voiceId];
     /* update rendering variables */
-    item->m_x = item->m_segment[item->m_next].m_dx;
-    item->m_y = 1 - item->m_segment[item->m_next].m_dx;
+    item->m_x = item->m_segment[obj->m_stopIndex].m_dx;
+    item->m_y = 1 - item->m_segment[obj->m_stopIndex].m_dx;
     item->m_start = item->m_signal;
     /* update segment/state variables */
     item->m_state = obj->m_state[obj->m_stopIndex];
