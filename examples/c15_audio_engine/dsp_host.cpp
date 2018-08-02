@@ -799,8 +799,12 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             std::cout << "selected FLANGER" << std::endl;
             break;
         case 13:
-            /* Echo (later: Reverb) */
+            /* Echo and Reverb */
             std::cout << "selected ECHO_&_REVERB" << std::endl;
+            break;
+        case 16:
+            /* FB Mix */
+            std::cout << "selected FEEDBACK MIXER" << std::endl;
             break;
         case 17:
             /* Master */
