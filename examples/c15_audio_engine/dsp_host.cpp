@@ -409,6 +409,34 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
                 keyApply(v);
             }
         }
+        /* end of classical apply */
+        /* Trigger Slow Rendering and Post Processing (Key Events should be effective immediately) */
+        uint32_t i; // temporary item index
+        /* render slow mono parameters and perform mono post processing */
+        for(p = 0; p < m_params.m_clockIds.m_data[3].m_data[0].m_length; p++)
+        {
+            i = m_params.m_head[m_params.m_clockIds.m_data[3].m_data[0].m_data[p]].m_index;
+            m_params.tickItem(i);
+        }
+        m_params.postProcessMono_slow(m_paramsignaldata[0]);
+        /* render slow poly parameters and perform poly slow post processing */
+        for(v = 0; v < m_voices; v++)
+        {
+            for(p = 0; p < m_params.m_clockIds.m_data[3].m_data[1].m_length; p++)
+            {
+                i = m_params.m_head[m_params.m_clockIds.m_data[3].m_data[1].m_data[p]].m_index + v;
+                m_params.tickItem(i);
+            }
+            m_params.postProcessPoly_slow(m_paramsignaldata[v], v);
+
+            /* slow polyphonic Trigger for Filter Coefficients */
+            setPolySlowFilterCoeffs(m_paramsignaldata[v], v);
+        }
+
+        /* slow monophonic Trigger for Filter Coefficients */
+        setMonoSlowFilterCoeffs(m_paramsignaldata[0]);
+        /* Reset Slow Clock counter (next slow clock tick will occur in 120 samples - @48kHz) */
+        m_clockPosition[3] = 1;
         break;
     }
 }
