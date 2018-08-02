@@ -108,6 +108,8 @@ struct paramengine
     stereo_lfo m_flangerLFO;
     float m_flangerRateToDecay = 0.55f;
     float m_flangerEnv[10];
+    NlToolbox::Curves::Shaper_1_BP m_revColorCurve1;
+    NlToolbox::Curves::Shaper_1_BP m_revColorCurve2;
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */

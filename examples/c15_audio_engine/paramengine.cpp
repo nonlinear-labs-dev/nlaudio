@@ -34,6 +34,8 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     m_svfResonanceCurve.setCurve(0.f, 0.49f, 0.79f, 0.94f);                     // initialize control shaper for the svf resonance parameter (later, test4)
     m_flaFeedbackCurve.setCurve(-1.f, -0.5f, 0.5f, 1.f);                        // initialize control shaper for the flanger feedback curve
     m_flangerRateToDecay *= NlToolbox::Constants::twopi * m_reciprocal_samplerate;
+    m_revColorCurve1.setCurve(66.f, 137.f, 130.f);                              // initialize control shaper for the reverb internal lowpass (color)
+    m_revColorCurve2.setCurve(29.f, 29.f, 85.f);                                // initialize control shaper for the reverb internal highpass (color)
     /* provide indices for further definitions */
     uint32_t i, p;
     /* initialize envelope events */
@@ -917,7 +919,7 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     unitPitch = m_pitch_reference * m_body[m_head[P_SVF_CUT].m_index].m_signal;     // as a tonal component, the Reference Tone frequency is applied (instead of const 440 Hz)
     unitSpread = m_body[m_head[P_SVF_SPR].m_index].m_signal;                        // get the Spread parameter (already scaled to 50%)
     unitMod = m_body[m_head[P_SVF_FM].m_index].m_signal;                            // get the FM parameter
-    // now, calculate the actual filter frequencies and put them in the shared signal array
+    /*   now, calculate the actual filter frequencies and put them in the shared signal array */
     _signal[SVF_F1_CUT] = evalNyquist(unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod + unitSpread));    // SVF upper 2PF Cutoff Frequency
     _signal[SVF_F2_CUT] = evalNyquist(unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod - unitSpread));    // SVF lower 2PF Cutoff Frequency
     _signal[SVF_F1_FM] = _signal[SVF_F1_CUT] * unitMod;                                                                                 // SVF upper 2PF FM Amount (Frequency)
@@ -927,6 +929,9 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     envMod = _signal[ENV_C_SIG] * m_body[m_head[P_SVF_REC].m_index].m_signal;
     unitPitch = m_body[m_head[P_SVF_RES].m_index].m_signal + envMod + (basePitch * keyTracking);
     _signal[SVF_RES] = m_svfResonanceCurve.applyCurve(std::clamp(unitPitch, 0.f, 1.f));
+    /* - Feedback Mixer */
+    /*   - determine Highpass Filter Frequency */
+    _signal[FBM_HPF] = evalNyquist(m_convert.eval_lin_pitch(12.f + basePitch) * 440.f);
 }
 
 /* Poly Post Processing - fast parameters */
@@ -972,6 +977,7 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
 #endif
     /* temporary variables */
     float tmp_lvl, tmp_pan, tmp_abs;
+    const float basePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
     /* State Variable Filter */
     /* - LBH */
     tmp_lvl = m_body[m_head[P_SVF_LBH].m_index].m_signal;
@@ -1006,6 +1012,10 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     tmp_pan = std::clamp(m_body[m_head[P_OM_SP].m_index].m_signal + key_pan, 0.f, 1.f);
     _signal[OUT_SVF_L] = tmp_lvl * (1.f - tmp_pan);
     _signal[OUT_SVF_R] = tmp_lvl * tmp_pan;
+    /* - Feedback Mixer */
+    tmp_lvl = m_body[m_head[P_FBM_LVL].m_index].m_signal;
+    tmp_pan = std::min(m_convert.eval_level(m_body[m_head[P_FBM_LKT].m_index].m_signal * basePitch), env_clip_peak);
+    _signal[FBM_LVL] = tmp_lvl * tmp_pan;
 }
 
 /* Poly Post Processing - audio parameters */
@@ -1266,6 +1276,29 @@ void paramengine::postProcessMono_fast(float *_signal)
     _signal[DLY_WET] = (2.f * tmp_val) - (tmp_val * tmp_val);
     tmp_val = 1.f - tmp_val;
     _signal[DLY_DRY] = (2.f * tmp_val) - (tmp_val * tmp_val);
+    /* - Reverb */
+    /*   - Size to Size, Feedback, Balance */
+    tmp_val = m_body[m_head[P_REV_SIZE].m_index].m_signal;
+    tmp_val *= 2.f - std::abs(tmp_val);
+    _signal[REV_SIZE] = tmp_val;
+    tmp_fb = tmp_val * (0.6f + (0.4f * std::abs(tmp_val)));
+    _signal[REV_FEED] = 4.32f - (3.32f * tmp_fb);
+    tmp_fb = tmp_val * (1.3f - (0.3f * std::abs(tmp_val)));
+    _signal[REV_BAL] = 0.9f * tmp_fb;
+    /*   - Pre Delay */
+    _signal[REV_PRE] = m_body[m_head[P_REV_PRE].m_index].m_signal * 200.f * m_millisecond;
+    /*   - Color to Filter Frequencies (HPF, LPF) */
+    tmp_val = m_body[m_head[P_REV_COL].m_index].m_signal;
+    _signal[REV_LPF] = evalNyquist(m_convert.eval_lin_pitch(m_revColorCurve1.applyCurve(tmp_val)) * 440.f);
+    _signal[REV_HPF] = evalNyquist(m_convert.eval_lin_pitch(m_revColorCurve2.applyCurve(tmp_val)) * 440.f);
+    /*   - Mix to Dry, Wet */
+    tmp_val = m_body[m_head[P_REV_MIX].m_index].m_signal;
+    tmp_dry = 1.f - tmp_val;
+    tmp_dry = (2.f - tmp_dry) * tmp_dry;
+    _signal[REV_DRY] = tmp_dry;
+    tmp_wet = tmp_val;
+    tmp_wet = (2.f - tmp_wet) * tmp_wet;
+    _signal[REV_WET] = tmp_wet;
 }
 
 /* Mono Post Processing - audio parameters */
