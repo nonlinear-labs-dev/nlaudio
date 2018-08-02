@@ -168,15 +168,15 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - FEEDBACK MIXER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 118 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 119 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 120 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 121 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 122 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 123 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 124 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 125 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 126 (PLACEHOLDER)
+    {        156,    2,      0,      8000,   0,      0,      60,     1,      1,      8000   },         // 118 FBM_COMB_MIX
+    {        158,    2,      0,      8000,   0,      0,      61,     1,      1,      8000   },         // 119 FBM_SVF_MIX
+    {        160,    2,      0,      8000,   3,      0,      62,     1,      1,      8000   },         // 120 FBM_EFFECTS_MIX
+    {        162,    2,      0,      16000,  0,      0,      63,     0,      0,      16000  },         // 121 FBM_REVERB_MIX
+    {        164,    2,      0,      200,    11,     2.5f,   64,     1,      0,      10000  },         // 122 FBM_DRIVE
+    {        166,    3,      0,      16000,  0,      0,      65,     1,      0,      16000  },         // 123 FBM_FOLD
+    {        167,    3,      0,      16000,  0,      0,      66,     1,      0,      16000  },         // 124 FBM_ASYM
+    {        168,    3,      0,      8000,   0,      0,      -1,     1,      1,      8000   },         // 125 FBM_LEVEL_KT
+    {        299,    2,      0,      16000,  4,      4,      -1,     1,      0,      16000  },         // 126 FBM_LEVEL
 
     // - - - OUTPUT MIXER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
@@ -239,11 +239,11 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - REVERB - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 171 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 172 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 173 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 174 (PLACEHOLDER)
-    {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 175 (PLACEHOLDER)
+    {        235,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 171 REVERB_SIZE
+    {        237,    2,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 172 REVERB_PRE_DELAY
+    {        238,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 173 REVERB_COLOR
+    {        240,    3,      0,      16000,  4,      1,      126,    0,      0,      16000  },         // 174 REVERB_CHORUS
+    {        241,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 175 REVERB_MIX
 
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
