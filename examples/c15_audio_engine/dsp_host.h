@@ -27,6 +27,7 @@
 #include "ae_gapfilter.h"
 #include "ae_echo.h"
 #include "ae_flanger.h"
+#include "ae_feedbackmixer.h"
 
 /* dsp_host: main dsp object, holding TCD Decoder, Parameter Engine, Audio Engine, shared Signal Array, main signal (L, R) */
 class dsp_host
@@ -84,13 +85,11 @@ public:
     void testParseDestination(int32_t _value);                          // send destinations accordingly
     void testInit();
 
-    /*fadepoint for flushing*/
-
-
     /* Audio Engine */
     ae_soundgenerator m_soundgenerator[dsp_number_of_voices];
     ae_combfilter m_combfilter[dsp_number_of_voices];
     ae_svfilter m_svfilter[dsp_number_of_voices];
+    ae_feedbackmixer m_feedbackmixer[dsp_number_of_voices];
     ae_outputmixer m_outputmixer;
     ae_cabinet m_cabinet;
     ae_gapfilter m_gapfilter;
@@ -105,6 +104,7 @@ public:
     inline void setMonoSlowFilterCoeffs(float *_signal);
     inline void setMonoFastFilterCoeffs(float *_signal);
 
+    /*fadepoint for flushing*/
     bool m_flush;
     uint32_t m_table_indx;
     uint32_t m_flush_indx;

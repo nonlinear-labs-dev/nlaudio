@@ -1107,6 +1107,7 @@ void dsp_host::initAudioEngine()
         m_soundgenerator[p].init(static_cast<float>(m_samplerate), p);
         m_combfilter[p].init(static_cast<float>(m_samplerate), m_upsampleFactor);
         m_svfilter[p].init(static_cast<float>(m_samplerate));
+        m_feedbackmixer[p].init(static_cast<float>(m_samplerate));
     }
 
     m_outputmixer.init(static_cast<float>(m_samplerate), m_voices);
@@ -1124,7 +1125,8 @@ void dsp_host::initAudioEngine()
 
 void dsp_host::makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint)
 {
-    m_soundgenerator[_voiceID].generate(0.f, _signal);             /// _feedbackSample
+    m_soundgenerator[_voiceID].generate(m_feedbackmixer[_voiceID].m_out,
+                                        _signal);
 
     m_combfilter[_voiceID].apply(m_soundgenerator[_voiceID].m_out_A,
                                  m_soundgenerator[_voiceID].m_out_B,
@@ -1134,6 +1136,11 @@ void dsp_host::makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint
                                m_soundgenerator[_voiceID].m_out_B,
                                m_combfilter[_voiceID].m_out,
                                _signal);
+
+    m_feedbackmixer[_voiceID].apply(m_combfilter[_voiceID].m_out,
+                                    m_svfilter[_voiceID].m_out,
+                                    0.f,                            /// m_reverb.m_fx_out
+                                    _signal);
 
     m_outputmixer.combine(m_soundgenerator[_voiceID].m_out_A,
                           m_soundgenerator[_voiceID].m_out_B,
@@ -1228,6 +1235,7 @@ inline void dsp_host::setPolySlowFilterCoeffs(float *_signal, uint32_t _voiceID)
     m_soundgenerator[_voiceID].set(_signal);
     m_combfilter[_voiceID].set(_signal, static_cast<float>(m_samplerate));
     m_svfilter[_voiceID].set(_signal);
+    m_feedbackmixer[_voiceID].set(_signal);
 }
 
 

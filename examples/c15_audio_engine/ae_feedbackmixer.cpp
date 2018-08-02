@@ -56,7 +56,7 @@ void ae_feedbackmixer::init(float _samplerate)
 
 void ae_feedbackmixer::set(float *_signal)
 {
-    float omega = std::clamp(0.f, m_freqClip_min, m_freqClip_max);          ///_signal[FEEDB_HPF]
+    float omega = std::clamp(_signal[FBM_HPF], m_freqClip_min, m_freqClip_max);
     omega = NlToolbox::Math::tan(omega * m_warpConst_PI);
 
     m_hp_a1 = (1.f - omega) / (1.f + omega);
@@ -72,26 +72,26 @@ void ae_feedbackmixer::set(float *_signal)
 
 void ae_feedbackmixer::apply(float _sampleComb, float _sampleSVF, float _sampleFX, float *_signal)
 {
-    float tmpVar = _sampleFX * 0.f + _sampleComb * 0.f + _sampleSVF * 0.f;      /// _signal[FEEDB_CMB] _signal[FEEDB_SVF] _signal[FEEDB_FX]
+    float tmpVar = _sampleFX * _signal[FBM_FX] + _sampleComb * _signal[FBM_CMB] + _sampleSVF * _signal[FBM_SVF];
 
     m_out  = m_hp_b0 * tmpVar;                  // HP
     m_out += m_hp_b1 * m_hp_stateVar_1;
     m_out += m_hp_a1 * m_hp_stateVar_2;
 
-    m_hp_stateVar_1 = tmpVar + DNC_CONST;
-    m_hp_stateVar_2 = m_out + DNC_CONST;
+    m_hp_stateVar_1 = tmpVar + DNC_const;
+    m_hp_stateVar_2 = m_out + DNC_const;
 
-    m_out *= 0.f;               /// _signal[FEEDB_DRV]
+    m_out *= _signal[FBM_DRV];
 
     tmpVar = m_out;
     m_out = NlToolbox::Math::sinP3_wrap(m_out);
-    m_out = NlToolbox::Others::threeRanges(m_out, tmpVar, 0.f);     /// _signal[FEEDB_FLD]
+    m_out = NlToolbox::Others::threeRanges(m_out, tmpVar, _signal[FBM_FLD]);
 
     tmpVar  = m_out * m_out;
     tmpVar -= m_hp30hz_stateVar;                // HP 30Hz
     m_hp30hz_stateVar = tmpVar * m_hp30hz_b0 + m_hp30hz_stateVar + DNC_CONST;
 
-    m_out = NlToolbox::Others::parAsym(m_out, tmpVar, 0.f);         /// _signal[FEEDB_ASM]
+    m_out = NlToolbox::Others::parAsym(m_out, tmpVar, _signal[FBM_ASM]);
 
-    m_out = tmpVar * 0.f;           /// _signal[FEEDB_LVL]
+    m_out = tmpVar * _signal[FBM_LVL];
 }
