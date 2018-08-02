@@ -188,16 +188,16 @@ const float param_definition[sig_number_of_params][10] = {
     {        177,    2,      0,      16000,  0,      0.5f,   -1,     0,      1,      8000   },         // 132 OUT_COMB_PAN
     {        178,    2,      0,      4000,   0,      0,      -1,     0,      1,      8000   },         // 133 OUT_SVF_LEVEL
     {        180,    2,      0,      16000,  0,      0.5f,   -1,     0,      1,      8000   },         // 134 OUT_SVF_PAN
-    {        181,    2,      0,      200,    11,     0.25f,  68,     1,      0,      10000  },         // 135 OUT_DRIVE
-    {        183,    3,      0,      16000,  0,      0,      69,     1,      0,      16000  },         // 136 OUT_FOLD (later maybe fast type)
-    {        184,    3,      0,      16000,  0,      0,      70,     1,      0,      16000  },         // 137 OUT_ASYMETRY (later maybe fast type)
-    {        185,    2,      0,      16000,  4,      2.56f,  71,     0,      0,      16000  },         // 138 OUT_LEVEL
+    {        181,    2,      0,      200,    11,     0.25f,  77,     1,      0,      10000  },         // 135 OUT_DRIVE
+    {        183,    3,      0,      16000,  0,      0,      78,     1,      0,      16000  },         // 136 OUT_FOLD (later maybe fast type)
+    {        184,    3,      0,      16000,  0,      0,      79,     1,      0,      16000  },         // 137 OUT_ASYMETRY (later maybe fast type)
+    {        185,    2,      0,      16000,  4,      2.56f,  80,     0,      0,      16000  },         // 138 OUT_LEVEL
 
     // - - - CABINET  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        188,    2,      0,      200,    12,     0,      72,     0,      0,      10000  },         // 139 CABINET_DRIVE
-    {        190,    3,      0,      16000,  0,      0,      73,     0,      0,      16000  },         // 140 CABINET_FOLD (later maybe fast type)
-    {        191,    3,      0,      16000,  0,      0,      74,     0,      0,      16000  },         // 141 CABINET_ASYMETRY (later maybe fast type)
+    {        188,    2,      0,      200,    12,     0,      81,     0,      0,      10000  },         // 139 CABINET_DRIVE
+    {        190,    3,      0,      16000,  0,      0,      82,     0,      0,      16000  },         // 140 CABINET_FOLD (later maybe fast type)
+    {        191,    3,      0,      16000,  0,      0,      83,     0,      0,      16000  },         // 141 CABINET_ASYMETRY (later maybe fast type)
     {        192,    2,      0,      80,     0,      0,      -1,     0,      1,      8000   },         // 142 CABINET_TILT (implement fast and slow handling)
     {        194,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 143 CABINET_HI_CUT
     {        196,    3,      0,      200,    9,      20,     -1,     0,      0,      16000  },         // 144 CABINET_LOW_CUT
@@ -209,13 +209,13 @@ const float param_definition[sig_number_of_params][10] = {
     {        201,    3,      0,      100,    0,      24,     -1,     0,      0,      9600   },         // 147 GAP_FILTER_CENTER
     {        203,    3,      0,      200,    1,      0.5f,   -1,     0,      1,      7200   },         // 148 GAP_FILTER_STEREO
     {        204,    3,      0,      100,    1,      0.5f,   -1,     0,      0,      9600   },         // 149 GAP_FILTER_GAP
-    {        206,    3,      0,      16000,  1,      0.9f,   86,     0,      0,      16000  },         // 150 GAP_FILTER_RESONANCE
+    {        206,    3,      0,      16000,  1,      0.9f,   95,     0,      0,      16000  },         // 150 GAP_FILTER_RESONANCE
     {        207,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 151 GAP_FILTER_BALANCE
     {        209,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 152 GAP_FILTER_MIX
 
     // - - - FLANGER  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        211,    2,      0,      8000,   4,      1,      92,     0,      1,      8000   },         // 153 FLANGER_TIME_MOD
+    {        211,    2,      0,      8000,   4,      1,      101,    0,      1,      8000   },         // 153 FLANGER_TIME_MOD
     {        213,    3,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 154 FLANGER_PHASE
     {        214,    3,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 155 FLANGER_RATE
     {        216,    3,      0,      12500,  4,      50,     -1,     0,      0,      12500  },         // 156 FLANGER_TIME
@@ -247,7 +247,7 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        247,    2,      0,      16000,  4,      4,      111,    0,      0,      16000  },         // 176 MASTER_VOLUME
+    {        247,    2,      0,      16000,  4,      4,      129,    0,      0,      16000  },         // 176 MASTER_VOLUME
     {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 177 MASTER_TUNE
 
     // - - - POLY KEY EVENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
