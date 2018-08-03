@@ -33,13 +33,13 @@ void ae_reverb::init(float _samplerate, uint32_t _upsampleFactor)
 
 
     //************************** Reverb Modulation ***************************//
-    m_half_tick = 0;
+    m_lfo_tick = 0;
     m_mod_1a = 0.f;
     m_mod_2a = 0.f;
     m_mod_1b = 0.f;
     m_mod_2b = 0.f;
-    m_lfo_omega_1 = 0.86306f / _samplerate;
-    m_lfo_omega_2 = 0.6666f / _samplerate;
+    m_lfo_omega_1 = 0.86306f * 2.f / _samplerate;
+    m_lfo_omega_2 = 0.6666f * 2.f / _samplerate;
 
     //****************************** Loop Filter *****************************//
     m_warpConst_PI = pi / _samplerate;
@@ -134,14 +134,14 @@ void ae_reverb::set(float *_signal)
     tmpVar = _signal[REV_SIZE];
     m_depth = _signal[REV_CHO] * (tmpVar * -200.f + 311.f);         /// Smoothing??
 
-    tmpVar = tmpVar * (0.5f - std::abs(tmpVar * -0.5f));
-    m_absorb  = tmpVar * 0.334f + 0.666f;                           /// Smoothing??
-    m_fb_amnt = tmpVar * 0.667f + 0.333f;                           /// Smoothing??
+    tmpVar = tmpVar * (0.5f - std::abs(tmpVar * -0.5f));            /// Smoothing??
+    m_absorb  = tmpVar * 0.334f + 0.666f;
+    m_fb_amnt = tmpVar * 0.667f + 0.333f;
 
-    tmpVar = _signal[REV_BAL];
-    m_bal_full = tmpVar * (2.f - tmpVar);                           /// Smoothing??
+    tmpVar = _signal[REV_BAL];                                      /// Smoothing??
+    m_bal_full = tmpVar * (2.f - tmpVar);
     tmpVar = 1.f - tmpVar;
-    m_bal_half = tmpVar * (2.f - tmpVar);                           /// Smoothing??
+    m_bal_half = tmpVar * (2.f - tmpVar);
 
     tmpVar = _signal[REV_PRE];
     m_preDel_time_L = std::round(tmpVar);                           /// Smoothing?
@@ -173,7 +173,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     float wetSample_L, wetSample_R;
 
     //************************** Reverb Modulation ***************************//
-    if (!m_half_tick)
+    if (!m_lfo_tick)
     {
         /// Smoothing here
 
@@ -196,7 +196,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
         m_mod_2b = (1.f - tmpVar) * m_depth;
     }
 
-    m_half_tick = (m_half_tick + 1) & 1;            /// only Half Rate! Should it b quarte rate with 96kHz??
+    m_lfo_tick = (m_lfo_tick + 1) & 1;            /// only Half Rate! Should it b quarte rate with 96kHz??
 
     //************************************************************************//
     //**************************** Left Channel ******************************//

@@ -56,7 +56,7 @@ struct ae_reverb
 
 
     //************************** Reverb Modulation ***************************//
-    int32_t m_half_tick;
+    int32_t m_lfo_tick;
     float m_mod_1a, m_mod_2a, m_mod_1b, m_mod_2b;
     float m_lfo_omega_1, m_lfo_omega_2;
     float m_lfo_stateVar_1, m_lfo_stateVar_2;
