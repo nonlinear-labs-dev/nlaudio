@@ -18,6 +18,32 @@ using namespace NlToolbox::Constants;
 
 #define REVERB_BUFFER_SIZE 16384
 
+#define REV_G_1 0.617748f
+#define REV_G_2 0.630809f
+#define REV_G_3 0.64093f
+#define REV_G_4 0.653011f
+
+/*********** Primes - 1 for 48 kHz ***********/
+#define REV_DEL_L1 280          // 563
+#define REV_DEL_L2 1122         // 2243
+#define REV_DEL_L3 862          // 1723
+#define REV_DEL_L4 466          // 937
+#define REV_DEL_L5 718          // 1439
+#define REV_DEL_L6 1030         // 2063
+#define REV_DEL_L7 886          // 1777
+#define REV_DEL_L8 1216         // 2437
+#define REV_DEL_R1 378          // 757
+#define REV_DEL_R2 1102         // 2003
+#define REV_DEL_R3 928          // 1861
+#define REV_DEL_R4 490          // 577
+#define REV_DEL_R5 682          // 1361
+#define REV_DEL_R6 1018         // 2039
+#define REV_DEL_R7 858          // 1721
+#define REV_DEL_R8 1366         // 1733
+
+#define REV_DEL_L9 2916         // 5827
+#define REV_DEL_R9 2676         // 5351
+
 struct ae_reverb
 {
     ae_reverb();        // Default Contructor
@@ -30,6 +56,8 @@ struct ae_reverb
 
 
     //************************** Reverb Modulation ***************************//
+    int32_t m_half_tick;
+    float m_mod_1a, m_mod_2a, m_mod_1b, m_mod_2b;
     float m_lfo_omega_1, m_lfo_omega_2;
     float m_lfo_stateVar_1, m_lfo_stateVar_2;
     float m_depth;
@@ -47,6 +75,7 @@ struct ae_reverb
     //***************************** Delay Buffer *****************************//
     float m_fb_amnt;
     float m_absorb;
+    float m_bal_half, m_bal_full;
 
     int32_t m_buffer_indx;
     int32_t m_buffer_sz_m1, m_buffer_sz_m2;
@@ -76,13 +105,13 @@ struct ae_reverb
     std::vector<float> m_buffer_R8;
     std::vector<float> m_buffer_R9;
 
-    float m_StateVar_L1, m_StateVar_R1;
-    float m_StateVar_L2, m_StateVar_R2;
-    float m_StateVar_L3, m_StateVar_R3;
-    float m_StateVar_L4, m_StateVar_R4;
-    float m_StateVar_L5, m_StateVar_R5;
-    float m_StateVar_L6, m_StateVar_R6;
-    float m_StateVar_L7, m_StateVar_R7;
-    float m_StateVar_L8, m_StateVar_R8;
-    float m_StateVar_L9, m_StateVar_R9;
+    float m_stateVar_L1, m_stateVar_R1;
+    float m_stateVar_L2, m_stateVar_R2;
+    float m_stateVar_L3, m_stateVar_R3;
+    float m_stateVar_L4, m_stateVar_R4;
+    float m_stateVar_L5, m_stateVar_R5;
+    float m_stateVar_L6, m_stateVar_R6;
+    float m_stateVar_L7, m_stateVar_R7;
+    float m_stateVar_L8, m_stateVar_R8;
+    float m_stateVar_L9, m_stateVar_R9;
 };

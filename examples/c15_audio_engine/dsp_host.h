@@ -28,6 +28,7 @@
 #include "ae_echo.h"
 #include "ae_flanger.h"
 #include "ae_feedbackmixer.h"
+#include "ae_reverb.h"
 
 /* dsp_host: main dsp object, holding TCD Decoder, Parameter Engine, Audio Engine, shared Signal Array, main signal (L, R) */
 class dsp_host
@@ -95,6 +96,7 @@ public:
     ae_gapfilter m_gapfilter;
     ae_echo m_echo;
     ae_flanger m_flanger;
+    ae_reverb m_reverb;
 
     void initAudioEngine();
     void makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint);

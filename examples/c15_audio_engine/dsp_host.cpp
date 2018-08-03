@@ -1119,6 +1119,7 @@ void dsp_host::initAudioEngine()
     m_gapfilter.init(static_cast<float>(m_samplerate));
     m_echo.init(static_cast<float>(m_samplerate), m_upsampleFactor);
     m_flanger.init(static_cast<float>(m_samplerate), m_upsampleFactor);
+    m_reverb.init(static_cast<float>(m_samplerate), m_upsampleFactor);
 }
 
 
@@ -1143,7 +1144,7 @@ void dsp_host::makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint
 
     m_feedbackmixer[_voiceID].apply(m_combfilter[_voiceID].m_out,
                                     m_svfilter[_voiceID].m_out,
-                                    0.f,                            /// m_reverb.m_fx_out
+                                    m_reverb.m_out_FX,
                                     _signal);
 
     m_outputmixer.combine(m_soundgenerator[_voiceID].m_out_A,
@@ -1193,12 +1194,14 @@ void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
     m_cabinet.apply(m_flanger.m_out_L, m_flanger.m_out_R, _signal);
     m_gapfilter.apply(m_cabinet.m_out_L, m_cabinet.m_out_R, _signal);
     m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal, _fadePoint);
+    m_reverb.apply(m_echo.m_out_L, m_echo.m_out_R, _signal, _fadePoint);
 
     //******************************* Soft Clip ******************************//
 //    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
 //    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
 //    m_mainOut_L = m_gapfilter.m_out_L * _signal[MST_VOL];
-    m_mainOut_L = m_echo.m_out_L * _signal[MST_VOL];
+//    m_mainOut_L = m_echo.m_out_L * _signal[MST_VOL];
+    m_mainOut_L = m_reverb.m_out_L * _signal[MST_VOL];
 
     m_mainOut_L *= 0.1588f;
     m_mainOut_L = std::clamp(m_mainOut_L, -0.25f, 0.25f);
@@ -1214,7 +1217,8 @@ void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
 //    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
 //    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
 //    m_mainOut_R = m_gapfilter.m_out_R * _signal[MST_VOL];
-    m_mainOut_R = m_echo.m_out_R * _signal[MST_VOL];
+//    m_mainOut_R = m_echo.m_out_R * _signal[MST_VOL];
+    m_mainOut_R = m_reverb.m_out_R * _signal[MST_VOL];
 
     m_mainOut_R *= 0.1588f;
     m_mainOut_R = std::clamp(m_mainOut_R, -0.25f, 0.25f);
