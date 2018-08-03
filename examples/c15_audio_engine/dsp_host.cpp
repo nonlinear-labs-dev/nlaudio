@@ -1259,6 +1259,10 @@ inline void dsp_host::setMonoSlowFilterCoeffs(float *_signal)
     m_cabinet.set(_signal);
     m_gapfilter.set(_signal);
     m_echo.set(_signal);
+    /* reverb setter (if reverb params render with slow clock) - see pe_defines.config.h */
+#if test_reverbParams == 1
+    m_reverb.set(_signal);
+#endif
 }
 
 
@@ -1270,4 +1274,8 @@ inline void dsp_host::setMonoSlowFilterCoeffs(float *_signal)
 inline void dsp_host::setMonoFastFilterCoeffs(float *_signal)
 {
     m_flanger.set_fast(_signal);
+    /* reverb setter (if reverb params render with fast clock) - see pe_defines.config.h */
+#if test_reverbParams == 0
+    m_reverb.set(_signal);
+#endif
 }

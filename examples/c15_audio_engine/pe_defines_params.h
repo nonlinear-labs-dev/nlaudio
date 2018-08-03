@@ -236,15 +236,24 @@ const float param_definition[sig_number_of_params][10] = {
     {        231,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 168 ECHO_CROSS_FEEDBACK
     {        232,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 169 ECHO_HI_CUT
     {        233,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 170 ECHO_MIX
-
     // - - - REVERB - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* should the parameters run with fast clock? (except chorus) - see pe_defines_config.h */
+#if test_reverbParams == 0
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        235,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 171 REVERB_SIZE
     {        237,    2,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 172 REVERB_PRE_DELAY
     {        238,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 173 REVERB_COLOR
     {        240,    3,      0,      16000,  4,      1,      126,    0,      0,      16000  },         // 174 REVERB_CHORUS
     {        241,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 175 REVERB_MIX
-
+/* should the parameters run with slow clock? - see pe_defines_config.h */
+#elif test_reverbParams == 1
+    //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
+    {        235,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 171 REVERB_SIZE
+    {        237,    3,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 172 REVERB_PRE_DELAY
+    {        238,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 173 REVERB_COLOR
+    {        240,    3,      0,      16000,  4,      1,      126,    0,      0,      16000  },         // 174 REVERB_CHORUS
+    {        241,    3,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 175 REVERB_MIX
+#endif
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        247,    2,      0,      16000,  4,      4,      129,    0,      0,      16000  },         // 176 MASTER_VOLUME

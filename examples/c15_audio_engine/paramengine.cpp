@@ -1184,6 +1184,32 @@ void paramengine::postProcessMono_slow(float *_signal)
     _signal[DLY_TR] = tmp_Center * (1.f - tmp_Stereo);
     /*   - High Cut Frequency */
     _signal[DLY_LPF] = evalNyquist(m_body[m_head[P_DLY_LPF].m_index].m_signal * 440.f);
+    /* - Reverb (if slow rendering is enabled - see pe_defines_config.h) */
+#if test_reverbParams == 1
+    float tmp_val, tmp_fb, tmp_dry, tmp_wet;
+    /*   - Size to Size, Feedback, Balance */
+    tmp_val = m_body[m_head[P_REV_SIZE].m_index].m_signal;
+    tmp_val *= 2.f - std::abs(tmp_val);
+    _signal[REV_SIZE] = tmp_val;
+    tmp_fb = tmp_val * (0.6f + (0.4f * std::abs(tmp_val)));
+    _signal[REV_FEED] = 4.32f - (3.32f * tmp_fb);
+    tmp_fb = tmp_val * (1.3f - (0.3f * std::abs(tmp_val)));
+    _signal[REV_BAL] = 0.9f * tmp_fb;
+    /*   - Pre Delay */
+    _signal[REV_PRE] = m_body[m_head[P_REV_PRE].m_index].m_signal * 200.f * m_millisecond;
+    /*   - Color to Filter Frequencies (HPF, LPF) */
+    tmp_val = m_body[m_head[P_REV_COL].m_index].m_signal;
+    _signal[REV_LPF] = evalNyquist(m_convert.eval_lin_pitch(m_revColorCurve1.applyCurve(tmp_val)) * 440.f);
+    _signal[REV_HPF] = evalNyquist(m_convert.eval_lin_pitch(m_revColorCurve2.applyCurve(tmp_val)) * 440.f);
+    /*   - Mix to Dry, Wet */
+    tmp_val = m_body[m_head[P_REV_MIX].m_index].m_signal;
+    tmp_dry = 1.f - tmp_val;
+    tmp_dry = (2.f - tmp_dry) * tmp_dry;
+    _signal[REV_DRY] = tmp_dry;
+    tmp_wet = tmp_val;
+    tmp_wet = (2.f - tmp_wet) * tmp_wet;
+    _signal[REV_WET] = tmp_wet;
+#endif
 }
 
 /* Mono Post Processing - fast parameters */
@@ -1276,7 +1302,8 @@ void paramengine::postProcessMono_fast(float *_signal)
     _signal[DLY_WET] = (2.f * tmp_val) - (tmp_val * tmp_val);
     tmp_val = 1.f - tmp_val;
     _signal[DLY_DRY] = (2.f * tmp_val) - (tmp_val * tmp_val);
-    /* - Reverb */
+    /* - Reverb (if fast rendering is enabled - see pe_defines_config.h) */
+#if test_reverbParams == 0
     /*   - Size to Size, Feedback, Balance */
     tmp_val = m_body[m_head[P_REV_SIZE].m_index].m_signal;
     tmp_val *= 2.f - std::abs(tmp_val);
@@ -1299,6 +1326,7 @@ void paramengine::postProcessMono_fast(float *_signal)
     tmp_wet = tmp_val;
     tmp_wet = (2.f - tmp_wet) * tmp_wet;
     _signal[REV_WET] = tmp_wet;
+#endif
 }
 
 /* Mono Post Processing - audio parameters */
