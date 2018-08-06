@@ -134,7 +134,7 @@ void ae_reverb::set(float *_signal)
     tmpVar = _signal[REV_SIZE];
     m_depth = _signal[REV_CHO] * (tmpVar * -200.f + 311.f);         /// Smoothing??
 
-    tmpVar = tmpVar * (0.5f - std::abs(tmpVar * -0.5f));            /// Smoothing??
+    tmpVar = tmpVar * (0.5f - std::abs(tmpVar) * -0.5f);            /// Smoothing??
     m_absorb  = tmpVar * 0.334f + 0.666f;
     m_fb_amnt = tmpVar * 0.667f + 0.333f;
 
@@ -207,12 +207,13 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     wetSample_L *= _fadePoint;
     m_buffer_L[m_buffer_indx] = wetSample_L;
 
-    tmpVar = std::clamp(m_preDel_time_L, 0.f, static_cast<float>(m_buffer_sz_m1));
+    tmpVar = std::clamp(m_preDel_time_L, 0.f, static_cast<float>(m_buffer_sz_m1));      /// this can be in a setter!
 
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = ind_t0 - 1;
+//    ind_tm1 = ind_t0 - 1;
+    ind_tm1 = ind_t0 + 1;
 
     ind_t0  = m_buffer_indx - ind_t0;
     ind_tm1 = m_buffer_indx - ind_tm1;
@@ -254,9 +255,12 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = std::max(ind_t0, 1) + 1;
-    ind_tp1 = ind_t0 + -1;
-    ind_tp2 = ind_t0 + -2;
+//    ind_tm1 = std::max(ind_t0, 1) + 1;
+//    ind_tp1 = ind_t0 + -1;
+//    ind_tp2 = ind_t0 + -2;
+    ind_tm1 = std::max(ind_t0, 1) - 1;
+    ind_tp1 = ind_t0 + 1;
+    ind_tp2 = ind_t0 + 2;
 
     ind_tm1 = m_buffer_indx - ind_tm1;
     ind_t0  = m_buffer_indx - ind_t0;
@@ -382,9 +386,12 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = std::max(ind_t0, 1) + 1;
-    ind_tp1 = ind_t0 + -1;
-    ind_tp2 = ind_t0 + -2;
+//    ind_tm1 = std::max(ind_t0, 1) + 1;
+//    ind_tp1 = ind_t0 + -1;
+//    ind_tp2 = ind_t0 + -2;
+    ind_tm1 = std::max(ind_t0, 1) - 1;
+    ind_tp1 = ind_t0 + 1;
+    ind_tp2 = ind_t0 + 2;
 
     ind_tm1 = m_buffer_indx - ind_tm1;
     ind_t0  = m_buffer_indx - ind_t0;
@@ -417,7 +424,8 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = ind_t0 - 1;
+//    ind_tm1 = ind_t0 - 1;
+    ind_tm1 = ind_t0 + 1;
 
     ind_t0  = m_buffer_indx - ind_t0;
     ind_tm1 = m_buffer_indx - ind_tm1;
@@ -459,9 +467,13 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = std::max(ind_t0, 1) + 1;
-    ind_tp1 = ind_t0 + -1;
-    ind_tp2 = ind_t0 + -2;
+//    ind_tm1 = std::max(ind_t0, 1) + 1;
+//    ind_tp1 = ind_t0 + -1;
+//    ind_tp2 = ind_t0 + -2;
+
+    ind_tm1 = std::max(ind_t0, 1) - 1;
+    ind_tp1 = ind_t0 + 1;
+    ind_tp2 = ind_t0 + 2;
 
     ind_tm1 = m_buffer_indx - ind_tm1;
     ind_t0  = m_buffer_indx - ind_t0;
@@ -588,9 +600,12 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = std::max(ind_t0, 1) + 1;
-    ind_tp1 = ind_t0 + -1;
-    ind_tp2 = ind_t0 + -2;
+//    ind_tm1 = std::max(ind_t0, 1) + 1;
+//    ind_tp1 = ind_t0 + -1;
+//    ind_tp2 = ind_t0 + -2;
+    ind_tm1 = std::max(ind_t0, 1) - 1;
+    ind_tp1 = ind_t0 + 1;
+    ind_tp2 = ind_t0 + 2;
 
     ind_tm1 = m_buffer_indx - ind_tm1;
     ind_t0  = m_buffer_indx - ind_t0;
