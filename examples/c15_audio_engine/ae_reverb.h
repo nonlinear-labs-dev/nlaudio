@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "pe_defines_config.h"              /// For Smoother Debugging
+
 #include "dsp_defines_signallabels.h"
 #include "nltoolbox.h"
 #include <vector>
@@ -80,7 +82,7 @@ struct ae_reverb
     int32_t m_buffer_indx;
     int32_t m_buffer_sz_m1, m_buffer_sz_m2;
 
-    float m_preDel_time_L, m_preDel_time_R;
+    float m_preDel_L, m_preDel_R;
 
     std::vector<float> m_buffer_L;
     std::vector<float> m_buffer_R;
@@ -114,4 +116,34 @@ struct ae_reverb
     float m_stateVar_L7, m_stateVar_R7;
     float m_stateVar_L8, m_stateVar_R8;
     float m_stateVar_L9, m_stateVar_R9;
+
+    //******************************* Smoothing ******************************//
+    float m_smooth_inc;
+
+    float m_depth_max, m_depth_min;
+    float m_depth_target;
+    float m_depth_inc;
+
+    float m_size_max, m_size_min;
+    float m_size;
+    float m_size_target;
+    float m_size_inc;
+
+    float m_bal_max, m_bal_min;
+    float m_bal;
+    float m_bal_target;
+    float m_bal_inc;
+
+    float m_preDel_L_max, m_preDel_L_min;
+    float m_preDel_L_target;
+    float m_preDel_L_inc;
+
+    float m_preDel_R_max, m_preDel_R_min;
+    float m_preDel_R_target;
+    float m_preDel_R_inc;
+
+    float m_lp_omega_max, m_lp_omega_min;
+    float m_hp_omega_max, m_hp_omega_min;
+    float m_lp_omega_target, m_hp_omega_target;
+    float m_lp_omega_inc, m_hp_omega_inc;
 };

@@ -119,6 +119,9 @@ void ae_reverb::init(float _samplerate, uint32_t _upsampleFactor)
     m_stateVar_R7 = 0.f;
     m_stateVar_R8 = 0.f;
     m_stateVar_R9 = 0.f;
+
+    //******************************* Smoothing ******************************//
+    m_smooth_inc = 1.f / std::max(50.f * (0.001f * _samplerate / 2.f), 1.e-12f);            /// 50ms als DEfine Bitte!
 }
 
 
@@ -131,9 +134,54 @@ void ae_reverb::set(float *_signal)
 {
     float tmpVar;
 
+#if test_reverbSmoother == 1
+
+    tmpVar = _signal[REV_SIZE];
+    m_depth_target = _signal[REV_CHO] * (tmpVar * -200.f + 311.f);
+    m_depth_inc = (m_depth_target - m_depth) * m_smooth_inc;
+    m_depth_max = std::max(m_depth, m_depth_target);
+    m_depth_min = std::min(m_depth, m_depth_target);
+
+    m_size_target = tmpVar * (0.5f - std::abs(tmpVar) * -0.5f);
+    m_size_inc = (m_size_target - m_size) * m_smooth_inc;
+    m_size_max = std::max(m_size, m_size_target);
+    m_size_min = std::min(m_size, m_size_target);
+
+    m_bal_target = _signal[REV_BAL];
+    m_bal_inc = (m_bal_target - m_bal) * m_smooth_inc;
+    m_bal_max = std::max(m_bal, m_bal_target);
+    m_bal_min = std::min(m_bal, m_bal_target);
+
+    tmpVar = _signal[REV_PRE];
+    m_preDel_L_target = std::round(tmpVar);
+    m_preDel_L_inc = (m_preDel_L_target - m_preDel_L) * m_smooth_inc;
+    m_preDel_L_max = std::max(m_preDel_L, m_preDel_L_target);
+    m_preDel_L_min = std::min(m_preDel_L, m_preDel_L_target);
+
+    m_preDel_R_target = std::round(tmpVar * 1.18933f);
+    m_preDel_R_inc = (m_preDel_R_target - m_preDel_R) * m_smooth_inc;
+    m_preDel_R_max = std::max(m_preDel_R, m_preDel_R_target);
+    m_preDel_R_min = std::min(m_preDel_R, m_preDel_R_target);
+
+    tmpVar = std::clamp(_signal[REV_LPF], 0.1f, m_omegaClip_max);
+    m_lp_omega_target = NlToolbox::Math::tan(tmpVar * m_warpConst_PI);
+    m_lp_omega_inc = (m_lp_omega_target - m_lp_omega) * m_smooth_inc;
+    m_lp_omega_max = std::max(m_lp_omega, m_lp_omega_target);
+    m_lp_omega_min = std::min(m_lp_omega, m_lp_omega_target);
+
+    tmpVar = std::clamp(_signal[REV_HPF], 0.1f, m_omegaClip_max);
+    m_hp_omega_target = NlToolbox::Math::tan(tmpVar * m_warpConst_PI);
+    m_hp_omega_inc = (m_hp_omega_target - m_hp_omega) * m_smooth_inc;
+    m_hp_omega_max = std::max(m_hp_omega, m_hp_omega_target);
+    m_hp_omega_min = std::min(m_hp_omega, m_hp_omega_target);
+
+#endif
+
+#if test_reverbSmoother == 0
     tmpVar = _signal[REV_SIZE];
     m_depth = _signal[REV_CHO] * (tmpVar * -200.f + 311.f);         /// Smoothing??
 
+    tmpVar = _signal[REV_SIZE];
     tmpVar = tmpVar * (0.5f - std::abs(tmpVar) * -0.5f);            /// Smoothing??
     m_absorb  = tmpVar * 0.334f + 0.666f;
     m_fb_amnt = tmpVar * 0.667f + 0.333f;
@@ -144,8 +192,8 @@ void ae_reverb::set(float *_signal)
     m_bal_half = tmpVar * (2.f - tmpVar);
 
     tmpVar = _signal[REV_PRE];
-    m_preDel_time_L = std::round(tmpVar);                           /// Smoothing?
-    m_preDel_time_R = std::round(tmpVar * 1.18933f);                /// Smoothing?
+    m_preDel_L = std::round(tmpVar);                           /// Smoothing?
+    m_preDel_R = std::round(tmpVar * 1.18933f);                /// Smoothing?
 
     tmpVar = std::clamp(_signal[REV_LPF], 0.1f, m_omegaClip_max);
     m_lp_omega = NlToolbox::Math::tan(tmpVar * m_warpConst_PI);     /// Smoothing??
@@ -158,6 +206,7 @@ void ae_reverb::set(float *_signal)
 
     m_hp_a0 = 1.f / (m_hp_omega + 1.f);
     m_hp_a1 = m_hp_omega - 1.f;
+#endif
 }
 
 
@@ -175,7 +224,30 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     //************************** Reverb Modulation ***************************//
     if (!m_lfo_tick)
     {
-        /// Smoothing here
+#if test_reverbSmoother == 1
+        m_depth = std::clamp(m_depth + m_depth_inc, m_depth_min, m_depth_max);
+
+        m_size = std::clamp(m_size + m_size_inc, m_size_min, m_size_max);
+        m_absorb  = m_size * 0.334f + 0.666f;
+        m_fb_amnt = m_size * 0.667f + 0.333f;
+
+        m_bal = std::clamp(m_bal + m_bal_inc, m_size_min, m_bal_max);
+        tmpVar = m_bal;
+        m_bal_full = tmpVar * (2.f - tmpVar);
+        tmpVar = 1.f - tmpVar;
+        m_bal_half = tmpVar * (2.f - tmpVar);
+
+        m_preDel_L = std::clamp(m_preDel_L + m_preDel_L_inc, m_preDel_L_min, m_preDel_L_max);
+        m_preDel_R = std::clamp(m_preDel_R + m_preDel_R_inc, m_preDel_R_min, m_preDel_R_max);
+
+        m_lp_omega = std::clamp(m_lp_omega + m_lp_omega_inc, m_lp_omega_min, m_lp_omega_max);
+        m_lp_a0 = 1.f / (m_lp_omega + 1.f);
+        m_lp_a1 = m_lp_omega - 1.f;
+
+        m_hp_omega = std::clamp(m_hp_omega + m_hp_omega_inc, m_hp_omega_min, m_hp_omega_max);
+        m_hp_a0 = 1.f / (m_hp_omega + 1.f);
+        m_hp_a1 = m_hp_omega - 1.f;
+#endif
 
         tmpVar = m_lfo_stateVar_1 + m_lfo_omega_1;
         tmpVar = tmpVar - std::round(tmpVar);
@@ -207,7 +279,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     wetSample_L *= _fadePoint;
     m_buffer_L[m_buffer_indx] = wetSample_L;
 
-    tmpVar = std::clamp(m_preDel_time_L, 0.f, static_cast<float>(m_buffer_sz_m1));      /// this can be in a setter!
+    tmpVar = std::clamp(m_preDel_L, 0.f, static_cast<float>(m_buffer_sz_m1));      /// this can be in a setter!
 
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
@@ -419,7 +491,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     wetSample_R *= _fadePoint;
     m_buffer_R[m_buffer_indx] = wetSample_R;
 
-    tmpVar = std::clamp(m_preDel_time_R, 0.f, static_cast<float>(m_buffer_sz_m1));
+    tmpVar = std::clamp(m_preDel_R, 0.f, static_cast<float>(m_buffer_sz_m1));
 
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
