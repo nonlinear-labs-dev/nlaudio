@@ -56,9 +56,10 @@ struct ae_reverb
     void set(float *_signal);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint);
 
+    int32_t m_slow_tick;
+    int32_t m_slow_thrsh;
 
     //************************** Reverb Modulation ***************************//
-    int32_t m_lfo_tick;
     float m_mod_1a, m_mod_2a, m_mod_1b, m_mod_2b;
     float m_lfo_omega_1, m_lfo_omega_2;
     float m_lfo_stateVar_1, m_lfo_stateVar_2;

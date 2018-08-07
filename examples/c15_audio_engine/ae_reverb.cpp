@@ -31,9 +31,10 @@ void ae_reverb::init(float _samplerate, uint32_t _upsampleFactor)
     m_out_R = 0.f;
     m_out_FX = 0.f;
 
+    m_slow_tick = 0;
+    m_slow_thrsh = 2 * _upsampleFactor - 1;
 
     //************************** Reverb Modulation ***************************//
-    m_lfo_tick = 0;
     m_mod_1a = 0.f;
     m_mod_2a = 0.f;
     m_mod_1b = 0.f;
@@ -222,7 +223,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     float wetSample_L, wetSample_R;
 
     //************************** Reverb Modulation ***************************//
-    if (!m_lfo_tick)
+    if (!m_slow_tick)
     {
 #if test_reverbSmoother == 1
         m_depth = std::clamp(m_depth + m_depth_inc, m_depth_min, m_depth_max);
@@ -268,7 +269,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
         m_mod_2b = (1.f - tmpVar) * m_depth;
     }
 
-    m_lfo_tick = (m_lfo_tick + 1) & 1;            /// only Half Rate! Should it b quarte rate with 96kHz??
+    m_slow_tick = (m_slow_tick + 1) & m_slow_thrsh;            /// only Half Rate! Should it b quarte rate with 96kHz??
 
     //************************************************************************//
     //**************************** Left Channel ******************************//
