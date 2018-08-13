@@ -269,7 +269,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
         m_mod_2b = (1.f - tmpVar) * m_depth;
     }
 
-    m_slow_tick = (m_slow_tick + 1) & m_slow_thrsh;            /// only Half Rate! Should it b quarte rate with 96kHz??
+    m_slow_tick = (m_slow_tick + 1) & m_slow_thrsh;
 
     //************************************************************************//
     //**************************** Left Channel ******************************//
