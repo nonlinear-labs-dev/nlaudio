@@ -38,8 +38,6 @@
 #include <common/stopwatch.h>
 #include <common/blockingcircularbuffer.h>
 
-// temporary...
-//#include "c15_audio_engine/minisynth.h"
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
 
