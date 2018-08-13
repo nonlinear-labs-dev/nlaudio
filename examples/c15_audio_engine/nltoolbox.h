@@ -12,7 +12,7 @@
 #include <cmath>
 #include <common/tools.h>
 #include <algorithm>
-#include "nlglobaldefines.h"
+//#include "nlglobaldefines.h"
 
 
 namespace NlToolbox {
@@ -351,7 +351,7 @@ struct Highpass30Hz
         float output;
 
         output = _sample - mInStateVar;
-        mInStateVar = (output * mOmega + mInStateVar) + DNC_CONST;
+        mInStateVar = (output * mOmega + mInStateVar) + NlToolbox::Constants::DNC_const;
 
         return output;
     }
@@ -404,7 +404,7 @@ struct Lowpass2Hz
         output = _sample - mStateVar;
         output = output * mOmega + mStateVar;
 
-        mStateVar = output + DNC_CONST;
+        mStateVar = output + NlToolbox::Constants::DNC_const;
 
         return output;
     }
@@ -466,7 +466,7 @@ struct ChirpFilter
         tmpVar = output;
 
         output = (output + mStateVar) * mOmega;     // FIR
-        mStateVar = tmpVar + DNC_CONST;
+        mStateVar = tmpVar + NlToolbox::Constants::DNC_const;
 
         return output;
     }

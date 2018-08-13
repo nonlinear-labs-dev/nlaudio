@@ -326,10 +326,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     hp_sample += m_hp_l1_a1 * m_hp_l1_stateVar_3;
     hp_sample += m_hp_l1_a2 * m_hp_l1_stateVar_4;
 
-    m_hp_l1_stateVar_2 = m_hp_l1_stateVar_1 + DNC_CONST;
-    m_hp_l1_stateVar_1 = _rawSample_L + DNC_CONST;
-    m_hp_l1_stateVar_4 = m_hp_l1_stateVar_3 + DNC_CONST;
-    m_hp_l1_stateVar_3 = hp_sample + DNC_CONST;
+    m_hp_l1_stateVar_2 = m_hp_l1_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_hp_l1_stateVar_1 = _rawSample_L + NlToolbox::Constants::DNC_const;
+    m_hp_l1_stateVar_4 = m_hp_l1_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_hp_l1_stateVar_3 = hp_sample + NlToolbox::Constants::DNC_const;
 
     tmpVar  = m_hp_l2_b0 * hp_sample;                            // L2
     tmpVar += m_hp_l2_b1 * m_hp_l2_stateVar_1;
@@ -337,10 +337,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_hp_l2_a1 * m_hp_l2_stateVar_3;
     tmpVar += m_hp_l2_a2 * m_hp_l2_stateVar_4;
 
-    m_hp_l2_stateVar_2 = m_hp_l2_stateVar_1 + DNC_CONST;
-    m_hp_l2_stateVar_1 = hp_sample + DNC_CONST;
-    m_hp_l2_stateVar_4 = m_hp_l2_stateVar_3 + DNC_CONST;
-    m_hp_l2_stateVar_3 = tmpVar + DNC_CONST;
+    m_hp_l2_stateVar_2 = m_hp_l2_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_hp_l2_stateVar_1 = hp_sample + NlToolbox::Constants::DNC_const;
+    m_hp_l2_stateVar_4 = m_hp_l2_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_hp_l2_stateVar_3 = tmpVar + NlToolbox::Constants::DNC_const;
 
     hp_sample = tmpVar;
 
@@ -354,10 +354,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     lp_sample += m_lp_l1_a1 * m_lp_l1_stateVar_3;
     lp_sample += m_lp_l1_a2 * m_lp_l1_stateVar_4;
 
-    m_lp_l1_stateVar_2 = m_lp_l1_stateVar_1 + DNC_CONST;
-    m_lp_l1_stateVar_1 = tmpVar + DNC_CONST;
-    m_lp_l1_stateVar_4 = m_lp_l1_stateVar_3 + DNC_CONST;
-    m_lp_l1_stateVar_3 = lp_sample + DNC_CONST;
+    m_lp_l1_stateVar_2 = m_lp_l1_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_lp_l1_stateVar_1 = tmpVar + NlToolbox::Constants::DNC_const;
+    m_lp_l1_stateVar_4 = m_lp_l1_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_lp_l1_stateVar_3 = lp_sample + NlToolbox::Constants::DNC_const;
 
     tmpVar  = m_lp_l2_b0 * lp_sample;                            // L2
     tmpVar += m_lp_l2_b1 * m_lp_l2_stateVar_1;
@@ -365,10 +365,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_lp_l2_a1 * m_lp_l2_stateVar_3;
     tmpVar += m_lp_l2_a2 * m_lp_l2_stateVar_4;
 
-    m_lp_l2_stateVar_2 = m_lp_l2_stateVar_1 + DNC_CONST;
-    m_lp_l2_stateVar_1 = lp_sample + DNC_CONST;
-    m_lp_l2_stateVar_4 = m_lp_l2_stateVar_3 + DNC_CONST;
-    m_lp_l2_stateVar_3 = tmpVar + DNC_CONST;
+    m_lp_l2_stateVar_2 = m_lp_l2_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_lp_l2_stateVar_1 = lp_sample + NlToolbox::Constants::DNC_const;
+    m_lp_l2_stateVar_4 = m_lp_l2_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_lp_l2_stateVar_3 = tmpVar + NlToolbox::Constants::DNC_const;
 
     lp_sample  = tmpVar * _signal[GAP_LPOUT];
     hp_sample *= _signal[GAP_HPOUT];
@@ -382,10 +382,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     hp_sample += m_hp_r1_a1 * m_hp_r1_stateVar_3;
     hp_sample += m_hp_r1_a2 * m_hp_r1_stateVar_4;
 
-    m_hp_r1_stateVar_2 = m_hp_r1_stateVar_1 + DNC_CONST;
-    m_hp_r1_stateVar_1 = _rawSample_R + DNC_CONST;
-    m_hp_r1_stateVar_4 = m_hp_r1_stateVar_3 + DNC_CONST;
-    m_hp_r1_stateVar_3 = hp_sample + DNC_CONST;
+    m_hp_r1_stateVar_2 = m_hp_r1_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_hp_r1_stateVar_1 = _rawSample_R + NlToolbox::Constants::DNC_const;
+    m_hp_r1_stateVar_4 = m_hp_r1_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_hp_r1_stateVar_3 = hp_sample + NlToolbox::Constants::DNC_const;
 
     tmpVar  = m_hp_r2_b0 * hp_sample;                            // R2
     tmpVar += m_hp_r2_b1 * m_hp_r2_stateVar_1;
@@ -393,10 +393,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_hp_r2_a1 * m_hp_r2_stateVar_3;
     tmpVar += m_hp_r2_a2 * m_hp_r2_stateVar_4;
 
-    m_hp_r2_stateVar_2 = m_hp_r2_stateVar_1 + DNC_CONST;
-    m_hp_r2_stateVar_1 = hp_sample + DNC_CONST;
-    m_hp_r2_stateVar_4 = m_hp_r2_stateVar_3 + DNC_CONST;
-    m_hp_r2_stateVar_3 = tmpVar + DNC_CONST;
+    m_hp_r2_stateVar_2 = m_hp_r2_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_hp_r2_stateVar_1 = hp_sample + NlToolbox::Constants::DNC_const;
+    m_hp_r2_stateVar_4 = m_hp_r2_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_hp_r2_stateVar_3 = tmpVar + NlToolbox::Constants::DNC_const;
 
     hp_sample = tmpVar;
 
@@ -410,10 +410,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     lp_sample += m_lp_r1_a1 * m_lp_r1_stateVar_3;
     lp_sample += m_lp_r1_a2 * m_lp_r1_stateVar_4;
 
-    m_lp_r1_stateVar_2 = m_lp_r1_stateVar_1 + DNC_CONST;
-    m_lp_r1_stateVar_1 = tmpVar + DNC_CONST;
-    m_lp_r1_stateVar_4 = m_lp_r1_stateVar_3 + DNC_CONST;
-    m_lp_r1_stateVar_3 = lp_sample + DNC_CONST;
+    m_lp_r1_stateVar_2 = m_lp_r1_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_lp_r1_stateVar_1 = tmpVar + NlToolbox::Constants::DNC_const;
+    m_lp_r1_stateVar_4 = m_lp_r1_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_lp_r1_stateVar_3 = lp_sample + NlToolbox::Constants::DNC_const;
 
     tmpVar  = m_lp_r2_b0 * lp_sample;                            // R2
     tmpVar += m_lp_r2_b1 * m_lp_r2_stateVar_1;
@@ -421,10 +421,10 @@ void ae_gapfilter::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     tmpVar += m_lp_r2_a1 * m_lp_r2_stateVar_3;
     tmpVar += m_lp_r2_a2 * m_lp_r2_stateVar_4;
 
-    m_lp_r2_stateVar_2 = m_lp_r2_stateVar_1 + DNC_CONST;
-    m_lp_r2_stateVar_1 = lp_sample + DNC_CONST;
-    m_lp_r2_stateVar_4 = m_lp_r2_stateVar_3 + DNC_CONST;
-    m_lp_r2_stateVar_3 = tmpVar + DNC_CONST;
+    m_lp_r2_stateVar_2 = m_lp_r2_stateVar_1 + NlToolbox::Constants::DNC_const;
+    m_lp_r2_stateVar_1 = lp_sample + NlToolbox::Constants::DNC_const;
+    m_lp_r2_stateVar_4 = m_lp_r2_stateVar_3 + NlToolbox::Constants::DNC_const;
+    m_lp_r2_stateVar_3 = tmpVar + NlToolbox::Constants::DNC_const;
 
     lp_sample  = tmpVar * _signal[GAP_LPOUT];
     hp_sample *= _signal[GAP_HPOUT];

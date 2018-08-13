@@ -39,7 +39,7 @@
 #include <common/blockingcircularbuffer.h>
 
 // temporary...
-#include "c15_audio_engine/minisynth.h"
+//#include "c15_audio_engine/minisynth.h"
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
 
@@ -175,9 +175,10 @@ int main(int argc, char **argv)
         Nl::JobHandle handle;
         switch(opts[OPT_MODE]) {
         case 0:
-            std::cout << "Nl::MINISYNTH::miniSynthMidiControl()" << std::endl;
-            handle = Nl::MINISYNTH::miniSynthMidiControl(audioOut, midiIn, buffersize, samplerate);
-            break;
+//            std::cout << "Nl::MINISYNTH::miniSynthMidiControl()" << std::endl;
+//            handle = Nl::MINISYNTH::miniSynthMidiControl(audioOut, midiIn, buffersize, samplerate);
+            std::cout << ">>> NO MORE MINISYNTH MODE<<<" << std::endl;
+            exit(EXIT_FAILURE);
         case 1:
             std::cout << "Nl::DSP_HOST_HANDLE::dspHostTCDControl()" << std::endl;
             handle = Nl::DSP_HOST_HANDLE::dspHostTCDControl(audioOut, midiIn, buffersize, samplerate, polyphony);

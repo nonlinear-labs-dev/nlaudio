@@ -106,7 +106,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     tmpVar = oscSampleA;
 
     oscSampleA = (oscSampleA + m_chiA_stateVar) * m_chiA_omega; // Chirp FIR
-    m_chiA_stateVar = tmpVar + DNC_CONST;
+    m_chiA_stateVar = tmpVar + NlToolbox::Constants::DNC_const;
 
     oscSampleA += m_oscA_phase;
 
@@ -143,7 +143,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     tmpVar = oscSampleB;
 
     oscSampleB = (oscSampleB + m_chiB_stateVar) * m_chiB_omega; // Chirp FIR
-    m_chiB_stateVar = tmpVar + DNC_CONST;
+    m_chiB_stateVar = tmpVar + NlToolbox::Constants::DNC_const;
 
     oscSampleB += m_oscB_phase;
 
