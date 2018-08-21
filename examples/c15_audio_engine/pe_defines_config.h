@@ -22,8 +22,9 @@
 
 /* Test poly Key Parameters */
 
-#define par_key_phaseA              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
-#define par_key_phaseB              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
+//#define par_key_phaseA              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
+//#define par_key_phaseB              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
+#define par_unisono_phase           0               //
 #define par_voice_pan               0               // constant values to be sent during KeyDown sequence, tcd range: [-8000 ... 8000]
 
 /* Main Configuration                               (prepared for maximal 20 Voices) */
@@ -41,15 +42,15 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Main Parameter Definition                        -> see Linux Engine - Test 5 */
 
-#define sig_number_of_params        184             // 3 * (15 ENV params) + 2 * (14 OSC + 8 SHP params) + (16 CMB params) + (13 SVF params) + (9 FB Mix params) + (12 OUT params)
-                                                    // + (8 CABINET params) + (6 GAP params) + (12 FLANGER params) (6 ECHO params) + (5 REVERB params) + (2 MASTER params) + (6 KEY params)
-#define sig_number_of_param_items   298             // (45 + 44 + 16 + 13 + 9 + 12 + 8 + 6 + 12 + 6 + 5 + 2 (* 1 Voice) MONO params) + (6 (* 20 Voices) POLY params)
-#define sig_number_of_signal_items  130             // 130 shared signals
+#define sig_number_of_params        185             // 3 * (15 ENV params) + 2 * (15 OSC + 8 SHP params) + (16 CMB params) + (13 SVF params) + (9 FB Mix params) + (12 OUT params)
+                                                    // + (8 CABINET params) + (6 GAP params) + (12 FLANGER params) (6 ECHO params) + (5 REVERB params) + (2 MASTER params) + (5 KEY params)
+#define sig_number_of_param_items   280             // (45 + 46 + 16 + 13 + 9 + 12 + 8 + 6 + 12 + 6 + 5 + 2 (* 1 Voice) MONO params) + (5 (* 20 Voices) POLY params)
+#define sig_number_of_signal_items  132             // 132 shared signals
 
 /* TCD List Handling */
 
-#define lst_recall_length           174             // 174 preset-relevant parameters
-#define lst_keyEvent_length         6               // 6 key event parameters
+#define lst_recall_length           176             // 176 preset-relevant parameters
+#define lst_keyEvent_length         5               // 5 key event parameters
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
 
 /* Utility Parameters and Envelope Definition */

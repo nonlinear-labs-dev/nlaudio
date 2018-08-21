@@ -586,9 +586,12 @@ void dsp_host::keyApply(uint32_t _voiceId)
         //resetOscPhase(m_paramsignaldata[_voiceId], _voiceId);
         /* NEW approach of phase reset - no array involved - still only unisono phase */
 
-        float phaseA = m_params.m_body[m_params.m_head[P_KEY_PA].m_index + _voiceId].m_signal;
-        float phaseB = m_params.m_body[m_params.m_head[P_KEY_PB].m_index + _voiceId].m_signal;
-        m_soundgenerator[_voiceId].resetPhase(phaseA, phaseB);
+        /* NEW UNISONO PHASE FUNCTIONALITY, Osc Phases are now offsets */
+        //float phaseA = m_params.m_body[m_params.m_head[P_KEY_PA].m_index + _voiceId].m_signal;
+        //float phaseB = m_params.m_body[m_params.m_head[P_KEY_PB].m_index + _voiceId].m_signal;
+        float uniPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
+        //m_soundgenerator[_voiceId].resetPhase(phaseA, phaseB);
+        m_soundgenerator[_voiceId].resetPhase(uniPhase, uniPhase);                                  // function could be reduced to one argument
     }
 }
 
@@ -866,8 +869,9 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     /* key event sequence */
     evalMidi(47, 2, 1);                                     // enable preload (key event list mode)
     evalMidi(0, 0, m_test_voiceId);                         // select voice: current
-    testParseDestination(par_key_phaseA);                   // phase a (see pe_defines.config.h)
-    testParseDestination(par_key_phaseB);                   // phase b (see pe_defines.config.h)
+    //testParseDestination(par_key_phaseA);                   // phase a (see pe_defines.config.h)
+    //testParseDestination(par_key_phaseB);                   // phase b (see pe_defines.config.h)
+    testParseDestination(par_unisono_phase);                // unisono phase
     testParseDestination(notePitch);                        // note pitch
     testParseDestination(par_voice_pan);                    // voice pan (see pe_defines.config.h)
     evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
@@ -878,8 +882,9 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     /* take current voiceId and increase it (wrapped around polyphony) - sloppy approach */
     m_test_voiceId = (m_test_voiceId + 1) % m_voices;
 #elif test_unisonCluster == 1
-    testParseDestination(par_key_phaseA);                   // phase a (see pe_defines.config.h)
-    testParseDestination(par_key_phaseB);                   // phase b (see pe_defines.config.h)
+    //testParseDestination(par_key_phaseA);                   // phase a (see pe_defines.config.h)
+    //testParseDestination(par_key_phaseB);                   // phase b (see pe_defines.config.h)
+    testParseDestination(par_unisono_phase);                // unisono phase
     testParseDestination(notePitch + 12000);                // note pitch (one octave apart)
     testParseDestination(par_voice_pan);                    // voice pan (see pe_defines.config.h)
     evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)

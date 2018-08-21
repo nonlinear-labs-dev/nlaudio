@@ -110,6 +110,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 
     oscSampleA += m_oscA_phase;
 
+    oscSampleA += _signal[OSC_A_PHS];                           // NEW Phase Offset
     oscSampleA += (-0.25f);                                         // Wrap
     oscSampleA -= NlToolbox::Conversion::float2int(oscSampleA);
 
@@ -147,6 +148,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 
     oscSampleB += m_oscB_phase;
 
+    oscSampleB += _signal[OSC_B_PHS];                           // NEW Phase Offset
     oscSampleB += (-0.25f);                                     // Warp
     oscSampleB -= NlToolbox::Conversion::float2int(oscSampleB);
 
