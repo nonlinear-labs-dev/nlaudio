@@ -50,7 +50,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 #define lst_recall_length           174             // 174 preset-relevant parameters
 #define lst_keyEvent_length         6               // 6 key event parameters
-#define lst_number_of_lists         2               // predefined paramId lists (simplifying recal and key event update TCD sequences)
+#define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
 
 /* Utility Parameters and Envelope Definition */
 
