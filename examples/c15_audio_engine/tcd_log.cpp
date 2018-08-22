@@ -10,7 +10,8 @@ void logEntry::set(uint32_t _delta, uint32_t _cmdID, uint32_t _arg1, uint32_t _a
 
 void logEntry::get()
 {
-    std::cout << "delta: " << m_elapsedSamples << ", ID: " << m_commandID << ", Args: " << m_commandArgs[0] << ", " << m_commandArgs[1] << std::endl;
+    std::cout << "delta: " << m_elapsedSamples << ", ID: " << m_commandID << " ( " << tcd_command_names[m_commandID];
+    std::cout << " ), Args: " << m_commandArgs[0] << ", " << m_commandArgs[1] << std::endl;
 }
 
 void tcd_log::reset()

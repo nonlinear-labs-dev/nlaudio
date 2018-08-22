@@ -84,6 +84,7 @@ public:
     void testGetSignalData();                                           // print signal
     void testGetParamHeadData();                                        // print param configuration
     void testGetParamRenderData();                                      // print param rendering state
+    void testGetTCDLogData();                                           // print TCD Log
     void testParseDestination(int32_t _value);                          // send destinations accordingly
     void testInit();
     /* Debug Stuff */

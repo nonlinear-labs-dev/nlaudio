@@ -35,19 +35,8 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     /* Load Initial Preset (TCD zero for every Parameter) */
     loadInitialPreset();
 
-    /* */
+    /* TCD Log */
     m_log.reset();
-    for(uint32_t i = 0; i < tcd_log_buffersize; i++)
-    {
-        m_log.add(i, 0, 0);
-        for(uint32_t j = 0; j < i + 1; j++)
-        {
-            m_log.tick();
-        }
-    }
-    m_log.add(99, 99, 99);
-    m_log.add(99, 99, 99);
-    m_log.get();
 }
 
 /* */
@@ -160,6 +149,9 @@ void dsp_host::tickMain()
     /* AUDIO_ENGINE: mono dsp phase */
     makeMonoSound(m_paramsignaldata[0], fadePoint);
 
+    /* TCD Log */
+    m_log.tick();
+
     /* finally: update (fast and slow) clock positions */
     m_clockPosition[2] = (m_clockPosition[2] + 1) % m_clockDivision[2];
     m_clockPosition[3] = (m_clockPosition[3] + 1) % m_clockDivision[3];
@@ -172,6 +164,8 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
     int32_t i;                                      // parsing variable for signed integers
     int32_t v = static_cast<int32_t>(m_voices);     // parsing variable representing number of voices as signed integer
     float f;                                        // parsing variable for floating point values
+    /* TCD Log */
+    m_log.add(_status, _data0, _data1);
     switch(m_decoder.getCommandId(_status & 127))
     {
     case 0:
@@ -701,9 +695,11 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             }
             break;
         case 4:
+            /* TCD Log */
+            testGetTCDLogData();
             /* Print Body */
-            std::cout << "print parameters: BODY" << std::endl;
-            testGetParamRenderData();
+            //std::cout << "print parameters: BODY" << std::endl;
+            //testGetParamRenderData();
             break;
         case 5:
             /* Print Signal */
@@ -1056,6 +1052,13 @@ void dsp_host::testGetParamRenderData()
             index++;
         }
     }
+}
+
+/* TCD Log */
+void dsp_host::testGetTCDLogData()
+{
+    m_log.get();
+    m_log.reset();
 }
 
 /* prepare destinations */
