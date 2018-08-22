@@ -195,8 +195,11 @@ int main(int argc, char **argv)
         //	     The calls should happen in this order. Otherwise we trigger
         //		 a deadlock with the audio callback.
 
-        while(getchar() != 'q')
+        // mechanism for distinguishing different chars, triggering debug stuff
+        char c;
+        while((c = static_cast<char>(getchar())) != 'q')
         {
+
             std::cout << *sw << std::endl;
 
             if (handle.audioOutput) std::cout << "Audio: Output Statistics:" << std::endl
