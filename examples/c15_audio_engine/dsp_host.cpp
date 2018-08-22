@@ -34,6 +34,20 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
 
     /* Load Initial Preset (TCD zero for every Parameter) */
     loadInitialPreset();
+
+    /* */
+    m_log.reset();
+    for(uint32_t i = 0; i < tcd_log_buffersize; i++)
+    {
+        m_log.add(i, 0, 0);
+        for(uint32_t j = 0; j < i + 1; j++)
+        {
+            m_log.tick();
+        }
+    }
+    m_log.add(99, 99, 99);
+    m_log.add(99, 99, 99);
+    m_log.get();
 }
 
 /* */
