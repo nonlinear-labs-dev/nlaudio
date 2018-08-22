@@ -90,6 +90,8 @@ namespace DSP_HOST_HANDLE {
         m_host.init(samplerate, polyphony);
         JobHandle ret;
 
+        ret.debugBufferQueue = DebugBuffer::createSharedDebugBufferQueue();
+
         // No input here
         ret.inBuffer = nullptr;
         ret.audioInput = nullptr;

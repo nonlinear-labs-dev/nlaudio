@@ -32,6 +32,7 @@
 #include <thread>
 
 #include "common/blockingcircularbuffer.h"
+#include "common/debugbuffer.h"
 #include "audio/audioalsainput.h"
 #include "audio/audioalsaoutput.h"
 #include "midi/rawmididevice.h"
@@ -96,6 +97,7 @@ struct JobHandle {
     SharedBufferHandle inBuffer;
     SharedBufferHandle outBuffer;
     SharedBufferHandle inMidiBuffer;
+    SharedDebugBufferQueue debugBufferQueue;
 };
 
 
