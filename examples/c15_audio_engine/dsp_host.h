@@ -14,6 +14,7 @@
 #include <vector>
 #include "paramengine.h"
 #include "tcd_decoder.h"
+#include "tcd_log.h"
 
 /* for testing purposes */
 #include "pe_defines_testconfig.h"
@@ -85,6 +86,8 @@ public:
     void testGetParamRenderData();                                      // print param rendering state
     void testParseDestination(int32_t _value);                          // send destinations accordingly
     void testInit();
+    /* Debug Stuff */
+    tcd_log m_log;
 
     /* Audio Engine */
     ae_soundgenerator m_soundgenerator[dsp_number_of_voices];
