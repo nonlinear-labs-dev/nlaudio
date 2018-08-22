@@ -21,9 +21,11 @@
 
 #include <mutex>
 
-template <T>
-class DebugBuffer {
+namespace Nl {
 
+template <typename T>
+class DebugBuffer {
+public:
     void set(const T& data)
     {
         std::lock_guard<std::mutex> guard(m_lock);
@@ -42,3 +44,5 @@ private:
     T m_shadow;
     std::mutex m_lock;
 };
+
+} // namespace Nl
