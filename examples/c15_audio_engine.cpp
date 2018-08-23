@@ -210,7 +210,7 @@ int main(int argc, char **argv)
                                              << handle.audioInput->getStats() << std::endl;
 
             if (handle.debugBuffer) std::cout << "Debug: " <<std::endl
-                                              << handle.debugBuffer << std::endl;
+                                              << *handle.debugBuffer.get() << std::endl;
 
             if (handle.inMidiBuffer) {
                 unsigned long rxBytes, txBytes;
