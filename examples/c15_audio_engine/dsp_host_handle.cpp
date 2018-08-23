@@ -26,6 +26,24 @@ namespace DSP_HOST_HANDLE {
     {
 
         JobHandle jh = std::any_cast<JobHandle>(ptr);
+
+        while (auto c = jh.cmdBuffer->get()) {
+            switch (c) {
+            case Nl::CommandBuffer::CMD_GET_PARAM:
+                    jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_PARAM"));
+                break;
+            case Nl::CommandBuffer::CMD_GET_SIGNAL:
+                    jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_SIGNAL"));
+                break;
+            case Nl::CommandBuffer::CMD_GET_TCD_INPUT:
+                    jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_TCD_INPUT"));
+                break;
+            case Nl::CommandBuffer::CMD_NO_CMD:
+                // Just to suppress the warning (NEVER use this element)
+                break;
+            }
+        }
+
         StopBlockTime(sw, "dsp_host");
         auto midiBuffer = getBufferForName("MidiBuffer");
 
@@ -93,6 +111,7 @@ namespace DSP_HOST_HANDLE {
         JobHandle ret;
 
         ret.debugBuffer = createSharedDebugBuffer();
+        ret.cmdBuffer = createSharedCommandBuffer();
 
         // No input here
         ret.inBuffer = nullptr;

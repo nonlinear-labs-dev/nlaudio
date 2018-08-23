@@ -37,7 +37,6 @@ class PrintableDebugBufferItem
 {
 public:
     virtual std::ostream &operator<<(std::ostream &s) = 0;
-    virtual std::string print() = 0;
 };
 
 template <typename T>
@@ -64,14 +63,6 @@ public:
         s << m_shadow;
         return s;
     }
-
-    virtual std::string print() override
-    {
-        std::stringstream ss;
-        ss << m_shadow;
-        return ss.str();
-    }
-
 private:
     T m_shadow;
 };

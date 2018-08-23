@@ -17,38 +17,35 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <common/debugbuffer.h>
-
-#include <iostream>
+#include <common/commandbuffer.h>
 
 namespace Nl {
 
-void DebugBuffer::insert(const SharedPrintableDebugBufferItem& item)
+CommandBuffer::Command CommandBuffer::get()
+{
+    Command ret = CMD_NO_CMD;
+
+    if (!m_queue.empty()) {
+        std::lock_guard<std::mutex> guard(m_lock);
+        ret = m_queue.front();
+        m_queue.pop();
+    }
+
+    return ret;
+}
+
+void CommandBuffer::set(CommandBuffer::Command c)
 {
     std::lock_guard<std::mutex> guard(m_lock);
-    m_items.push(item);
+    m_queue.push(c);
 }
 
-std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
+SharedCommandBuffer createSharedCommandBuffer()
 {
-    static std::queue<SharedPrintableDebugBufferItem> copy;
-
-    {
-        std::lock_guard<std::mutex> guard(p.m_lock);
-        p.m_items.swap(copy);
-    }
-
-    while (!copy.empty()) {
-        s << copy.front().get();
-        copy.pop();
-    }
-
-    return s;
+    return SharedCommandBuffer(new CommandBuffer);
 }
 
-SharedDebugBuffer createSharedDebugBuffer()
-{
-    return SharedDebugBuffer(new DebugBuffer);
-}
 
-} // namespace NL
+
+} // namespace Nl
+

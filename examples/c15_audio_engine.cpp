@@ -38,6 +38,7 @@
 #include <common/stopwatch.h>
 #include <common/blockingcircularbuffer.h>
 #include <common/debugbuffer.h>
+#include <common/commandbuffer.h>
 
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
@@ -201,6 +202,17 @@ int main(int argc, char **argv)
         char c;
         while((c = static_cast<char>(getchar())) != 'q')
         {
+            switch (c) {
+            case 'a':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_PARAM);
+                break;
+            case 'b':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_SIGNAL);
+                break;
+            case 'c':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_TCD_INPUT);
+                break;
+            }
 
             std::cout << *sw << std::endl;
 

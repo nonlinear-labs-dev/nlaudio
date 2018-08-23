@@ -34,6 +34,7 @@
 
 #include "common/blockingcircularbuffer.h"
 #include "common/debugbuffer.h"
+#include "common/commandbuffer.h"
 #include "audio/audioalsainput.h"
 #include "audio/audioalsaoutput.h"
 #include "midi/rawmididevice.h"
@@ -80,6 +81,7 @@ struct JobHandle {
     SharedBufferHandle outBuffer;
     SharedBufferHandle inMidiBuffer;
     SharedDebugBuffer debugBuffer;
+    SharedCommandBuffer cmdBuffer;
 };
 
 

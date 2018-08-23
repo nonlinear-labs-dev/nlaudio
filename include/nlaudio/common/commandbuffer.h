@@ -17,38 +17,36 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <common/debugbuffer.h>
+#pragma once
 
-#include <iostream>
+#include <queue>
+#include <memory>
+#include <mutex>
+//#include <numeric>
 
 namespace Nl {
 
-void DebugBuffer::insert(const SharedPrintableDebugBufferItem& item)
-{
-    std::lock_guard<std::mutex> guard(m_lock);
-    m_items.push(item);
-}
+class CommandBuffer;
+typedef std::shared_ptr<CommandBuffer> SharedCommandBuffer;
 
-std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
-{
-    static std::queue<SharedPrintableDebugBufferItem> copy;
+class CommandBuffer {
+public:
+    enum Command {
+        CMD_GET_TCD_INPUT,
+        CMD_GET_SIGNAL,
+        CMD_GET_PARAM,
+        CMD_NO_CMD = std::numeric_limits<int>::max() // Sentinel
+    };
 
-    {
-        std::lock_guard<std::mutex> guard(p.m_lock);
-        p.m_items.swap(copy);
-    }
+    Command get();
+    void set(Command c);
 
-    while (!copy.empty()) {
-        s << copy.front().get();
-        copy.pop();
-    }
+private:
+    std::queue<Command> m_queue;
+    std::mutex m_lock;
 
-    return s;
-}
+};
 
-SharedDebugBuffer createSharedDebugBuffer()
-{
-    return SharedDebugBuffer(new DebugBuffer);
-}
+SharedCommandBuffer createSharedCommandBuffer();
 
-} // namespace NL
+} // namespace Nl
