@@ -9,6 +9,13 @@
 #include <math.h>
 #include "paramengine.h"
 
+std::ostream& operator<<(std::ostream& lhs, const param_body& rhs)
+{
+    lhs << rhs.m_state << std::endl;
+
+    return lhs;
+}
+
 /* proper init */
 void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
 {

@@ -266,8 +266,7 @@ const float param_definition[sig_number_of_params][10] = {
     {        400,    0,      1,      14400,  0,      0,      -1,     0,      1,      7200   },         // 180 KEY_UNISON_PHASE
     {        406,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 181 KEY_NOTE_PITCH
     {        407,    0,      1,      8000,   0,      0,      -1,     0,      1,      8000   },         // 182 KEY_VOICE_PAN
-    {        408,    0,      1,      16000,  0,      0,      -1,     0,      0,      16000  },         // 183 KEY_ENV_C_RATE
-    {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 184 KEY_VOICE_STEAL
+    {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 183 KEY_VOICE_STEAL
 
 };
 

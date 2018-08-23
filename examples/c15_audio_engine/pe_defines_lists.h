@@ -41,5 +41,5 @@ const uint32_t paramIds_recall[lst_recall_length] = {
 // NOTE:    - keyEvent param id order by LPC, list mechanism usable -> keep
 
 const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
-    180, 181, 182, 183, 184
+    180, 181, 182, 183
 };

@@ -5,7 +5,7 @@
 #include <midi/rawmididevice.h>
 
 #include <common/stopwatch.h>
-
+#include "paramengine.h"
 #include <any>
 
 extern std::shared_ptr<Nl::StopWatch> sw;
@@ -93,6 +93,8 @@ namespace DSP_HOST_HANDLE {
                 setSample(out, outputSample, frameIndex, channelIndex, sampleSpecs);
             }
         }
+
+        jh.debugBuffer->insert(Nl::pack<::param_body>(m_host.m_params.m_body[0]));
     }
 
 

@@ -56,6 +56,7 @@ struct param_body
     float m_diff = 0.f;
     float m_dest = 0.f;
 };
+std::ostream& operator<<(std::ostream& lhs, const param_body& rhs);
 
 /* */
 struct param_utility
