@@ -27,8 +27,8 @@
 #include "audio/samplespecs.h"
 #include "midi/rawmididevice.h"
 
-
 #include <iostream>
+#include <any>
 
 namespace Nl {
 
@@ -301,7 +301,7 @@ SharedAudioHandle createAlsaOutputDevice(const AlsaAudioCardIdentifier &card, Sh
 */
 WorkingThreadHandle registerInputCallbackOnBuffer(SharedBufferHandle inBuffer,
 												  AudioCallbackIn callback,
-												  SharedUserPtr ptr)
+                                                  std::any ptr)
 {
 	WorkingThreadHandle handle;
 	handle.terminateRequest = createTerminateFlag();
@@ -327,7 +327,7 @@ WorkingThreadHandle registerInputCallbackOnBuffer(SharedBufferHandle inBuffer,
 */
 WorkingThreadHandle registerOutputCallbackOnBuffer(SharedBufferHandle outBuffer,
 												   AudioCallbackOut callback,
-												   SharedUserPtr ptr)
+                                                   std::any ptr)
 {
 	WorkingThreadHandle handle;
 	handle.terminateRequest = createTerminateFlag();
@@ -355,7 +355,7 @@ WorkingThreadHandle registerOutputCallbackOnBuffer(SharedBufferHandle outBuffer,
 WorkingThreadHandle registerInOutCallbackOnBuffer(SharedBufferHandle inBuffer,
 												  SharedBufferHandle outBuffer,
 												  AudioCallbackInOut callback,
-												  SharedUserPtr ptr)
+                                                  std::any ptr)
 {
 	WorkingThreadHandle handle;
 	handle.terminateRequest = createTerminateFlag();

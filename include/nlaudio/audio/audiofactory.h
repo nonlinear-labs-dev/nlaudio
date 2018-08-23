@@ -30,6 +30,7 @@
 #include <map>
 #include <memory>
 #include <thread>
+#include <any>
 
 #include "common/blockingcircularbuffer.h"
 #include "common/debugbuffer.h"
@@ -42,25 +43,6 @@
 
 namespace Nl {
 
-/**
- * \brief The User Pointer struct
- *
- * A handle that is passed to the audio callbacks for userdata
- *
- */
-struct UserPtr {
-    UserPtr() :
-        info("unused"),
-        ptr(nullptr) {}
-    UserPtr(const std::string info, void* ptr) :
-        info(info),
-        ptr(ptr) {}
-    std::string info; /**< A description of the type passed */
-    void *ptr;	/**< The actual user pointer */
-};
-
-typedef std::shared_ptr<UserPtr> SharedUserPtr;
-
 class AudioAlsaInput;
 class AudioAlsaOutput;
 class RawMidiDevice;
@@ -68,9 +50,9 @@ class RawMidiDevice;
 /*! A shared handle to a \ref std::atomic<bool> */
 typedef std::shared_ptr<std::atomic<bool>> SharedTerminateFlag;
 
-typedef void (*AudioCallbackIn)(uint8_t*, const SampleSpecs &specs, SharedUserPtr ptr);
-typedef void (*AudioCallbackOut)(uint8_t*, const SampleSpecs &specs, SharedUserPtr ptr);
-typedef void (*AudioCallbackInOut)(uint8_t*, uint8_t*, const SampleSpecs &specs, SharedUserPtr ptr);
+typedef void (*AudioCallbackIn)(uint8_t*, const SampleSpecs &specs, std::any ptr);
+typedef void (*AudioCallbackOut)(uint8_t*, const SampleSpecs &specs, std::any ptr);
+typedef void (*AudioCallbackInOut)(uint8_t*, uint8_t*, const SampleSpecs &specs, std::any ptr);
 
 /*! A shared handle to a \ref std::thread */
 typedef std::shared_ptr<std::thread> SharedThreadHandle;
@@ -97,7 +79,7 @@ struct JobHandle {
     SharedBufferHandle inBuffer;
     SharedBufferHandle outBuffer;
     SharedBufferHandle inMidiBuffer;
-    //SharedDebugBufferQueue debugBufferQueue;
+    SharedDebugBuffer debugBuffer;
 };
 
 
@@ -124,20 +106,20 @@ SharedAudioHandle createAlsaOutputDevice(const AlsaAudioCardIdentifier &card, Sh
 
 WorkingThreadHandle registerInputCallbackOnBuffer(SharedBufferHandle inBuffer,
                                                   AudioCallbackIn callback,
-                                                  SharedUserPtr ptr);
+                                                  std::any ptr);
 WorkingThreadHandle registerOutputCallbackOnBuffer(SharedBufferHandle outBuffer,
                                                    AudioCallbackOut callback,
-                                                   SharedUserPtr ptr);
+                                                   std::any ptr);
 WorkingThreadHandle registerInOutCallbackOnBuffer(SharedBufferHandle inBuffer,
                                                   SharedBufferHandle outBuffer,
                                                   AudioCallbackInOut callback,
-                                                  SharedUserPtr ptr);
+                                                  std::any ptr);
 WorkingThreadHandle registerAutoDrainOnBuffer(SharedBufferHandle inBuffer);
 
 // Thread function, that handles blocking io calls on the buffers
 auto readAudioFunction = [](SharedBufferHandle audioBuffer,
 AudioCallbackIn callback,
-SharedTerminateFlag terminateRequest, SharedUserPtr ptr)
+SharedTerminateFlag terminateRequest, std::any ptr)
 {
 
     SampleSpecs sampleSpecs = audioBuffer->sampleSpecs();
@@ -156,7 +138,7 @@ SharedTerminateFlag terminateRequest, SharedUserPtr ptr)
 // Thread function, that handles blocking io calls on the buffers
 auto writeAudioFunction = [](SharedBufferHandle audioBuffer,
 AudioCallbackIn callback,
-SharedTerminateFlag terminateRequest, SharedUserPtr ptr) {
+SharedTerminateFlag terminateRequest, std::any ptr) {
 
     SampleSpecs sampleSpecs = audioBuffer->sampleSpecs();
 
@@ -177,7 +159,7 @@ SharedTerminateFlag terminateRequest, SharedUserPtr ptr) {
 auto readWriteAudioFunction = [](SharedBufferHandle audioInBuffer,
 SharedBufferHandle audioOutBuffer,
 AudioCallbackInOut callback,
-SharedTerminateFlag terminateRequest, SharedUserPtr ptr) {
+SharedTerminateFlag terminateRequest, std::any ptr) {
 
     SampleSpecs sampleSpecsIn = audioInBuffer->sampleSpecs();
     SampleSpecs sampleSpecsOut = audioOutBuffer->sampleSpecs();

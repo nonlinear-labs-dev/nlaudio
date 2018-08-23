@@ -7,7 +7,7 @@ using namespace Nl;
 void inToOutCallback(u_int8_t *in,
 					 u_int8_t *out,
 					 const SampleSpecs &sampleSpecs __attribute__ ((unused)),
-					 SharedUserPtr ptr __attribute__ ((unused)));
+					 std::any ptr __attribute__ ((unused)));
 
 JobHandle inputToOutput(const AlsaAudioCardIdentifier &audioInCard,
                              const AlsaAudioCardIdentifier &audioOutCard,

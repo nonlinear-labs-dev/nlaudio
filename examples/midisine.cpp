@@ -70,7 +70,7 @@ namespace Examples {
 
 void midiSineCallback(u_int8_t *out,
                       const SampleSpecs &sampleSpecs,
-                      SharedUserPtr ptr __attribute__ ((unused)))
+                      std::any ptr __attribute__ ((unused)))
 {
     static uint8_t velocity = 0;
     static double frequency = 0;
@@ -155,8 +155,7 @@ JobHandle midiSine(const AlsaAudioCardIdentifier &audioOutCard,
     std::cout << "MidiBufferSize: " << midiInput->getAlsaMidiBufferSize() << std::endl;
 
     // Register a Callback
-    SharedUserPtr ptr(new UserPtr("unused", nullptr));
-    ret.workingThreadHandle = registerOutputCallbackOnBuffer(ret.outBuffer, midiSineCallback, ptr);
+    ret.workingThreadHandle = registerOutputCallbackOnBuffer(ret.outBuffer, midiSineCallback, 0);
 
     return ret;
 }

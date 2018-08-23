@@ -68,7 +68,7 @@ int main()
 void inToOutCallback(u_int8_t *in,
 					 u_int8_t *out,
 					 const SampleSpecs &sampleSpecs __attribute__ ((unused)),
-					 SharedUserPtr ptr __attribute__ ((unused)))
+                     std::any ptr __attribute__ ((unused)))
 {
 	//static int counter = 0;
 	//StopBlockTime sft(sw, "val" + std::to_string(counter++));
@@ -102,8 +102,7 @@ JobHandle inputToOutput(const AlsaAudioCardIdentifier &inCard, const AlsaAudioCa
 	ret.audioOutput->start();
 	ret.audioInput->start();
 
-	SharedUserPtr ptr(new UserPtr("unused", nullptr));
-	ret.workingThreadHandle = registerInOutCallbackOnBuffer(ret.inBuffer, ret.outBuffer, inToOutCallback, ptr);
+    ret.workingThreadHandle = registerInOutCallbackOnBuffer(ret.inBuffer, ret.outBuffer, inToOutCallback, 0);
 
 	return ret;
 }

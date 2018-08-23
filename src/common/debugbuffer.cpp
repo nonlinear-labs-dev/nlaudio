@@ -47,4 +47,9 @@ std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
     return s;
 }
 
+SharedDebugBuffer createSharedDebugBuffer()
+{
+    return SharedDebugBuffer(new DebugBuffer);
+}
+
 } // namespace NL

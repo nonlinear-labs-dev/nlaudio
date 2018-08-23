@@ -6,6 +6,8 @@
 
 #include <common/stopwatch.h>
 
+#include <any>
+
 extern std::shared_ptr<Nl::StopWatch> sw;
 
 namespace Nl {
@@ -20,10 +22,10 @@ namespace DSP_HOST_HANDLE {
             @param    buffer size
             @param    Sample Specs
     */
-    void dspHostCallback(uint8_t *out, const SampleSpecs &sampleSpecs __attribute__ ((unused)), SharedUserPtr ptr)
+    void dspHostCallback(uint8_t *out, const SampleSpecs &sampleSpecs __attribute__ ((unused)), std::any ptr)
     {
 
-
+        JobHandle jh = std::any_cast<JobHandle>(ptr);
         StopBlockTime(sw, "dsp_host");
         auto midiBuffer = getBufferForName("MidiBuffer");
 
@@ -90,7 +92,7 @@ namespace DSP_HOST_HANDLE {
         m_host.init(samplerate, polyphony);
         JobHandle ret;
 
-        //ret.debugBufferQueue = DebugBuffer::createSharedDebugBufferQueue();
+        ret.debugBuffer = createSharedDebugBuffer();
 
         // No input here
         ret.inBuffer = nullptr;
@@ -106,7 +108,7 @@ namespace DSP_HOST_HANDLE {
         ret.audioOutput->start();
         ret.midiInput->start();
 
-        ret.workingThreadHandle = registerOutputCallbackOnBuffer(ret.outBuffer, dspHostCallback, nullptr);
+        ret.workingThreadHandle = registerOutputCallbackOnBuffer(ret.outBuffer, dspHostCallback, ret);
 
         return ret;
     }

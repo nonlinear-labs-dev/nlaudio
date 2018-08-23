@@ -27,8 +27,10 @@
 
 namespace Nl {
 
-class PrintableDebugBufferItem;
+class DebugBuffer;
+typedef std::shared_ptr<DebugBuffer> SharedDebugBuffer;
 
+class PrintableDebugBufferItem;
 typedef std::shared_ptr<PrintableDebugBufferItem> SharedPrintableDebugBufferItem;
 
 class PrintableDebugBufferItem
@@ -90,5 +92,7 @@ SharedPrintableDebugBufferItem pack(T d)
 {
     return SharedPrintableDebugBufferItem(new DebugBufferItem<T>(d));
 };
+
+SharedDebugBuffer createSharedDebugBuffer();
 
 } // namespace Nl

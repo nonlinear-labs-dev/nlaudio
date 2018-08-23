@@ -68,7 +68,7 @@ namespace Examples {
 // Silence Example
 void silenceCallback(u_int8_t *out,
                      const SampleSpecs &sampleSpecs __attribute__ ((unused)),
-                     SharedUserPtr ptr __attribute__ ((unused)))
+                     std::any ptr __attribute__ ((unused)))
 {
     memset(out, 0, sampleSpecs.buffersizeInBytesPerPeriode);
 }
@@ -95,8 +95,7 @@ JobHandle silence(const AlsaAudioCardIdentifier &audioOutCard,
     ret.audioOutput->start();
 
     // Register a Callback
-    SharedUserPtr ptr(new UserPtr("unused", nullptr));
-    ret.workingThreadHandle = registerOutputCallbackOnBuffer(ret.outBuffer, silenceCallback, ptr);
+    ret.workingThreadHandle = registerOutputCallbackOnBuffer(ret.outBuffer, silenceCallback, 0);
 
     return ret;
 }

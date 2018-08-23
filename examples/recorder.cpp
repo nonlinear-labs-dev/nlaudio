@@ -92,7 +92,7 @@ namespace Examples {
 // Recorder Example
 void recorderCallback(u_int8_t *out,
                       const SampleSpecs &sampleSpecs,
-                      SharedUserPtr ptr)
+                      std::any ptr)
 {
     static uint32_t total = 0;
 

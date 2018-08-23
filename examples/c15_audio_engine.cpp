@@ -37,6 +37,7 @@
 #include <common/tools.h>
 #include <common/stopwatch.h>
 #include <common/blockingcircularbuffer.h>
+#include <common/debugbuffer.h>
 
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
@@ -98,11 +99,12 @@ int main(int argc, char **argv)
     }
 
     char c = 0;
-    while ((c = getopt(argc, argv, "hs:v:t:a:m:")) != -1) {
+    while ((c = static_cast<char>(getopt(argc, argv, "hs:v:t:a:m:"))) != -1) {
         switch (c)
         {
         case 'h':
             usage(argv[0]);
+            break;
         case 's': // Samplerate
             opts[OPT_SAMPLERATE] = atoi(optarg);
             break;
