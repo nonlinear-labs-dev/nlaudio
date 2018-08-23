@@ -27,7 +27,8 @@ namespace DSP_HOST_HANDLE {
 
         JobHandle jh = std::any_cast<JobHandle>(ptr);
 
-        while (auto c = jh.cmdBuffer->get()) {
+        Nl::CommandBuffer::Command c;
+        while ((c = jh.cmdBuffer->get()) != Nl::CommandBuffer::CMD_NO_CMD) {
             switch (c) {
             case Nl::CommandBuffer::CMD_GET_PARAM:
                     jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_PARAM"));
@@ -94,7 +95,7 @@ namespace DSP_HOST_HANDLE {
             }
         }
 
-        jh.debugBuffer->insert(Nl::pack<::param_body>(m_host.m_params.m_body[0]));
+        //jh.debugBuffer->insert(Nl::pack<::param_body>(m_host.m_params.m_body[0]));
     }
 
 

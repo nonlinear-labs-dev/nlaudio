@@ -29,6 +29,12 @@ void DebugBuffer::insert(const SharedPrintableDebugBufferItem& item)
     m_items.push(item);
 }
 
+std::ostream &PrintableDebugBufferItem::operator<<(std::ostream &s)
+{
+    print(s);
+    return s;
+}
+
 std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
 {
     static std::queue<SharedPrintableDebugBufferItem> copy;
@@ -38,10 +44,13 @@ std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
         p.m_items.swap(copy);
     }
 
+    s << "Debug: " << std::endl;
     while (!copy.empty()) {
-        s << copy.front().get();
+        s << "  ";
+        copy.front().get()->operator<<(s);
         copy.pop();
     }
+    s << std::endl;
 
     return s;
 }

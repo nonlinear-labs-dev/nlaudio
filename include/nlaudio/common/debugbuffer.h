@@ -36,7 +36,8 @@ typedef std::shared_ptr<PrintableDebugBufferItem> SharedPrintableDebugBufferItem
 class PrintableDebugBufferItem
 {
 public:
-    virtual std::ostream &operator<<(std::ostream &s) = 0;
+    virtual void print(std::ostream &s) = 0;
+    std::ostream &operator<<(std::ostream &s);
 };
 
 template <typename T>
@@ -58,10 +59,9 @@ public:
         return m_shadow;
     }
 
-    virtual std::ostream &operator<<(std::ostream &s) override
+    virtual void print(std::ostream &s) override
     {
         s << m_shadow;
-        return s;
     }
 private:
     T m_shadow;
