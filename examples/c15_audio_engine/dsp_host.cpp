@@ -884,7 +884,7 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     testParseDestination(par_unisono_phase);                // unisono phase
     testParseDestination(notePitch);                        // note pitch
     testParseDestination(par_voice_pan);                    // voice pan (see pe_defines.config.h)
-    evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
+    //evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
     evalMidi(5, 0, 0);                                      // voice steal: 0
     evalMidi(23, noteVel >> 7, noteVel & 127);              // key down: velocity
 #if test_unisonCluster == 0
@@ -897,7 +897,7 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
     testParseDestination(par_unisono_phase);                // unisono phase
     testParseDestination(notePitch + 12000);                // note pitch (one octave apart)
     testParseDestination(par_voice_pan);                    // voice pan (see pe_defines.config.h)
-    evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
+    //evalMidi(5, 0, 0);                                      // env c rate: 0 (will be removed later - almost certainly)
     evalMidi(5, 0, 0);                                      // voice steal: 0
     evalMidi(23, noteVel >> 7, noteVel & 127);              // key down: velocity
     evalMidi(47, 0, 2);                                     // apply preloaded values
