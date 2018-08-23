@@ -71,6 +71,7 @@ class DebugBuffer
 {
 public:
     void insert(const SharedPrintableDebugBufferItem& item);
+    bool canRead();
 
 private:
     std::mutex m_lock;

@@ -39,6 +39,7 @@
 #include <common/blockingcircularbuffer.h>
 #include <common/debugbuffer.h>
 #include <common/commandbuffer.h>
+#include <common/specialkeyboard.h>
 
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
@@ -176,8 +177,8 @@ int main(int argc, char **argv)
         Nl::JobHandle handle;
         switch(opts[OPT_MODE]) {
         case 0:
-//            std::cout << "Nl::MINISYNTH::miniSynthMidiControl()" << std::endl;
-//            handle = Nl::MINISYNTH::miniSynthMidiControl(audioOut, midiIn, buffersize, samplerate);
+            //            std::cout << "Nl::MINISYNTH::miniSynthMidiControl()" << std::endl;
+            //            handle = Nl::MINISYNTH::miniSynthMidiControl(audioOut, midiIn, buffersize, samplerate);
             std::cout << ">>> NO MORE MINISYNTH MODE<<<" << std::endl;
             exit(EXIT_FAILURE);
         case 1:
@@ -189,20 +190,12 @@ int main(int argc, char **argv)
             exit(EXIT_FAILURE);
         }
 
-        // Wait for user to exit by pressing 'q'
-        // Print buffer statistics on other keys
-        // TODO: We might have a deadlock here:
-        //		 sw.printSummary() holds a lock
-        //		 audioXX->getStats() holds a lock
-        //		 inMidiBuffer->getStats() holds a lock
-        //	     The calls should happen in this order. Otherwise we trigger
-        //		 a deadlock with the audio callback.
-
-        // mechanism for distinguishing different chars, triggering debug stuff
-        char c;
-        while((c = static_cast<char>(getchar())) != 'q')
-        {
-            switch (c) {
+        SpecialKeyboard sk;
+        bool exit = false;
+        while(true) {
+            // nonblocking Keyboard Read
+            char key = sk.kbhit();
+            switch (key) {
             case 'a':
                 handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_PARAM);
                 break;
@@ -212,23 +205,36 @@ int main(int argc, char **argv)
             case 'c':
                 handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_TCD_INPUT);
                 break;
+            case 'm':
+                if (handle.inMidiBuffer) {
+                    unsigned long rxBytes, txBytes;
+                    handle.inMidiBuffer->getStat(&rxBytes, &txBytes);
+                    std::cout << "Midi: Input Statistics:" << std::endl
+                              << "  rx=" << rxBytes << "  txBytes=" << txBytes << std::endl;
+                }
+                break;
+            case 'n':
+                if (handle.audioOutput) {
+                    std::cout << "Audio: Output Statistics:" << std::endl
+                              << handle.audioOutput->getStats() << std::endl;
+                }
+                if (handle.audioInput) {
+                    std::cout << "Audio: Input Statistics:" << std::endl
+                              << handle.audioInput->getStats() << std::endl;
+                }
+
+                break;
+            case 'q':
+                exit = true;
+                break;
+            default:
+                if (handle.debugBuffer->canRead())
+                    std::cout << *handle.debugBuffer.get() << std::endl;
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
 
-            std::cout << *sw << std::endl;
-
-            if (handle.audioOutput) std::cout << "Audio: Output Statistics:" << std::endl
-                                              << handle.audioOutput->getStats() << std::endl;
-            if (handle.audioInput) std::cout << "Audio: Input Statistics:" << std::endl
-                                             << handle.audioInput->getStats() << std::endl;
-
-            if (handle.debugBuffer) std::cout << *handle.debugBuffer.get() << std::endl;
-
-            if (handle.inMidiBuffer) {
-                unsigned long rxBytes, txBytes;
-                handle.inMidiBuffer->getStat(&rxBytes, &txBytes);
-                std::cout << "Midi: Input Statistics:" << std::endl
-                          << "rxBytes=" << rxBytes << "  txBytes=" << txBytes << std::endl;
-            }
+            if (exit) break;
         }
 
         // Tell worker thread to cleanup and quit

@@ -29,6 +29,12 @@ void DebugBuffer::insert(const SharedPrintableDebugBufferItem& item)
     m_items.push(item);
 }
 
+bool DebugBuffer::canRead()
+{
+    std::lock_guard<std::mutex> guard(m_lock);
+    return !m_items.empty();
+}
+
 std::ostream &PrintableDebugBufferItem::operator<<(std::ostream &s)
 {
     print(s);
@@ -44,7 +50,7 @@ std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
         p.m_items.swap(copy);
     }
 
-    s << "Debug: " << std::endl;
+    if (!copy.empty()) s << "Debug: " << std::endl;
     while (!copy.empty()) {
         s << "  ";
         copy.front().get()->operator<<(s);
