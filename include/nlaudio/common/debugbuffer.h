@@ -27,12 +27,11 @@
 
 namespace Nl {
 
-class PrintableDebugBuffer;
+class PrintableDebugBufferItem;
 
-typedef std::shared_ptr<PrintableDebugBuffer> SharedPrintableDebugBuffer;
-typedef std::shared_ptr<std::queue<SharedPrintableDebugBuffer>> SharedDebugBufferQueue;
+typedef std::shared_ptr<PrintableDebugBufferItem> SharedPrintableDebugBufferItem;
 
-class PrintableDebugBuffer
+class PrintableDebugBufferItem
 {
 public:
     virtual std::ostream &operator<<(std::ostream &s) = 0;
@@ -40,25 +39,21 @@ public:
 };
 
 template <typename T>
-class LockedDebugBuffer : public PrintableDebugBuffer
+class DebugBufferItem : public PrintableDebugBufferItem
 {
 public:
-    LockedDebugBuffer(const T& item)
+    DebugBufferItem(const T& item)
     {
         set(item);
     }
 
     void set(const T& item)
     {
-        std::lock_guard<std::mutex> guard(m_lock);
-
         m_shadow = item;
     }
 
     T get(void) const
     {
-        std::lock_guard<std::mutex> guard(m_lock);
-
         return m_shadow;
     }
 
@@ -77,18 +72,23 @@ public:
 
 private:
     T m_shadow;
-    std::mutex m_lock;
 };
 
-namespace DebugBuffer {
-    SharedDebugBufferQueue createSharedDebugBufferQueue();
-    void print(SharedDebugBufferQueue q, std::ostream &out);
+class DebugBuffer
+{
+public:
+    void insert(const SharedPrintableDebugBufferItem& item);
 
-    template <typename T>
-    SharedPrintableDebugBuffer pack(T d)
-    {
-        return SharedPrintableDebugBuffer(new LockedDebugBuffer<T>(d));
-    };
-} // namespace DebugBuffer
+private:
+    std::mutex m_lock;
+    std::queue<SharedPrintableDebugBufferItem> m_items;
+    friend std::ostream& operator<<(std::ostream &s, DebugBuffer& p);
+};
+
+template <typename T>
+SharedPrintableDebugBufferItem pack(T d)
+{
+    return SharedPrintableDebugBufferItem(new DebugBufferItem<T>(d));
+};
 
 } // namespace Nl

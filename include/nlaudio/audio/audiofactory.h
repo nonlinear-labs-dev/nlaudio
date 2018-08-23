@@ -97,7 +97,7 @@ struct JobHandle {
     SharedBufferHandle inBuffer;
     SharedBufferHandle outBuffer;
     SharedBufferHandle inMidiBuffer;
-    SharedDebugBufferQueue debugBufferQueue;
+    //SharedDebugBufferQueue debugBufferQueue;
 };
 
 

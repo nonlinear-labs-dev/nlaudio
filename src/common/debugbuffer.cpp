@@ -22,22 +22,29 @@
 #include <iostream>
 
 namespace Nl {
-namespace DebugBuffer {
 
-SharedDebugBufferQueue createSharedDebugBufferQueue()
+void DebugBuffer::insert(const SharedPrintableDebugBufferItem& item)
 {
-    auto *queuePtr = new std::queue<SharedPrintableDebugBuffer>();
-    return std::shared_ptr<std::queue<SharedPrintableDebugBuffer>>(queuePtr);
+    std::lock_guard<std::mutex> guard(m_lock);
+    m_items.push(item);
 }
 
-void print(SharedDebugBufferQueue q, std::ostream &out)
+std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
 {
-    while (!q->empty()) {
-        std::shared_ptr<Nl::PrintableDebugBuffer> curr = q->front();
-        out << curr->print();
-        q->pop();
+    std::queue<SharedPrintableDebugBufferItem> copy;
+
+    {
+        std::lock_guard<std::mutex> guard(p.m_lock);
+        copy = p.m_items;
+        while (!p.m_items.empty()) p.m_items.pop();
     }
+
+    while (!copy.empty()) {
+        s << copy.front()->print();
+        copy.pop();
+    }
+
+    return s;
 }
 
-} // namespace DebugBuffer
 } // namespace NL
