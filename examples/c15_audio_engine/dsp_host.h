@@ -14,7 +14,9 @@
 #include <vector>
 #include "paramengine.h"
 #include "tcd_decoder.h"
+
 #include "tcd_log.h"
+#include "dsp_host_examine.h"
 
 /* for testing purposes */
 #include "pe_defines_testconfig.h"
@@ -89,6 +91,9 @@ public:
     void testInit();
     /* Debug Stuff */
     tcd_log m_log;
+    examine_tcd_input_log m_tcd_input_log;
+    examine_param m_param_status;
+    examine_signal m_signal_status;
 
     /* Audio Engine */
     ae_soundgenerator m_soundgenerator[dsp_number_of_voices];
