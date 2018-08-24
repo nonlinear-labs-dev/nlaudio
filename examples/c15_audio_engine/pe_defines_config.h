@@ -20,11 +20,15 @@
 #define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
 #define test_reverbSmoother         1               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
 
+/* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */
+
+#define log_examine                 1               // Examine Mechanism (Log, Param, Signal) - 0: disabled, 1: enabled
+#define log_param_id                0               // Parameter ID of observed Parameter (internal ID, not TCD ID)
+#define log_signal_id               0               // Signal ID of observed Signal
+
 /* Test poly Key Parameters */
 
-//#define par_key_phaseA              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
-//#define par_key_phaseB              0               // constant values to be sent during KeyDown sequence, tcd range: [-7200 ... 7200]
-#define par_unisono_phase           0               //
+#define par_unisono_phase           0               // instead of two separate phases (as used previously), only one Unisono Phase needs to be transmitted
 #define par_voice_pan               0               // constant values to be sent during KeyDown sequence, tcd range: [-8000 ... 8000]
 
 /* Main Configuration                               (prepared for maximal 20 Voices) */

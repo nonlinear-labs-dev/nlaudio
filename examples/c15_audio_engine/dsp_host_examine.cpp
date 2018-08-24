@@ -55,12 +55,34 @@ std::ostream& operator<<(std::ostream& lhs, const examine_tcd_input_log& rhs)
 
 std::ostream& operator<<(std::ostream& lhs, const examine_param& rhs)
 {
-    //
+    lhs << std::endl << "Examine Parameter (" << rhs.m_selected << "):\n" << std::endl;
+    lhs << "ID\tIndex\tSize\tClock\tPoly\tScale\tArg\tPost\tNorm" << std::endl;
+    lhs << rhs.m_id << "\t" << rhs.m_index << "\t" << rhs.m_size << "\t" << rhs.m_clockType << "\t";
+    lhs << rhs.m_polyType << "\t" << rhs.m_scaleId << "\t" << rhs.m_scaleArg << "\t";
+    lhs << rhs.m_postId << "\t" << rhs.m_normalize << std::endl;
+
+    lhs << "\nRender Status (per voice):\n" << std::endl;
+    lhs << "Voice\tState\tPre\tSignal\t\tdx0\t\tdx1\t\tx\t\tStart\t\tDiff\t\tDest" << std::endl;
+    for(uint32_t i = 0; i < rhs.m_size; i++)
+    {
+        lhs << i << "\t" << rhs.m_state[i] << "\t" << rhs.m_preload[i] << "\t" << rhs.m_signal[i] << "\t\t";
+        lhs << rhs.m_dx[i][0] << "\t\t" << rhs.m_dx[i][1] << "\t\t" << rhs.m_x[i] << "\t\t";
+        lhs << rhs.m_start[i] << "\t\t" << rhs.m_diff[i] << "\t\t" << rhs.m_dest[i] << std::endl;
+    }
+
     return lhs;
 }
 
 std::ostream& operator<<(std::ostream& lhs, const examine_signal& rhs)
 {
-    //
+    lhs << std::endl << "Examine Signal (" << rhs.m_selected << "):\n" << std::endl;
+
+    for(uint32_t i = 0; i < rhs.m_size; i++)
+    {
+        lhs << rhs.m_value[i] << "\t";
+    }
+
+    lhs << std::endl;
+
     return lhs;
 }

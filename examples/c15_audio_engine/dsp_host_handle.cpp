@@ -31,10 +31,10 @@ namespace DSP_HOST_HANDLE {
         while ((c = jh.cmdBuffer->get()) != Nl::CommandBuffer::CMD_NO_CMD) {
             switch (c) {
             case Nl::CommandBuffer::CMD_GET_PARAM:
-                    jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_PARAM"));
+                    jh.debugBuffer->insert(pack<::examine_param>(m_host.m_param_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_SIGNAL:
-                    jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_SIGNAL"));
+                    jh.debugBuffer->insert(pack<::examine_signal>(m_host.m_signal_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_TCD_INPUT:
                     jh.debugBuffer->insert(pack<::examine_tcd_input_log>(m_host.m_tcd_input_log));

@@ -35,8 +35,24 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     /* Load Initial Preset (TCD zero for every Parameter) */
     loadInitialPreset();
 
-    /* TCD Log */
+    /* Examine functionality: TCD MIDI Input Log, observed Parameter, observed Signal */
+#if log_examine
     m_tcd_input_log.reset();
+
+    m_param_status.m_selected = log_param_id;
+    m_param_status.m_id = m_params.m_head[m_param_status.m_selected].m_id;
+    m_param_status.m_index = m_params.m_head[m_param_status.m_selected].m_index;
+    m_param_status.m_size = m_params.m_head[m_param_status.m_selected].m_size;
+    m_param_status.m_clockType = m_params.m_head[m_param_status.m_selected].m_clockType;
+    m_param_status.m_polyType = m_params.m_head[m_param_status.m_selected].m_polyType;
+    m_param_status.m_scaleId = m_params.m_head[m_param_status.m_selected].m_scaleId;
+    m_param_status.m_postId = m_params.m_head[m_param_status.m_selected].m_postId;
+    m_param_status.m_normalize = m_params.m_head[m_param_status.m_selected].m_normalize;
+    m_param_status.m_scaleArg = m_params.m_head[m_param_status.m_selected].m_scaleArg;
+
+    m_signal_status.m_selected = log_signal_id;
+    m_signal_status.m_size = m_voices;
+#endif
 }
 
 /* */
@@ -149,8 +165,28 @@ void dsp_host::tickMain()
     /* AUDIO_ENGINE: mono dsp phase */
     makeMonoSound(m_paramsignaldata[0], fadePoint);
 
-    /* TCD Log */
+    /* Examine Updates (Log, Param, Signal) */
+#if log_examine
     m_tcd_input_log.tick();
+
+    for(v = 0; v < m_param_status.m_size; v++)
+    {
+        m_param_status.m_state[v] = m_params.m_body[m_param_status.m_index + v].m_state;
+        m_param_status.m_preload[v] = m_params.m_body[m_param_status.m_index + v].m_preload;
+        m_param_status.m_signal[v] = m_params.m_body[m_param_status.m_index + v].m_signal;
+        m_param_status.m_dx[v][0] = m_params.m_body[m_param_status.m_index + v].m_dx[0];
+        m_param_status.m_dx[v][1] = m_params.m_body[m_param_status.m_index + v].m_dx[1];
+        m_param_status.m_x[v] = m_params.m_body[m_param_status.m_index + v].m_x;
+        m_param_status.m_start[v] = m_params.m_body[m_param_status.m_index + v].m_start;
+        m_param_status.m_diff[v] = m_params.m_body[m_param_status.m_index + v].m_diff;
+        m_param_status.m_dest[v] = m_params.m_body[m_param_status.m_index + v].m_dest;
+    }
+
+    for(v = 0; v < m_signal_status.m_size; v++)
+    {
+        m_signal_status.m_value[v] = m_paramsignaldata[v][m_signal_status.m_selected];
+    }
+#endif
 
     /* finally: update (fast and slow) clock positions */
     m_clockPosition[2] = (m_clockPosition[2] + 1) % m_clockDivision[2];
@@ -166,7 +202,9 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
     float f;                                        // parsing variable for floating point values
     _status &= 127;
     /* TCD Log */
+#if log_examine
     m_tcd_input_log.add(_status, _data0, _data1);
+#endif
     switch(m_decoder.getCommandId(_status))
     {
     case 0:
