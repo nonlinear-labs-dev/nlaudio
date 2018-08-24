@@ -36,7 +36,7 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     loadInitialPreset();
 
     /* TCD Log */
-    m_log.reset();
+    m_tcd_input_log.reset();
 }
 
 /* */
@@ -150,7 +150,7 @@ void dsp_host::tickMain()
     makeMonoSound(m_paramsignaldata[0], fadePoint);
 
     /* TCD Log */
-    m_log.tick();
+    m_tcd_input_log.tick();
 
     /* finally: update (fast and slow) clock positions */
     m_clockPosition[2] = (m_clockPosition[2] + 1) % m_clockDivision[2];
@@ -164,9 +164,10 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
     int32_t i;                                      // parsing variable for signed integers
     int32_t v = static_cast<int32_t>(m_voices);     // parsing variable representing number of voices as signed integer
     float f;                                        // parsing variable for floating point values
+    _status &= 127;
     /* TCD Log */
-    m_log.add(_status, _data0, _data1);
-    switch(m_decoder.getCommandId(_status & 127))
+    m_tcd_input_log.add(_status, _data0, _data1);
+    switch(m_decoder.getCommandId(_status))
     {
     case 0:
         /* ignore */
@@ -695,11 +696,9 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             }
             break;
         case 4:
-            /* TCD Log */
-            testGetTCDLogData();
             /* Print Body */
-            //std::cout << "print parameters: BODY" << std::endl;
-            //testGetParamRenderData();
+            std::cout << "print parameters: BODY" << std::endl;
+            testGetParamRenderData();
             break;
         case 5:
             /* Print Signal */
@@ -1052,13 +1051,6 @@ void dsp_host::testGetParamRenderData()
             index++;
         }
     }
-}
-
-/* TCD Log */
-void dsp_host::testGetTCDLogData()
-{
-    m_log.get();
-    m_log.reset();
 }
 
 /* prepare destinations */

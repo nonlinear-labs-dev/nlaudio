@@ -37,7 +37,8 @@ namespace DSP_HOST_HANDLE {
                     jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_SIGNAL"));
                 break;
             case Nl::CommandBuffer::CMD_GET_TCD_INPUT:
-                    jh.debugBuffer->insert(pack<std::string>("Hello from TR: Triggered CMD_GET_TCD_INPUT"));
+                    jh.debugBuffer->insert(pack<::examine_tcd_input_log>(m_host.m_tcd_input_log));
+                    m_host.m_tcd_input_log.reset();
                 break;
             case Nl::CommandBuffer::CMD_NO_CMD:
                 // Just to suppress the warning (NEVER use this element)
@@ -95,7 +96,6 @@ namespace DSP_HOST_HANDLE {
             }
         }
 
-        //jh.debugBuffer->insert(Nl::pack<::param_body>(m_host.m_params.m_body[0]));
     }
 
 

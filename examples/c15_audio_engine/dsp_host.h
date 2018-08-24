@@ -15,7 +15,6 @@
 #include "paramengine.h"
 #include "tcd_decoder.h"
 
-#include "tcd_log.h"
 #include "dsp_host_examine.h"
 
 /* for testing purposes */
@@ -86,11 +85,9 @@ public:
     void testGetSignalData();                                           // print signal
     void testGetParamHeadData();                                        // print param configuration
     void testGetParamRenderData();                                      // print param rendering state
-    void testGetTCDLogData();                                           // print TCD Log
     void testParseDestination(int32_t _value);                          // send destinations accordingly
     void testInit();
     /* Debug Stuff */
-    tcd_log m_log;
     examine_tcd_input_log m_tcd_input_log;
     examine_param m_param_status;
     examine_signal m_signal_status;
