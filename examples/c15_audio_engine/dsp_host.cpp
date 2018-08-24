@@ -182,6 +182,8 @@ void dsp_host::tickMain()
         m_param_status.m_dest[v] = m_params.m_body[m_param_status.m_index + v].m_dest;
     }
 
+    m_signal_status.m_left = m_mainOut_L;
+    m_signal_status.m_right = m_mainOut_R;
     for(v = 0; v < m_signal_status.m_size; v++)
     {
         m_signal_status.m_value[v] = m_paramsignaldata[v][m_signal_status.m_selected];

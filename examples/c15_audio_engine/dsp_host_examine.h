@@ -72,6 +72,8 @@ struct examine_signal
     uint32_t m_selected = 0;
     uint32_t m_size = 0;
     float m_value[dsp_number_of_voices] = {};
+    float m_left = 0.f;
+    float m_right = 0.f;
 };
 
 std::ostream& operator<<(std::ostream& lhs, const examine_signal& rhs);
