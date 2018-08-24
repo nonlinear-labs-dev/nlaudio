@@ -30,17 +30,26 @@ void examine_tcd_input_log::add(const uint32_t _cmdId, const uint32_t _arg0, con
 
 std::ostream& operator<<(std::ostream& lhs, const examine_tcd_input_log& rhs)
 {
-    lhs << "TCD MIDI Input Log: (Length: " << rhs.m_length << ")" << std::endl;
-    lhs << "(elapsed Samples, Command, Databyte0, Databyte1)" << std::endl;
-    uint32_t idx = rhs.m_startPos;
-    for(uint32_t i = 0; i < rhs.m_length; i++)
+    lhs << std::endl << "TCD MIDI Input Log: (Length: " << rhs.m_length << ")" << std::endl;
+
+    if(rhs.m_length > 0)
     {
-        lhs << rhs.m_entry[idx].m_time << "\t: ";
-        lhs << tcd_command_names[rhs.m_entry[idx].m_cmdId] << " ";
-        lhs << rhs.m_entry[idx].m_arg << std::endl;
-        idx = (idx + 1) % tcd_log_buffersize;
+        lhs << "(elapsed Samples\t: Command Argument, ...) - Argument is always unsigned 14 bit" << std::endl;
+        uint32_t idx = rhs.m_startPos;
+        for(uint32_t i = 0; i < rhs.m_length; i++)
+        {
+            if(rhs.m_entry[idx].m_time > 0)
+            {
+                lhs << std::endl;
+                lhs << rhs.m_entry[idx].m_time << "\t: ";
+            }
+            lhs << tcd_command_names[rhs.m_entry[idx].m_cmdId] << " ";
+            lhs << rhs.m_entry[idx].m_arg << ", ";
+            idx = (idx + 1) % tcd_log_buffersize;
+        }
+        lhs << std::endl << "\nEnd of TCD MIDI Input Log" << std::endl;
     }
-    lhs << "End of TCD MIDI Input Log" << std::endl;
+
     return lhs;
 }
 
