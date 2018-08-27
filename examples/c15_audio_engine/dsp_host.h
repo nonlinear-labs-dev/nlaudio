@@ -93,11 +93,9 @@ public:
     void testInit();
 #endif
     /* Debug Stuff */
-#if log_examine
     examine_tcd_input_log m_tcd_input_log;
     examine_param m_param_status;
     examine_signal m_signal_status;
-#endif
 
     /* Audio Engine */
     ae_soundgenerator m_soundgenerator[dsp_number_of_voices];
