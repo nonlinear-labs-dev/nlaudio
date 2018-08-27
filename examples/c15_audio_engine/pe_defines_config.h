@@ -14,9 +14,8 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
-#define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
+#define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
-#define test_unisonCluster          0               // 0: transmit only played note, 1: transmit played note and second one (one octave apart)
 #define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
 #define test_reverbSmoother         1               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
 
@@ -26,10 +25,15 @@
 #define log_param_id                0               // Parameter ID of observed Parameter (internal ID, not TCD ID)
 #define log_signal_id               0               // Signal ID of observed Signal
 
-/* Test poly Key Parameters */
+#if test_inputModeFlag == 1
 
-#define par_unisono_phase           0               // instead of two separate phases (as used previously), only one Unisono Phase needs to be transmitted
-#define par_voice_pan               0               // constant values to be sent during KeyDown sequence, tcd range: [-8000 ... 8000]
+    /* Test poly Key Parameters (in Remote Mode only) */
+
+    #define test_unisonCluster      0               // 0: transmit only played note, 1: transmit played note and second one (one octave apart)
+    #define par_unisono_phase       0               // instead of two separate phases (as used previously), only one Unisono Phase needs to be transmitted
+    #define par_voice_pan           0               // constant values to be sent during KeyDown sequence, tcd range: [-8000 ... 8000]#endif
+
+#endif
 
 /* Main Configuration                               (prepared for maximal 20 Voices) */
 

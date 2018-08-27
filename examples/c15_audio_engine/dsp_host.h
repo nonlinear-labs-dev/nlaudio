@@ -12,13 +12,16 @@
 
 #include <stdint.h>
 #include <vector>
+#include "pe_defines_config.h"
 #include "paramengine.h"
 #include "tcd_decoder.h"
 
 #include "dsp_host_examine.h"
 
 /* for testing purposes */
+#if test_inputModeFlag == 1
 #include "pe_defines_testconfig.h"
+#endif
 
 /* Audio Engine */
 #include "ae_soundgenerator.h"
@@ -68,6 +71,7 @@ public:
     void keyDown(uint32_t _voiceId, float _velocity);                   // key down event trigger
     void keyApply(uint32_t _voiceId);                                   // key application and distribution (to voice selection)
     /* test stuff */
+#if test_inputModeFlag == 1
     uint32_t m_test_voiceId = 0;                                        // a rather sloppy voice allocation approach
     uint32_t m_test_noteId[128] = {};                                   // active note tracking
     const float m_test_normalizeMidi = (1.f / 127.f);                   // normalize midi values
@@ -87,6 +91,7 @@ public:
     void testGetParamRenderData();                                      // print param rendering state
     void testParseDestination(int32_t _value);                          // send destinations accordingly
     void testInit();
+#endif
     /* Debug Stuff */
     examine_tcd_input_log m_tcd_input_log;
     examine_param m_param_status;

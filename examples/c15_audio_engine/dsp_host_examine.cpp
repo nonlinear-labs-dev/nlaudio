@@ -82,7 +82,7 @@ std::ostream& operator<<(std::ostream& lhs, const examine_signal& rhs)
         lhs << rhs.m_value[i] << "\t";
     }
 
-    lhs << std::endl << "Output Signal (left, right): " << rhs.m_left << ", " << rhs.m_right << std::endl;
+    lhs << std::endl << "\nOutput Signal (left, right): " << rhs.m_left << ", " << rhs.m_right << std::endl;
 
     return lhs;
 }

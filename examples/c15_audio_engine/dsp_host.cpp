@@ -7,8 +7,6 @@ dsp_host::dsp_host()
     /* init main audio output signal */
     m_mainOut_R = 0.f;
     m_mainOut_L = 0.f;
-    /* init shared signal array */
-//    m_paramsignaldata[dsp_number_of_voices][sig_number_of_signal_items] = {};
 }
 
 /* proper init - initialize engine(s) according to sampleRate and polyphony */
@@ -184,6 +182,7 @@ void dsp_host::tickMain()
 
     m_signal_status.m_left = m_mainOut_L;
     m_signal_status.m_right = m_mainOut_R;
+
     for(v = 0; v < m_signal_status.m_size; v++)
     {
         m_signal_status.m_value[v] = m_paramsignaldata[v][m_signal_status.m_selected];
@@ -647,6 +646,8 @@ void dsp_host::keyApply(uint32_t _voiceId)
 /* End of Main Definition, Test functionality below:
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *
  */
+
+#if test_inputModeFlag == 1
 
 /* midi input for test purposes (reMote) */
 void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
@@ -1135,7 +1136,7 @@ void dsp_host::testInit()
     testLoadPreset(1);          // load default preset
 }
 
-
+#endif
 
 /******************************************************************************/
 /**
