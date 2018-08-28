@@ -18,6 +18,7 @@
 ***/
 
 #include <iostream>
+#include <chrono>
 
 #include "audio/audioalsa.h"
 #include "audio/audioalsaexception.h"
@@ -304,8 +305,9 @@ SampleSpecs AudioAlsa::getSpecs()
 	specs.buffersizeInBytes = specs.bytesPerSample * specs.channels * specs.buffersizeInFrames;
 	specs.buffersizeInBytesPerPeriode = specs.buffersizeInBytes / getBufferCount();
 
-	specs.latency = static_cast<double>(specs.buffersizeInFramesPerPeriode) /
-			static_cast<double>(specs.samplerate) * 1000.0;
+    specs.latency = std::chrono::microseconds
+            (static_cast<long>(static_cast<double>(specs.buffersizeInFramesPerPeriode) /
+            static_cast<double>(specs.samplerate) * 1000.0 * 1000.0));
 
 	return specs;
 }
