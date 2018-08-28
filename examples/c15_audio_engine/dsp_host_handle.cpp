@@ -27,6 +27,11 @@ namespace DSP_HOST_HANDLE {
         if (sw == nullptr) {
             sw.reset(new StopWatch("AudioCallback", 100, StopWatch::SUMMARY, sampleSpecs.latency));
         }
+        //TODO: Fixme. This RAII variant seems not to work
+        //StopBlockTime(sw, "dsp_host");
+        sw->start("callback");
+
+       // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         JobHandle jh = std::any_cast<JobHandle>(ptr);
 
@@ -52,7 +57,6 @@ namespace DSP_HOST_HANDLE {
             }
         }
 
-        StopBlockTime(sw, "dsp_host");
         auto midiBuffer = getBufferForName("MidiBuffer");
 
         //---------------- Retrieve Midi Information if midi values have changed
@@ -101,13 +105,9 @@ namespace DSP_HOST_HANDLE {
                 setSample(out, outputSample, frameIndex, channelIndex, sampleSpecs);
             }
         }
+        sw->stop();
 
     }
-
-
-
-
-
 
     // Matthias: added polyphony as argument
     JobHandle dspHostTCDControl(const AlsaAudioCardIdentifier &audioOutCard,

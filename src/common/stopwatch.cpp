@@ -34,8 +34,7 @@ namespace Nl {
 StopBlockTime::StopBlockTime(SharedStopWatchHandle sw, std::string name = "noname") :
     m_currentStopWatch(sw)
 {
-    if (m_currentStopWatch)
-        m_currentStopWatch->start(name);
+    m_currentStopWatch->start(name);
 }
 
 /** \ingroup Tools
@@ -47,10 +46,7 @@ StopBlockTime::StopBlockTime(SharedStopWatchHandle sw, std::string name = "nonam
 */
 StopBlockTime::~StopBlockTime()
 {
-    if (m_currentStopWatch)
-        m_currentStopWatch->stop();
-
-    m_currentStopWatch = nullptr;
+    m_currentStopWatch->stop();
 }
 
 /** \ingroup Tools
@@ -115,12 +111,10 @@ void StopWatch::stop()
     m_currentTimeStamp.stop = std::chrono::high_resolution_clock::now();
 
     // Do moving window, if 10000 values are reached
-    if (m_timestamps.size() >= 10000)
+    if (m_timestamps.size() >= m_windowSize)
         m_timestamps.pop();
 
-    // Protect by mutex
     m_timestamps.push(m_currentTimeStamp);
-
 
     m_waitingForStop = false;
 }
@@ -198,9 +192,9 @@ std::ostream& StopWatch::printSummary(std::ostream &rhs)
     }
 
     unsigned long itemCount = workCopy.size();
-    unsigned long sum = 0;
-    unsigned int min = std::numeric_limits<unsigned int>::max();
-    unsigned int max = 0;
+    double sum = 0;
+    double min = std::numeric_limits<unsigned int>::max();
+    double max = 0;
     std::string minName = "";
     std::string maxName = "";
 
@@ -208,7 +202,8 @@ std::ostream& StopWatch::printSummary(std::ostream &rhs)
         Timestamp cur = workCopy.front();
         workCopy.pop();
 
-        unsigned int delta_us = std::chrono::duration_cast<std::chrono::microseconds>(cur.stop-cur.start).count();
+        double delta_us = std::chrono::duration_cast<std::chrono::microseconds>(cur.stop-cur.start).count();
+
         sum += delta_us;
 
         if (delta_us < min) {
