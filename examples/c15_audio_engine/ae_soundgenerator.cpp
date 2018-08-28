@@ -209,13 +209,10 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 
 
     //**************************** Feedback Mix ******************************//
-    /// -> the crossfade for ENV_G_SIG, ENV_C_SIG and SHP_A_FBEC/SHP_B_FBEC will soon be part of processing
-    tmpVar    = NlToolbox::Crossfades::unipolarCrossFade(_signal[ENV_G_SIG], _signal[ENV_C_SIG], _signal[SHP_A_FBEC]);
-    tmpVar   *= _feedbackSample;
+    tmpVar = _feedbackSample * _signal[SHP_A_FBEC];
     m_out_A = NlToolbox::Crossfades::unipolarCrossFade(m_out_A, tmpVar, _signal[SHP_A_FBM]);
 
-    tmpVar    = NlToolbox::Crossfades::unipolarCrossFade(_signal[ENV_G_SIG], _signal[ENV_C_SIG], _signal[SHP_B_FBEC]);
-    tmpVar   *= _feedbackSample;
+    tmpVar = _feedbackSample * _signal[SHP_B_FBEC];
     m_out_B = NlToolbox::Crossfades::unipolarCrossFade(m_out_B, tmpVar, _signal[SHP_B_FBM]);
 
 
