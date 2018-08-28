@@ -90,6 +90,7 @@ struct paramengine
     param_body m_body[sig_number_of_param_items];
     exponentiator m_convert;
     param_utility m_utilities[sig_number_of_utilities];
+    float m_env_c_clipFactor[dsp_number_of_voices];
 #if test_whichEnvelope == 0
     env_engine m_envelopes;
 #elif test_whichEnvelope == 1
