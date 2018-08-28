@@ -32,6 +32,8 @@ namespace Nl {
 
 class StopWatch;
 
+typedef std::shared_ptr<StopWatch> SharedStopWatchHandle;
+
 /** \ingroup Tools
  * \struct Timestamp - Stores time stamps for execution time measurements.
  *
@@ -47,8 +49,8 @@ struct Timestamp {
  * \class StopFunctionTime
  * \brief Helper class, that measures time duration for the time the object exists.
  *
- * This class calls StopWatch::start("") in constructor ans StopWatch::stop() in destructor.
- * Hence it can be used like this, to measure the total executiontime of a function:
+ * This class calls StopWatch::start("") in constructor and StopWatch::stop() in destructor.
+ * Hence it can be used like this, to measure the total execution time of a function:
  *
  * \code{.cpp}
  * StopWatch sw();
@@ -65,10 +67,10 @@ struct Timestamp {
 class StopBlockTime
 {
 public:
-    StopBlockTime(std::shared_ptr<StopWatch> sw, std::string name);
+    StopBlockTime(SharedStopWatchHandle sw, std::string name);
     ~StopBlockTime();
 private:
-    std::shared_ptr<StopWatch> m_currentStopWatch;
+    SharedStopWatchHandle m_currentStopWatch;
 };
 
 /** \ingroup Tools
@@ -97,7 +99,7 @@ public:
         DETAILED
     };
 
-    StopWatch(const std::string& name, uint32_t windowSize, Mode m);
+    StopWatch(const std::string& name, uint32_t windowSize, Mode m, std::chrono::microseconds maxBuffertime);
     void start(const std::string& name);
     void stop();
 
@@ -111,11 +113,13 @@ private:
     std::string m_name;
     uint32_t m_windowSize;
     Mode m_mode;
+    std::chrono::microseconds m_maxBuffertime;
 
     std::ostream& printDetailed(std::ostream& rhs);
     std::ostream& printSummary(std::ostream& rhs);
 };
 
 std::ostream& operator<<(std::ostream& lhs, StopWatch& rhs);
+std::ostream& operator<<(std::ostream& lhs, SharedStopWatchHandle& rhs);
 
 } // namespace Nl

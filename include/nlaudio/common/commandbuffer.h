@@ -35,6 +35,7 @@ public:
         CMD_GET_TCD_INPUT,
         CMD_GET_SIGNAL,
         CMD_GET_PARAM,
+        CMD_GET_CPU_LOAD,
         CMD_NO_CMD = std::numeric_limits<int>::max() // Sentinel
     };
 

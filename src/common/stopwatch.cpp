@@ -31,7 +31,7 @@ namespace Nl {
  * Calls StopWatch::start() in a RAII fashion.
  *
 */
-StopBlockTime::StopBlockTime(std::shared_ptr<StopWatch> sw, std::string name = "noname") :
+StopBlockTime::StopBlockTime(SharedStopWatchHandle sw, std::string name = "noname") :
     m_currentStopWatch(sw)
 {
     if (m_currentStopWatch)
@@ -60,14 +60,15 @@ StopBlockTime::~StopBlockTime()
  * Creates a StopWatch object
  *
 */
-StopWatch::StopWatch(const std::string &name, uint32_t windowSize, Mode m) :
+StopWatch::StopWatch(const std::string &name, uint32_t windowSize, Mode m, std::chrono::microseconds maxBuffertime) :
     m_mutex(),
     m_timestamps(),
     m_currentTimeStamp(),
     m_waitingForStop(false),
     m_name(name),
     m_windowSize(windowSize),
-    m_mode(m)
+    m_mode(m),
+    m_maxBuffertime(maxBuffertime)
 {
 }
 
@@ -154,12 +155,11 @@ std::ostream& StopWatch::printDetailed(std::ostream &rhs)
 {
     //TODO: Make this print the whole buffer with all details.
     //      Not used right now.
-
-    // Create an new empty copy and swap with the full one.
-    m_mutex.lock();
     std::queue<Timestamp> workCopy;
-    std::swap(m_timestamps, workCopy);
-    m_mutex.unlock();
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        std::swap(m_timestamps, workCopy);
+    }
 
     while (!workCopy.empty()) {
         Timestamp cur = workCopy.front();
@@ -191,11 +191,11 @@ std::ostream& StopWatch::printDetailed(std::ostream &rhs)
 */
 std::ostream& StopWatch::printSummary(std::ostream &rhs)
 {
-    // Create an new empty copy and swap with the full one.
-    m_mutex.lock();
     std::queue<Timestamp> workCopy;
-    std::swap(m_timestamps, workCopy);
-    m_mutex.unlock();
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        std::swap(m_timestamps, workCopy);
+    }
 
     unsigned long itemCount = workCopy.size();
     unsigned long sum = 0;
@@ -222,15 +222,17 @@ std::ostream& StopWatch::printSummary(std::ostream &rhs)
         }
     }
 
-    double mean = static_cast<double>(sum) / static_cast<double>(itemCount);
+    double ave = static_cast<double>(sum) / static_cast<double>(itemCount);
+    double minCpu = min * 100.0 / static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(m_maxBuffertime).count());
+    double maxCpu = max * 100.0 / static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(m_maxBuffertime).count());
+    double aveCpu = ave * 100.0 / static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(m_maxBuffertime).count());
 
     rhs << std::setiosflags(std::ios::fixed) << std::setprecision(2)
         << "Timing: [" << m_name << "] " << std::endl
-        << "values=" << itemCount << " "
-        << "sum=" << sum << "us "
-        << "min[" << minName << "]=" << min << "us "
-        << "max[" << maxName << "]=" << max << "us "
-        << "mean=" << mean << "us" << std::endl;
+        << "    Total runs: " << itemCount << "  Total time: " << sum << "us" << std::endl
+        << "    Fastest: " << min << "us -> CPU: " << minCpu << "%" << std::endl
+        << "    Slowest: " << max << "us -> CPU: " << maxCpu << "%" << std::endl
+        << "    Average: " << ave << "us -> CPU: " << aveCpu << "%" << std::endl;
 
     return rhs;
 }
@@ -252,6 +254,11 @@ std::ostream& StopWatch::printSummary(std::ostream &rhs)
 std::ostream& operator<<(std::ostream& lhs, StopWatch& rhs)
 {
     return rhs.print(lhs);
+}
+
+std::ostream& operator<<(std::ostream& lhs, SharedStopWatchHandle& rhs)
+{
+    return rhs->print(lhs);
 }
 
 }

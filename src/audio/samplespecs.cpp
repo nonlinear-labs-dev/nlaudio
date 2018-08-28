@@ -19,6 +19,7 @@
 
 
 #include <iostream>
+#include <chrono>
 
 #include "audio/samplespecs.h"
 
@@ -205,7 +206,9 @@ void setSample(u_int8_t* out, int32_t sample, u_int32_t frameIndex, u_int32_t ch
 */
 std::ostream& operator<<(std::ostream& lhs, const SampleSpecs& rhs)
 {
-	lhs << "Samplerate:                        " << rhs.samplerate << std::endl <<
+    auto latencyMs = std::chrono::duration_cast<std::chrono::microseconds>(rhs.latency);
+
+    lhs << "Samplerate:                        " << rhs.samplerate << std::endl <<
 		   "Buffersize in Samples:             " << rhs.buffersizeInSamples << std::endl <<
 		   "Buffersize in Samples Per Periode: " << rhs.buffersizeInSamplesPerPeriode << std::endl <<
 		   "Buffersize in Frames:              " << rhs.buffersizeInFrames << std::endl <<
@@ -219,7 +222,7 @@ std::ostream& operator<<(std::ostream& lhs, const SampleSpecs& rhs)
 		   "isLittleEndian:                    " << rhs.isLittleEndian << std::endl <<
 		   "isFloat                            " << rhs.isFloat << std::endl <<
 		   "isSigned:                          " << rhs.isSigned << std::endl <<
-		   "latency:                           " << rhs.latency << " ms" << std::endl;
+           "latency:                           " << latencyMs.count() << " us" << std::endl;
 	return lhs;
 }
 

@@ -8,12 +8,11 @@
 #include "paramengine.h"
 #include <any>
 
-extern std::shared_ptr<Nl::StopWatch> sw;
-
 namespace Nl {
 namespace DSP_HOST_HANDLE {
 
     dsp_host m_host;    // renamed member dsp_host to m_host (Matthias)
+    SharedStopWatchHandle sw = nullptr;
 
     /** @brief    Callback function for Sine Generator and Audio Input - testing with ReMote 61
             @param    Input Buffer
@@ -22,8 +21,12 @@ namespace DSP_HOST_HANDLE {
             @param    buffer size
             @param    Sample Specs
     */
-    void dspHostCallback(uint8_t *out, const SampleSpecs &sampleSpecs __attribute__ ((unused)), std::any ptr)
+    void dspHostCallback(uint8_t *out, const SampleSpecs &sampleSpecs, std::any ptr)
     {
+
+        if (sw == nullptr) {
+            sw.reset(new StopWatch("AudioCallback", 100, StopWatch::SUMMARY, sampleSpecs.latency));
+        }
 
         JobHandle jh = std::any_cast<JobHandle>(ptr);
 
@@ -39,6 +42,9 @@ namespace DSP_HOST_HANDLE {
             case Nl::CommandBuffer::CMD_GET_TCD_INPUT:
                     jh.debugBuffer->insert(pack<::examine_tcd_input_log>(m_host.m_tcd_input_log));
                     m_host.m_tcd_input_log.reset();
+                break;
+            case Nl::CommandBuffer::CMD_GET_CPU_LOAD:
+                    jh.debugBuffer->insert(pack<SharedStopWatchHandle>(sw));
                 break;
             case Nl::CommandBuffer::CMD_NO_CMD:
                 // Just to suppress the warning (NEVER use this element)

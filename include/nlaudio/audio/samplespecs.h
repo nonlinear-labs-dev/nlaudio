@@ -22,6 +22,7 @@
 #include <iosfwd>
 #include <limits>
 #include <stdint.h>
+#include <chrono>
 
 namespace Nl {
 
@@ -44,7 +45,7 @@ struct SampleSpecs {
 	bool isFloat;								///< Are we working with floating point samples?
 	bool isLittleEndian;						///< Are we working in little endian?
 	bool isSigned;								///< Are we using a sample format with signed values?
-	double latency;								///< Latency, which is buffersizeInFramesPerPeriode / samplerate
+    std::chrono::microseconds latency;          ///< Latency, which is buffersizeInFramesPerPeriode / samplerate
 	// bool isInterleaved
 };
 std::ostream& operator<<(std::ostream& lhs, const SampleSpecs& rhs);

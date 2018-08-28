@@ -83,7 +83,7 @@ template <typename T>
 SharedPrintableDebugBufferItem pack(T d)
 {
     return SharedPrintableDebugBufferItem(new DebugBufferItem<T>(d));
-};
+}
 
 SharedDebugBuffer createSharedDebugBuffer();
 

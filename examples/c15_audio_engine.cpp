@@ -49,9 +49,6 @@
 
 using namespace std;
 
-//TODO: Glbal Variables are bad (even in a namespace)
-std::shared_ptr<Nl::StopWatch> sw(new Nl::StopWatch("AudioCallback", 10000, Nl::StopWatch::SUMMARY));
-
 //
 //#include "c15_audio_engine/soundgenerator.h"
 
@@ -204,6 +201,9 @@ int main(int argc, char **argv)
                 break;
             case 'c':
                 handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_TCD_INPUT);
+                break;
+            case 'd':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_CPU_LOAD);
                 break;
             case 'm':
                 if (handle.inMidiBuffer) {
