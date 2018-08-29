@@ -24,6 +24,7 @@
 #define log_examine                 1               // Examine Mechanism (Log, Param, Signal) - 0: disabled, 1: enabled
 #define log_param_id                0               // Parameter ID of observed Parameter (internal ID, not TCD ID)
 #define log_signal_id               0               // Signal ID of observed Signal
+#define log_force_mono              0               // force monophonic rendering (map any voice to id 0)
 
 #if test_inputModeFlag == 1
 
