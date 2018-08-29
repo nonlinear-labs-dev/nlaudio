@@ -51,6 +51,10 @@ namespace DSP_HOST_HANDLE {
             case Nl::CommandBuffer::CMD_GET_CPU_LOAD:
                     jh.debugBuffer->insert(pack<SharedStopWatchHandle>(sw));
                 break;
+            case Nl::CommandBuffer::CMD_RESET:
+                    m_host.reset();
+                    jh.debugBuffer->insert(pack<std::string>("Reset executed"));
+                break;
             case Nl::CommandBuffer::CMD_NO_CMD:
                 // Just to suppress the warning (NEVER use this element)
                 break;

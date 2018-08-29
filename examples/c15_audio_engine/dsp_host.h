@@ -122,4 +122,7 @@ public:
     uint32_t m_table_indx;
     uint32_t m_flush_indx;
     std::vector<float> m_raised_cos_table;
+
+    /* Audio Engine Reset */
+    void reset();
 };
