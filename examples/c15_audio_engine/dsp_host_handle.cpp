@@ -39,9 +39,11 @@ namespace DSP_HOST_HANDLE {
         while ((c = jh.cmdBuffer->get()) != Nl::CommandBuffer::CMD_NO_CMD) {
             switch (c) {
             case Nl::CommandBuffer::CMD_GET_PARAM:
+                    m_host.examineParameter();
                     jh.debugBuffer->insert(pack<::examine_param>(m_host.m_param_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_SIGNAL:
+                m_host.examineSignal();
                     jh.debugBuffer->insert(pack<::examine_signal>(m_host.m_signal_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_TCD_INPUT:

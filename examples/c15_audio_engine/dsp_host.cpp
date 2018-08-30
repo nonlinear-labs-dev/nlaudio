@@ -163,30 +163,9 @@ void dsp_host::tickMain()
     /* AUDIO_ENGINE: mono dsp phase */
     makeMonoSound(m_paramsignaldata[0], fadePoint);
 
-    /* Examine Updates (Log, Param, Signal) */
+    /* Examine Updates (Log) */
 #if log_examine
     m_tcd_input_log.tick();
-
-    for(v = 0; v < m_param_status.m_size; v++)
-    {
-        m_param_status.m_state[v] = m_params.m_body[m_param_status.m_index + v].m_state;
-        m_param_status.m_preload[v] = m_params.m_body[m_param_status.m_index + v].m_preload;
-        m_param_status.m_signal[v] = m_params.m_body[m_param_status.m_index + v].m_signal;
-        m_param_status.m_dx[v][0] = m_params.m_body[m_param_status.m_index + v].m_dx[0];
-        m_param_status.m_dx[v][1] = m_params.m_body[m_param_status.m_index + v].m_dx[1];
-        m_param_status.m_x[v] = m_params.m_body[m_param_status.m_index + v].m_x;
-        m_param_status.m_start[v] = m_params.m_body[m_param_status.m_index + v].m_start;
-        m_param_status.m_diff[v] = m_params.m_body[m_param_status.m_index + v].m_diff;
-        m_param_status.m_dest[v] = m_params.m_body[m_param_status.m_index + v].m_dest;
-    }
-
-    m_signal_status.m_left = m_mainOut_L;
-    m_signal_status.m_right = m_mainOut_R;
-
-    for(v = 0; v < m_signal_status.m_size; v++)
-    {
-        m_signal_status.m_value[v] = m_paramsignaldata[v][m_signal_status.m_selected];
-    }
 #endif
 
     /* finally: update (fast and slow) clock positions */
@@ -1342,6 +1321,43 @@ inline void dsp_host::setMonoFastFilterCoeffs(float *_signal)
     m_reverb.set(_signal);
 #endif
 }
+
+/******************************************************************************/
+/**
+*******************************************************************************/
+
+void dsp_host::examineParameter()
+{
+    uint32_t v;
+    for(v = 0; v < m_param_status.m_size; v++)
+    {
+        m_param_status.m_state[v] = m_params.m_body[m_param_status.m_index + v].m_state;
+        m_param_status.m_preload[v] = m_params.m_body[m_param_status.m_index + v].m_preload;
+        m_param_status.m_signal[v] = m_params.m_body[m_param_status.m_index + v].m_signal;
+        m_param_status.m_dx[v][0] = m_params.m_body[m_param_status.m_index + v].m_dx[0];
+        m_param_status.m_dx[v][1] = m_params.m_body[m_param_status.m_index + v].m_dx[1];
+        m_param_status.m_x[v] = m_params.m_body[m_param_status.m_index + v].m_x;
+        m_param_status.m_start[v] = m_params.m_body[m_param_status.m_index + v].m_start;
+        m_param_status.m_diff[v] = m_params.m_body[m_param_status.m_index + v].m_diff;
+        m_param_status.m_dest[v] = m_params.m_body[m_param_status.m_index + v].m_dest;
+    }
+}
+
+void dsp_host::examineSignal()
+{
+    uint32_t v;
+    m_signal_status.m_left = m_mainOut_L;
+    m_signal_status.m_right = m_mainOut_R;
+
+    for(v = 0; v < m_signal_status.m_size; v++)
+    {
+        m_signal_status.m_value[v] = m_paramsignaldata[v][m_signal_status.m_selected];
+    }
+}
+
+/******************************************************************************/
+/**
+*******************************************************************************/
 
 /* Audio Engine Reset */
 void dsp_host::resetDSP()
