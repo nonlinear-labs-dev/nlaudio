@@ -26,6 +26,7 @@ struct ae_echo
     void init(float _samplerate, uint32_t _upsampleFactor);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint);
     void set(float *_signal);
+    void resetDSP();
 
     float m_warpConst_PI;
     float m_freqClip_min, m_freqClip_max;

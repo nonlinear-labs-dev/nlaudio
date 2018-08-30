@@ -35,6 +35,7 @@ struct ae_combfilter
     void apply(float _sampleA, float _sampleB, float *_signal, float _fadePoint);
     void set(float *_signal, float _samplerate);
     void setDelaySmoother();
+    void resetDSP();
 
     //**************************** Highpass Filter ****************************//
     float m_hpCoeff_b0, m_hpCoeff_b1, m_hpCoeff_a1;

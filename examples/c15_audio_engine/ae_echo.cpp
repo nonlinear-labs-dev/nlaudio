@@ -213,3 +213,46 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal, floa
 
     m_buffer_indx = (m_buffer_indx + 1) & m_buffer_sz_m1;
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_echo::resetDSP()
+{
+    m_out_L = 0.f;
+    m_out_R = 0.f;
+
+    //*************************** 1 pole Highpass ****************************//
+
+    m_hp_stateVar_L1 = 0.f;
+    m_hp_stateVar_L2 = 0.f;
+    m_hp_stateVar_R1 = 0.f;
+    m_hp_stateVar_R2 = 0.f;
+
+
+    //**************************** 1 pole Lowpass ****************************//
+    m_lp_b0 = 0.f;
+    m_lp_b1 = 0.f;
+    m_lp_a1 = 0.f;
+
+    m_lp_stateVar_L1 = 0.f;
+    m_lp_stateVar_L2 = 0.f;
+    m_lp_stateVar_R1 = 0.f;
+    m_lp_stateVar_R2 = 0.f;
+
+
+    //****************************** 2Hz Lowpass *****************************//
+
+    m_lp2hz_stateVar_L = 0.f;
+    m_lp2hz_stateVar_R = 0.f;
+
+    //***************************** Delay Buffer *****************************//
+    m_stateVar_L = 0.f;
+    m_stateVar_R = 0.f;
+
+    std::fill(m_buffer_L.begin(), m_buffer_L.end(), 0.f);
+    std::fill(m_buffer_R.begin(), m_buffer_R.end(), 0.f);
+
+    m_buffer_indx = 0;
+}

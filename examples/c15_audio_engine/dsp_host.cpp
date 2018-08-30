@@ -1387,8 +1387,11 @@ void dsp_host::resetDSP()
         m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
         m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
 #endif
-        // reset: audio engine poly section (wait for reset methods)
-        // ...
+        // reset: audio engine poly section (full flush included)
+        m_soundgenerator[v].resetDSP();
+        m_combfilter[v].resetDSP();
+        m_svfilter[v].resetDSP();
+        m_feedbackmixer[v].resetDSP();
     }
     // mono flanger envelope (new envelopes only)
 #if test_whichEnvelope == 1
@@ -1398,8 +1401,13 @@ void dsp_host::resetDSP()
     m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
     m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
 #endif
-    // audio engine mono section (wait for reset methods), flush?
-    m_flush = true;
+    // audio engine mono section (full flush included)
+    m_outputmixer.resetDSP();
+    m_flanger.resetDSP();
+    m_cabinet.resetDSP();
+    m_gapfilter.resetDSP();
+    m_echo.resetDSP();
+    m_reverb.resetDSP();
     // null host output signal
     m_mainOut_L = 0.f;
     m_mainOut_R = 0.f;

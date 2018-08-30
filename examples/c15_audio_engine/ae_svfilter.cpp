@@ -180,3 +180,29 @@ void ae_svfilter::set(float *_signal)
                          / (((resonance * omega) + (2.f - omega)) * 2.f);
 #endif
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_svfilter::resetDSP()
+{
+    m_out = 0.f;
+
+    m_resonance = 0.f;
+
+//    m_first_attenuation = 0.f;
+//    m_second_attenuation = 0.f;
+
+    m_first_fir_stateVar = 0.f;
+    m_second_fir_stateVar = 0.f;
+    m_first_int1_stateVar = 0.f;
+    m_first_int2_stateVar = 0.f;
+    m_second_int1_stateVar = 0.f;
+    m_second_int2_stateVar = 0.f;
+
+    m_first_sv_sample = 0.f;
+    m_first_sat_stateVar = 0.f;
+    m_second_sat_stateVar = 0.f;
+
+}

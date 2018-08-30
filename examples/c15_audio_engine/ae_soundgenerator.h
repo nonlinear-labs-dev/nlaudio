@@ -25,6 +25,7 @@ struct ae_soundgenerator
     void generate(float _feedbackSample, float *_signal);
     void set(float *_signal);
     void resetPhase(float _phaseA, float _phaseB);
+    void resetDSP();
 
     //************************** Shared Variables *****************************//
     float m_sample_interval;

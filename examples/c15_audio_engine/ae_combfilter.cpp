@@ -372,4 +372,32 @@ void ae_combfilter::set(float *_signal, float _samplerate)
     m_decayGain = frequency;
 }
 
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
 
+void ae_combfilter::resetDSP()
+{
+    m_out = 0.f;
+    m_decayStateVar = 0.f;
+
+    //***************************** Highpass *********************************//
+    m_hpInStateVar  = 0.f;
+    m_hpOutStateVar = 0.f;
+
+    //***************************** Lowpass **********************************//
+    m_lpStateVar    = 0.f;
+
+    //****************************** Allpass *********************************//
+    m_apStateVar_1  = 0.f;
+    m_apStateVar_2  = 0.f;
+    m_apStateVar_3  = 0.f;
+    m_apStateVar_4  = 0.f;
+
+    //***************************** Delay ************************************//
+    m_buffer_indx = 0;
+    std::fill(m_buffer.begin(), m_buffer.end(), 0.f);
+
+    m_delaySamples = 0.f;
+    m_delayStateVar = 0.f;
+}

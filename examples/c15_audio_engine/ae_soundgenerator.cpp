@@ -222,3 +222,23 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     m_out_A = NlToolbox::Crossfades::unipolarCrossFade(m_out_A, tmpVar, _signal[SHP_A_RM]);
     m_out_B = NlToolbox::Crossfades::unipolarCrossFade(m_out_B, tmpVar, _signal[SHP_B_RM]);
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_soundgenerator::resetDSP()
+{
+    m_out_A = 0.f;
+    m_out_B = 0.f;
+
+    m_chiA_stateVar = 0.f;
+    m_chiB_stateVar = 0.f;
+
+    m_chiA_omega = 0.f;
+    m_chiA_a0 = 0.f;
+    m_chiA_a1 = 0.f;
+    m_chiB_omega = 0.f;
+    m_chiB_a0 = 0.f;
+    m_chiB_a1 = 0.f;
+}

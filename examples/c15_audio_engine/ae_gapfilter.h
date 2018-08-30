@@ -21,6 +21,7 @@ struct ae_gapfilter
     void init(float _samplerate);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal);
     void set(float *_signal);
+    void resetDSP();
 
     float m_warpConst_2PI;
     float m_freqClip_max, m_freqClip_min;

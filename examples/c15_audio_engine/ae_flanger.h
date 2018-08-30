@@ -27,6 +27,7 @@ struct ae_flanger
     void set_slow(float *_signal);
     void set_fast(float *_signal);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint);
+    void resetDSP();
 
     float m_warpConst_PI, m_warpConst_2PI;
     float m_freqClip_min;

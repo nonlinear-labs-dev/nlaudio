@@ -26,6 +26,7 @@ struct ae_cabinet
     void init(float _samplerate);
     void apply(float _rawSample_L, float _rawSample_R, float *_signal);
     void set(float *_signal);
+    void resetDSP();
 
 
     //**************************** Biquad Highpass ****************************//

@@ -423,3 +423,94 @@ void ae_cabinet::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_out_L = NlToolbox::Crossfades::crossFade(_rawSample_L, sample_L, _signal[CAB_DRY], _signal[CAB_WET]);
     m_out_R = NlToolbox::Crossfades::crossFade(_rawSample_R, sample_R, _signal[CAB_DRY], _signal[CAB_WET]);
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_cabinet::resetDSP()
+{
+    m_out_L = 0.f;
+    m_out_R = 0.f;
+
+    //*************************** Biquad Highpass ****************************//
+    m_hp_b0 = 0.f;
+    m_hp_b1 = 0.f;
+    m_hp_a1 = 0.f;
+    m_hp_a2 = 0.f;
+
+    m_hp_stateVar_L1 = 0.f;
+    m_hp_stateVar_L2 = 0.f;
+    m_hp_stateVar_L3 = 0.f;
+    m_hp_stateVar_L4 = 0.f;
+    m_hp_stateVar_R1 = 0.f;
+    m_hp_stateVar_R2 = 0.f;
+    m_hp_stateVar_R3 = 0.f;
+    m_hp_stateVar_R4 = 0.f;
+
+    //************************** Biquad Lowpasses ****************************//
+    m_lp1_b0 = 0.f;
+    m_lp1_b1 = 0.f;
+    m_lp1_a1 = 0.f;
+    m_lp1_a2 = 0.f;
+
+    m_lp1_stateVar_L1 = 0.f;
+    m_lp1_stateVar_L2 = 0.f;
+    m_lp1_stateVar_L3 = 0.f;
+    m_lp1_stateVar_L4 = 0.f;
+    m_lp1_stateVar_R1 = 0.f;
+    m_lp1_stateVar_R2 = 0.f;
+    m_lp1_stateVar_R3 = 0.f;
+    m_lp1_stateVar_R4 = 0.f;
+
+    m_lp2_b0 = 0.f;
+    m_lp2_b1 = 0.f;
+    m_lp2_a1 = 0.f;
+    m_lp2_a2 = 0.f;
+
+    m_lp2_stateVar_L1 = 0.f;
+    m_lp2_stateVar_R1 = 0.f;
+    m_lp2_stateVar_L2 = 0.f;
+    m_lp2_stateVar_R2 = 0.f;
+    m_lp2_stateVar_L1 = 0.f;
+    m_lp2_stateVar_R1 = 0.f;
+    m_lp2_stateVar_L2 = 0.f;
+    m_lp2_stateVar_R2 = 0.f;
+
+    //*************************** Tilt Lowshelves ****************************//
+
+    m_ls1_b0 = 0.f;
+    m_ls1_b1 = 0.f;
+    m_ls1_b2 = 0.f;
+    m_ls1_a1 = 0.f;
+    m_ls1_a2 = 0.f;
+
+    m_ls1_stateVar_L1 = 0.f;
+    m_ls1_StateVar_L2 = 0.f;
+    m_ls1_StateVar_L3 = 0.f;
+    m_ls1_StateVar_L4 = 0.f;
+    m_ls1_stateVar_R1 = 0.f;
+    m_ls1_stateVar_R2 = 0.f;
+    m_ls1_stateVar_R3 = 0.f;
+    m_ls1_stateVar_R4 = 0.f;
+
+    m_ls2_b0 = 0.f;
+    m_ls2_b1 = 0.f;
+    m_ls2_b2 = 0.f;
+    m_ls2_a1 = 0.f;
+    m_ls2_a2 = 0.f;
+
+    m_ls2_stateVar_L1 = 0.f;
+    m_ls2_StateVar_L2 = 0.f;
+    m_ls2_StateVar_L3 = 0.f;
+    m_ls2_stateVar_R1 = 0.f;
+    m_ls2_StateVar_L4 = 0.f;
+    m_ls2_stateVar_R2 = 0.f;
+    m_ls2_stateVar_R3 = 0.f;
+    m_ls2_stateVar_R4 = 0.f;
+
+    //***************************** 30 Hz Highpass ****************************//
+
+    m_hp30_stateVar_L = 0.f;
+    m_hp30_stateVar_R = 0.f;
+}

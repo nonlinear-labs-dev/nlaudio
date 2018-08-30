@@ -24,6 +24,7 @@ struct ae_svfilter
     void init(float _samplerate);
     void apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal);
     void set(float *_signal);
+    void resetDSP();
 
     float m_resonance;
 //    float m_first_attenuation, m_second_attenuation;

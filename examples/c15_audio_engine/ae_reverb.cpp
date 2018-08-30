@@ -711,3 +711,74 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     m_out_FX = ((_rawSample_L + _rawSample_R) * (1.f - _signal[FBM_REV]))
             + ((wetSample_L + wetSample_R) * _signal[FBM_REV]);
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_reverb::resetDSP()
+{
+    m_out_L = 0.f;
+    m_out_R = 0.f;
+    m_out_FX = 0.f;
+
+    m_slow_tick = 0;
+
+    //************************** Reverb Modulation ***************************//
+    m_mod_1a = 0.f;
+    m_mod_2a = 0.f;
+    m_mod_1b = 0.f;
+    m_mod_2b = 0.f;
+
+    //****************************** Loop Filter *****************************//
+
+    m_lp_stateVar_L = 0.f;
+    m_lp_stateVar_R = 0.f;
+    m_hp_stateVar_L = 0.f;
+    m_hp_stateVar_R = 0.f;
+
+    //***************************** Delay Buffer *****************************//
+    m_buffer_indx = 0;
+
+    std::fill(m_buffer_L.begin(), m_buffer_L.end(), 0.f);
+    std::fill(m_buffer_L1.begin(), m_buffer_L1.end(), 0.f);
+    std::fill(m_buffer_L2.begin(), m_buffer_L2.end(), 0.f);
+    std::fill(m_buffer_L3.begin(), m_buffer_L3.end(), 0.f);
+    std::fill(m_buffer_L4.begin(), m_buffer_L4.end(), 0.f);
+    std::fill(m_buffer_L5.begin(), m_buffer_L5.end(), 0.f);
+    std::fill(m_buffer_L6.begin(), m_buffer_L6.end(), 0.f);
+    std::fill(m_buffer_L7.begin(), m_buffer_L7.end(), 0.f);
+    std::fill(m_buffer_L8.begin(), m_buffer_L8.end(), 0.f);
+    std::fill(m_buffer_L9.begin(), m_buffer_L9.end(), 0.f);
+
+    std::fill(m_buffer_R.begin(), m_buffer_R.end(), 0.f);
+    std::fill(m_buffer_R1.begin(), m_buffer_R1.end(), 0.f);
+    std::fill(m_buffer_R2.begin(), m_buffer_R2.end(), 0.f);
+    std::fill(m_buffer_R3.begin(), m_buffer_R3.end(), 0.f);
+    std::fill(m_buffer_R4.begin(), m_buffer_R4.end(), 0.f);
+    std::fill(m_buffer_R5.begin(), m_buffer_R5.end(), 0.f);
+    std::fill(m_buffer_R6.begin(), m_buffer_R6.end(), 0.f);
+    std::fill(m_buffer_R7.begin(), m_buffer_R7.end(), 0.f);
+    std::fill(m_buffer_R8.begin(), m_buffer_R8.end(), 0.f);
+    std::fill(m_buffer_R9.begin(), m_buffer_R9.end(), 0.f);
+
+    m_stateVar_L1 = 0.f;
+    m_stateVar_L2 = 0.f;
+    m_stateVar_L3 = 0.f;
+    m_stateVar_L4 = 0.f;
+    m_stateVar_L5 = 0.f;
+    m_stateVar_L6 = 0.f;
+    m_stateVar_L7 = 0.f;
+    m_stateVar_L8 = 0.f;
+    m_stateVar_L9 = 0.f;
+
+    m_stateVar_R1 = 0.f;
+    m_stateVar_R2 = 0.f;
+    m_stateVar_R3 = 0.f;
+    m_stateVar_R4 = 0.f;
+    m_stateVar_R5 = 0.f;
+    m_stateVar_R6 = 0.f;
+    m_stateVar_R7 = 0.f;
+    m_stateVar_R8 = 0.f;
+    m_stateVar_R9 = 0.f;
+}

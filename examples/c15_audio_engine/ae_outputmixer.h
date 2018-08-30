@@ -29,6 +29,7 @@ struct ae_outputmixer
     void init(float _samplerate, uint32_t _numOfVoices);
     void combine(float _sampleA, float _sampleB, float _sampleComb, float _sampleSVFilter, float *_signal, uint32_t _voiceID);
     void filter_level(float *_signal);
+    void resetDSP();
 
 
     //*************************** Highpass Filters ****************************//

@@ -129,3 +129,25 @@ void ae_outputmixer::filter_level(float *_signal)
     m_out_L *= _signal[OUT_LVL];
     m_out_R *= _signal[OUT_LVL];
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_outputmixer::resetDSP()
+{
+    m_out_L = 0.f;
+    m_out_R = 0.f;
+
+    //**************************** 30 Hz Highpass ****************************//
+
+    std::fill(m_hp30hz_stateVar_L.begin(), m_hp30hz_stateVar_L.end(), 0.f);
+    std::fill(m_hp30hz_stateVar_R.begin(), m_hp30hz_stateVar_R.end(), 0.f);
+
+    //*************************** 1 pole Highpass ****************************//
+
+    m_hp_stateVar_L1 = 0.f;
+    m_hp_stateVar_L2 = 0.f;
+    m_hp_stateVar_R1 = 0.f;
+    m_hp_stateVar_R2 = 0.f;
+}

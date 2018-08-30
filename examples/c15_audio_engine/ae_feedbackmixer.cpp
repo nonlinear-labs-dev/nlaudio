@@ -95,3 +95,24 @@ void ae_feedbackmixer::apply(float _sampleComb, float _sampleSVF, float _sampleF
 
     m_out = tmpVar * _signal[FBM_LVL];
 }
+
+/******************************************************************************/
+/** @brief
+*******************************************************************************/
+
+void ae_feedbackmixer::resetDSP()
+{
+    m_out = 0.f;
+
+    //***************************** 30Hz Highpass ****************************//
+
+    m_hp30hz_stateVar = 0.f;
+
+    //*************************** 1 pole Highpass ****************************//
+    m_hp_b0 = 0.f;
+    m_hp_b1 = 0.f;
+    m_hp_a1 = 0.f;
+
+    m_hp_stateVar_1 = 0.f;
+    m_hp_stateVar_2 = 0.f;
+}

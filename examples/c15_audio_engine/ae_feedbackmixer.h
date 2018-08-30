@@ -20,6 +20,7 @@ struct ae_feedbackmixer
     void init(float _samplerate);
     void set(float *_signal);
     void apply(float _sampleComb, float _sampleSVF, float _sampleFX, float *_signal);
+    void resetDSP();
 
     float m_out;
 
