@@ -216,7 +216,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         i = static_cast<int32_t>(m_decoder.unsigned14(_data0, _data1));
         /* force monophonic mode */
 #if log_force_mono == 1
-        i *= 0;
+        i = 0;
 #endif
         if(((i > -1) && (i < v)) || (i == 16383))
         {
@@ -233,7 +233,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         i = static_cast<int32_t>(m_decoder.unsigned14(_data0, _data1));
         /* force monophonic mode */
 #if log_force_mono == 1
-        i *= 0;
+        i = 0;
 #endif
         if(((i > -1) && (i < v)) || (i == 16383))
         {
