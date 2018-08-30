@@ -235,10 +235,11 @@ void ae_soundgenerator::resetDSP()
     m_chiA_stateVar = 0.f;
     m_chiB_stateVar = 0.f;
 
-    m_chiA_omega = 0.f;
-    m_chiA_a0 = 0.f;
-    m_chiA_a1 = 0.f;
-    m_chiB_omega = 0.f;
-    m_chiB_a0 = 0.f;
-    m_chiB_a1 = 0.f;
+    m_oscA_selfmix = 0.f;
+    m_oscA_crossmix = 0.f;
+    m_oscA_phase_stateVar = 0.f;
+
+    m_oscB_selfmix = 0.f;
+    m_oscB_crossmix = 0.f;
+    m_oscB_phase_stateVar = 0.f;
 }

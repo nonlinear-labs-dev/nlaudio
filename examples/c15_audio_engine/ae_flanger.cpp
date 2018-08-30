@@ -355,9 +355,6 @@ void ae_flanger::resetDSP()
 
 
     //**************************** 1 pole Lowpass ****************************//
-    m_lp_b0 = 0.f;
-    m_lp_b1 = 0.f;
-    m_lp_a1 = 0.f;
 
     m_lp_stateVar_L1 = 0.f;
     m_lp_stateVar_L2 = 0.f;
@@ -381,11 +378,6 @@ void ae_flanger::resetDSP()
 
 
     //**************************** 4 Pole Allpass ****************************//
-    m_ap_b0_L = 0.f;
-    m_ap_b1_L = 0.f;
-
-    m_ap_b0_R = 0.f;
-    m_ap_b1_R = 0.f;
 
     m_ap_StateVar_L1 = 0.f;
     m_ap_StateVar_L2 = 0.f;
@@ -412,6 +404,4 @@ void ae_flanger::resetDSP()
 
     std::fill(m_buffer_L.begin(), m_buffer_L.end(), 0.f);
     std::fill(m_buffer_R.begin(), m_buffer_R.end(), 0.f);
-
-    m_buffer_indx = 0;
 }

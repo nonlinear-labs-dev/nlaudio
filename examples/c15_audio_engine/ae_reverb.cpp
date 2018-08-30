@@ -722,14 +722,6 @@ void ae_reverb::resetDSP()
     m_out_R = 0.f;
     m_out_FX = 0.f;
 
-    m_slow_tick = 0;
-
-    //************************** Reverb Modulation ***************************//
-    m_mod_1a = 0.f;
-    m_mod_2a = 0.f;
-    m_mod_1b = 0.f;
-    m_mod_2b = 0.f;
-
     //****************************** Loop Filter *****************************//
 
     m_lp_stateVar_L = 0.f;
@@ -738,7 +730,6 @@ void ae_reverb::resetDSP()
     m_hp_stateVar_R = 0.f;
 
     //***************************** Delay Buffer *****************************//
-    m_buffer_indx = 0;
 
     std::fill(m_buffer_L.begin(), m_buffer_L.end(), 0.f);
     std::fill(m_buffer_L1.begin(), m_buffer_L1.end(), 0.f);

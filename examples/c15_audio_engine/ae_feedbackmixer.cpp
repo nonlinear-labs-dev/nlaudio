@@ -109,9 +109,6 @@ void ae_feedbackmixer::resetDSP()
     m_hp30hz_stateVar = 0.f;
 
     //*************************** 1 pole Highpass ****************************//
-    m_hp_b0 = 0.f;
-    m_hp_b1 = 0.f;
-    m_hp_a1 = 0.f;
 
     m_hp_stateVar_1 = 0.f;
     m_hp_stateVar_2 = 0.f;

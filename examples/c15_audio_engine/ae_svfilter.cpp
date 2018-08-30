@@ -191,9 +191,6 @@ void ae_svfilter::resetDSP()
 
     m_resonance = 0.f;
 
-//    m_first_attenuation = 0.f;
-//    m_second_attenuation = 0.f;
-
     m_first_fir_stateVar = 0.f;
     m_second_fir_stateVar = 0.f;
     m_first_int1_stateVar = 0.f;

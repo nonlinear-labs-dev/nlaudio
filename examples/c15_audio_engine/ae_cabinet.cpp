@@ -72,10 +72,10 @@ void ae_cabinet::init(float _samplerate)
     m_lp2_stateVar_R1 = 0.f;
     m_lp2_stateVar_L2 = 0.f;
     m_lp2_stateVar_R2 = 0.f;
-    m_lp2_stateVar_L1 = 0.f;
-    m_lp2_stateVar_R1 = 0.f;
-    m_lp2_stateVar_L2 = 0.f;
-    m_lp2_stateVar_R2 = 0.f;
+    m_lp2_stateVar_L3 = 0.f;
+    m_lp2_stateVar_R3 = 0.f;
+    m_lp2_stateVar_L4 = 0.f;
+    m_lp2_stateVar_R4 = 0.f;
 
     //*************************** Tilt Lowshelves ****************************//
     m_tiltOmegaSin = NlToolbox::Math::sin(1200.f * m_warpConst_2PI);
@@ -434,10 +434,6 @@ void ae_cabinet::resetDSP()
     m_out_R = 0.f;
 
     //*************************** Biquad Highpass ****************************//
-    m_hp_b0 = 0.f;
-    m_hp_b1 = 0.f;
-    m_hp_a1 = 0.f;
-    m_hp_a2 = 0.f;
 
     m_hp_stateVar_L1 = 0.f;
     m_hp_stateVar_L2 = 0.f;
@@ -449,10 +445,6 @@ void ae_cabinet::resetDSP()
     m_hp_stateVar_R4 = 0.f;
 
     //************************** Biquad Lowpasses ****************************//
-    m_lp1_b0 = 0.f;
-    m_lp1_b1 = 0.f;
-    m_lp1_a1 = 0.f;
-    m_lp1_a2 = 0.f;
 
     m_lp1_stateVar_L1 = 0.f;
     m_lp1_stateVar_L2 = 0.f;
@@ -463,27 +455,16 @@ void ae_cabinet::resetDSP()
     m_lp1_stateVar_R3 = 0.f;
     m_lp1_stateVar_R4 = 0.f;
 
-    m_lp2_b0 = 0.f;
-    m_lp2_b1 = 0.f;
-    m_lp2_a1 = 0.f;
-    m_lp2_a2 = 0.f;
-
     m_lp2_stateVar_L1 = 0.f;
     m_lp2_stateVar_R1 = 0.f;
     m_lp2_stateVar_L2 = 0.f;
     m_lp2_stateVar_R2 = 0.f;
-    m_lp2_stateVar_L1 = 0.f;
-    m_lp2_stateVar_R1 = 0.f;
-    m_lp2_stateVar_L2 = 0.f;
-    m_lp2_stateVar_R2 = 0.f;
+    m_lp2_stateVar_L3 = 0.f;
+    m_lp2_stateVar_R3 = 0.f;
+    m_lp2_stateVar_L4 = 0.f;
+    m_lp2_stateVar_R4 = 0.f;
 
     //*************************** Tilt Lowshelves ****************************//
-
-    m_ls1_b0 = 0.f;
-    m_ls1_b1 = 0.f;
-    m_ls1_b2 = 0.f;
-    m_ls1_a1 = 0.f;
-    m_ls1_a2 = 0.f;
 
     m_ls1_stateVar_L1 = 0.f;
     m_ls1_StateVar_L2 = 0.f;
@@ -493,12 +474,6 @@ void ae_cabinet::resetDSP()
     m_ls1_stateVar_R2 = 0.f;
     m_ls1_stateVar_R3 = 0.f;
     m_ls1_stateVar_R4 = 0.f;
-
-    m_ls2_b0 = 0.f;
-    m_ls2_b1 = 0.f;
-    m_ls2_b2 = 0.f;
-    m_ls2_a1 = 0.f;
-    m_ls2_a2 = 0.f;
 
     m_ls2_stateVar_L1 = 0.f;
     m_ls2_StateVar_L2 = 0.f;

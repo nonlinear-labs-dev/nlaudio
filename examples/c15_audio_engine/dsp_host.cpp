@@ -1358,7 +1358,8 @@ void dsp_host::resetDSP()
     }
 #endif
     // iterate voices
-    for(uint32_t v = 0; v < m_voices; v++)
+    uint32_t v;
+    for(v = 0; v < m_voices; v++)
     {
         // if present, reset new envelopes
 #if test_whichEnvelope == 1

@@ -395,7 +395,6 @@ void ae_combfilter::resetDSP()
     m_apStateVar_4  = 0.f;
 
     //***************************** Delay ************************************//
-    m_buffer_indx = 0;
     std::fill(m_buffer.begin(), m_buffer.end(), 0.f);
 
     m_delaySamples = 0.f;

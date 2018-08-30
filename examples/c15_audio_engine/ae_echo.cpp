@@ -232,9 +232,6 @@ void ae_echo::resetDSP()
 
 
     //**************************** 1 pole Lowpass ****************************//
-    m_lp_b0 = 0.f;
-    m_lp_b1 = 0.f;
-    m_lp_a1 = 0.f;
 
     m_lp_stateVar_L1 = 0.f;
     m_lp_stateVar_L2 = 0.f;
@@ -253,6 +250,4 @@ void ae_echo::resetDSP()
 
     std::fill(m_buffer_L.begin(), m_buffer_L.end(), 0.f);
     std::fill(m_buffer_R.begin(), m_buffer_R.end(), 0.f);
-
-    m_buffer_indx = 0;
 }
