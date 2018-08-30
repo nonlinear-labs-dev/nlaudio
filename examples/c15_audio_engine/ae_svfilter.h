@@ -25,7 +25,8 @@ struct ae_svfilter
     void apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal);
     void set(float *_signal);
 
-    float m_first_attenuation, m_second_attenuation;
+    float m_resonance;
+//    float m_first_attenuation, m_second_attenuation;
 
     //**************************** State Variables ****************************//
     float m_first_fir_stateVar, m_second_fir_stateVar;
