@@ -124,5 +124,5 @@ public:
     std::vector<float> m_raised_cos_table;
 
     /* Audio Engine Reset */
-    void reset();
+    void resetDSP();
 };

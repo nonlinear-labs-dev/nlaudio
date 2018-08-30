@@ -1344,22 +1344,24 @@ inline void dsp_host::setMonoFastFilterCoeffs(float *_signal)
 }
 
 /* Audio Engine Reset */
-void dsp_host::reset()
+void dsp_host::resetDSP()
 {
+    // if present, reset old envelopes
+#if test_whichEnvelope == 0
+    uint32_t e;
+    // reset old envelopes (A, B, C, G, F) -- not tested yet!
+    for(e = 0; e < sig_number_of_env_items; e++)
+    {
+        m_params.m_envelopes.m_body[e].m_index = 0;
+        m_params.m_envelopes.m_body[e].m_signal = 0.f;
+        m_params.m_envelopes.m_body[e].m_start = 0.f;
+    }
+#endif
     // iterate voices
     for(uint32_t v = 0; v < m_voices; v++)
     {
-        // reset: envelopes
-#if test_whichEnvelope == 0
-        uint32_t e;
-        // reset old envelopes (A, B, C, G, F) -- not tested yet!
-        for(e = 0; e < sig_number_of_env_items; e++)
-        {
-            m_envelopes.m_body[e].m_index = 0;
-            m_envelopes.m_body[e].m_signal = 0.f;
-            m_envelopes.m_body[e].m_start = 0.f;
-        }
-#elif test_whichEnvelope == 1
+        // if present, reset new envelopes
+#if test_whichEnvelope == 1
         // reset new envelopes (Env A)
         m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
         m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
