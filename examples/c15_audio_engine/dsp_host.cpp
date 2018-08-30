@@ -1218,6 +1218,9 @@ void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
             std::fill(m_echo.m_buffer_R.begin(), m_echo.m_buffer_R.end(), 0.f);
             std::fill(m_flanger.m_buffer_L.begin(), m_flanger.m_buffer_L.end(), 0.f);
             std::fill(m_flanger.m_buffer_R.begin(), m_flanger.m_buffer_R.end(), 0.f);
+            std::fill(m_reverb.m_buffer_L.begin(), m_reverb.m_buffer_L.end(), 0.f);
+            std::fill(m_reverb.m_buffer_R.begin(), m_reverb.m_buffer_R.end(), 0.f);
+
         }
 
         if (m_table_indx > m_raised_cos_table.size())
