@@ -205,6 +205,9 @@ int main(int argc, char **argv)
             case 'd':
                 handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_CPU_LOAD);
                 break;
+            case 'e':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_RESET);
+                break;
             case 'm':
                 if (handle.inMidiBuffer) {
                     unsigned long rxBytes, txBytes;

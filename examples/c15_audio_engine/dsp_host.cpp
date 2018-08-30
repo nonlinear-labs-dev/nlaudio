@@ -1342,3 +1342,63 @@ inline void dsp_host::setMonoFastFilterCoeffs(float *_signal)
     m_reverb.set(_signal);
 #endif
 }
+
+/* Audio Engine Reset */
+void dsp_host::reset()
+{
+    // iterate voices
+    for(uint32_t v = 0; v < m_voices; v++)
+    {
+        // reset: envelopes
+#if test_whichEnvelope == 0
+        uint32_t e;
+        // reset old envelopes (A, B, C, G, F) -- not tested yet!
+        for(e = 0; e < sig_number_of_env_items; e++)
+        {
+            m_envelopes.m_body[e].m_index = 0;
+            m_envelopes.m_body[e].m_signal = 0.f;
+            m_envelopes.m_body[e].m_start = 0.f;
+        }
+#elif test_whichEnvelope == 1
+        // reset new envelopes (Env A)
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env B)
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env C)
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env G)
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
+#endif
+        // reset: audio engine poly section (wait for reset methods)
+        // ...
+    }
+    // mono flanger envelope (new envelopes only)
+#if test_whichEnvelope == 1
+    // reset enw envelopes (Env F)
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
+#endif
+    // audio engine mono section (wait for reset methods), flush?
+    m_flush = true;
+    // null host output signal
+    m_mainOut_L = 0.f;
+    m_mainOut_R = 0.f;
+}
