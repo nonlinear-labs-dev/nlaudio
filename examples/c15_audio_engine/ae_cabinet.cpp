@@ -456,12 +456,12 @@ void ae_cabinet::resetDSP()
     m_lp1_stateVar_R4 = 0.f;
 
     m_lp2_stateVar_L1 = 0.f;
-    m_lp2_stateVar_R1 = 0.f;
     m_lp2_stateVar_L2 = 0.f;
-    m_lp2_stateVar_R2 = 0.f;
     m_lp2_stateVar_L3 = 0.f;
-    m_lp2_stateVar_R3 = 0.f;
     m_lp2_stateVar_L4 = 0.f;
+    m_lp2_stateVar_R1 = 0.f;
+    m_lp2_stateVar_R2 = 0.f;
+    m_lp2_stateVar_R3 = 0.f;
     m_lp2_stateVar_R4 = 0.f;
 
     //*************************** Tilt Lowshelves ****************************//
@@ -478,8 +478,8 @@ void ae_cabinet::resetDSP()
     m_ls2_stateVar_L1 = 0.f;
     m_ls2_StateVar_L2 = 0.f;
     m_ls2_StateVar_L3 = 0.f;
-    m_ls2_stateVar_R1 = 0.f;
     m_ls2_StateVar_L4 = 0.f;
+    m_ls2_stateVar_R1 = 0.f;
     m_ls2_stateVar_R2 = 0.f;
     m_ls2_stateVar_R3 = 0.f;
     m_ls2_stateVar_R4 = 0.f;

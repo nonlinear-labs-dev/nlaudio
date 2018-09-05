@@ -112,8 +112,8 @@ public:
     ae_reverb m_reverb;
 
     void initAudioEngine();
-    void makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint);
-    void makeMonoSound(float *_signal, float _fadePoint);
+    void makePolySound(float *_signal, uint32_t _voiceID);
+    void makeMonoSound(float *_signal);
 
     inline void setPolySlowFilterCoeffs(float *_signal, uint32_t _voiceID);
     inline void setMonoSlowFilterCoeffs(float *_signal);
@@ -126,5 +126,5 @@ public:
     std::vector<float> m_raised_cos_table;
 
     /* Audio Engine Reset */
-    void resetDSP();
+    void resetDSP(bool _resetEnvs);
 };

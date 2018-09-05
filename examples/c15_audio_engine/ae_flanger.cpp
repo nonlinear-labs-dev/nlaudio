@@ -169,7 +169,7 @@ void ae_flanger::set_fast(float *_signal)
 /** @brief
 *******************************************************************************/
 
-void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint)
+void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 {
     float tmpVar_1, tmpVar_2;
 
@@ -180,7 +180,6 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, f
 
     //**************************** Left Channel *****************************//
     tmpVar_1 = _rawSample_L + (m_stateVar_L * _signal[FLA_FB_LOC]) + (m_stateVar_R * _signal[FLA_FB_CR]);
-    tmpVar_1 *= _fadePoint;
 
     tmpVar_2  = m_lp_b0 * tmpVar_1;                                      // LP L
     tmpVar_2 += m_lp_b1 * m_lp_stateVar_L1;
@@ -220,7 +219,6 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, f
                                            m_buffer_L[ind_t0],
                                            m_buffer_L[ind_tp1],
                                            m_buffer_L[ind_tp2]);
-    tmpVar_1 *= _fadePoint;
 
     tmpVar_2 = tmpVar_1 * m_ap_b0_L;                            // AP L
     tmpVar_2 = tmpVar_2 + m_ap_StateVar_L1 * m_ap_b1_L;
@@ -262,7 +260,6 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, f
 
     //*************************** Right Channel *****************************//
     tmpVar_1 = _rawSample_R + (m_stateVar_R * _signal[FLA_FB_LOC]) + (m_stateVar_L * _signal[FLA_FB_CR]);
-    tmpVar_1 *= _fadePoint;
 
     tmpVar_2  = m_lp_b0 * tmpVar_1;                                      // LP L
     tmpVar_2 += m_lp_b1 * m_lp_stateVar_R1;
@@ -302,7 +299,6 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal, f
                                            m_buffer_R[ind_t0],
                                            m_buffer_R[ind_tp1],
                                            m_buffer_R[ind_tp2]);
-    tmpVar_1 *= _fadePoint;
 
     tmpVar_2 = tmpVar_1 * m_ap_b0_R;                            // AP R
     tmpVar_2 = tmpVar_2 + m_ap_StateVar_R1 * m_ap_b1_R;

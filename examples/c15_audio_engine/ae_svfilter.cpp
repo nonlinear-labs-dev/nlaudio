@@ -71,11 +71,12 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 
 
     //************************** Frequency Modulation ************************//
-    tmpVar = _sampleA * _signal[SVF_FMAB] + _sampleB * (1.f - _signal[SVF_FMAB]);
+//    tmpVar = _sampleA * _signal[SVF_FMAB] + _sampleB * (1.f - _signal[SVF_FMAB]);
+    float fmVar = _sampleA * _signal[SVF_FMAB] + _sampleB * (1.f - _signal[SVF_FMAB]);
 
 
     //************************** 1st Stage SV FILTER *************************//
-    float omega = (_signal[SVF_F1_CUT] + tmpVar * _signal[SVF_F1_FM]) * m_warpConst_2PI;
+    float omega = (_signal[SVF_F1_CUT] + fmVar * _signal[SVF_F1_FM]) * m_warpConst_2PI;
 //    omega = std::min(omega, 1.9f);
     omega = std::clamp(omega, 0.f, 1.5f);                                           /// new
 
@@ -86,9 +87,9 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
     m_first_fir_stateVar = firstSample + DNC_const;
 
 //    m_first_sv_sample = firOut - (m_first_attenuation * m_first_int1_stateVar + m_first_int2_stateVar);
-    m_first_sv_sample = firOut - (attenuation * m_first_int1_stateVar + m_first_int2_stateVar);     /// new
+    tmpVar = firOut - (attenuation * m_first_int1_stateVar + m_first_int2_stateVar);     /// new
 
-    float int1Out = m_first_sv_sample * omega + m_first_int1_stateVar;
+    float int1Out = tmpVar * omega + m_first_int1_stateVar;
     float int2Out = int1Out * omega + m_first_int2_stateVar;
 
     float lowpassOutput  = int2Out + m_first_int2_stateVar;
@@ -110,7 +111,7 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 
 
     //************************** 2nd Stage SV FILTER *************************//
-    omega = (_signal[SVF_F2_CUT] + tmpVar * _signal[SVF_F2_FM]) * m_warpConst_2PI;
+    omega = (_signal[SVF_F2_CUT] + fmVar * _signal[SVF_F2_FM]) * m_warpConst_2PI;
 //    omega = std::min(omega, 1.9f);
     omega = std::clamp(omega, 0.f, 1.5f);                   ///new
 

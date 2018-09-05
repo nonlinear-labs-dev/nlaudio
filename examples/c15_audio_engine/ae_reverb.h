@@ -54,7 +54,7 @@ struct ae_reverb
 
     void init(float _samplerate, uint32_t _upsampleFactor);
     void set(float *_signal);
-    void apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint);
+    void apply(float _rawSample_L, float _rawSample_R, float *_signal);
     void resetDSP();
 
     int32_t m_slow_tick;

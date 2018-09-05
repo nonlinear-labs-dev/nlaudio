@@ -216,7 +216,7 @@ void ae_reverb::set(float *_signal)
 /** @brief
 *******************************************************************************/
 
-void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, float _fadePoint)
+void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 {
     float tmpVar;
     int32_t ind_t0, ind_tm1, ind_tp1, ind_tp2;
@@ -277,7 +277,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
 
 
     //****************************** Asym 2 L ********************************//
-    wetSample_L *= _fadePoint;
     m_buffer_L[m_buffer_indx] = wetSample_L;
 
     tmpVar = std::clamp(m_preDel_L, 0.f, static_cast<float>(m_buffer_sz_m1));      /// this can be in a setter!
@@ -295,8 +294,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_tm1 &= m_buffer_sz_m1;
 
     wetSample_L = m_buffer_L[ind_t0] + tmpVar * (m_buffer_L[ind_tm1] - m_buffer_L[ind_t0]);
-    wetSample_L *= _fadePoint;
-
     wetSample_L += (m_stateVar_L9 * m_fb_amnt);
 
 
@@ -489,7 +486,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
 
 
     //****************************** Asym 2 R ********************************//
-    wetSample_R *= _fadePoint;
     m_buffer_R[m_buffer_indx] = wetSample_R;
 
     tmpVar = std::clamp(m_preDel_R, 0.f, static_cast<float>(m_buffer_sz_m1));
@@ -507,7 +503,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal, fl
     ind_tm1 &= m_buffer_sz_m1;
 
     wetSample_R = m_buffer_R[ind_t0] + tmpVar * (m_buffer_R[ind_tm1] - m_buffer_R[ind_t0]);
-    wetSample_R *= _fadePoint;
 
     wetSample_R += (m_stateVar_R9 * m_fb_amnt);
 

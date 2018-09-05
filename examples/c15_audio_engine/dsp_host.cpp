@@ -141,9 +141,6 @@ void dsp_host::tickMain()
     m_outputmixer.m_out_L = 0.f;
     m_outputmixer.m_out_R = 0.f;
 
-    /*set the current fadepoint*/
-    float fadePoint = m_raised_cos_table[m_table_indx];
-
     for(v = 0; v < m_voices; v++)
     {
         /* this is the MAIN POLYPHONIC LOOP - rendering (and post processing) parameters, envelopes and the AUDIO_ENGINE */
@@ -157,11 +154,11 @@ void dsp_host::tickMain()
         m_params.postProcessPoly_audio(m_paramsignaldata[v], v);
 
         /* AUDIO_ENGINE: poly dsp phase */
-        makePolySound(m_paramsignaldata[v], v, fadePoint);
+        makePolySound(m_paramsignaldata[v], v);
     }
 
     /* AUDIO_ENGINE: mono dsp phase */
-    makeMonoSound(m_paramsignaldata[0], fadePoint);
+    makeMonoSound(m_paramsignaldata[0]);
 
     /* Examine Updates (Log) */
 #if log_examine
@@ -1136,16 +1133,28 @@ void dsp_host::initAudioEngine()
     float sample_interval = 1.f / m_samplerate;
 
     m_table_indx = 0;
-    m_raised_cos_table.resize(static_cast<uint32_t>(fade_time * static_cast<float>(m_samplerate)) * 2 + 1);
+    m_raised_cos_table.resize(static_cast<uint32_t>(fade_time * static_cast<float>(m_samplerate)) * 2 + 2);
+    m_flush_indx = static_cast<uint32_t>((m_raised_cos_table.size() - 1) / 2);
 
     for (uint32_t ind = 0; ind < m_raised_cos_table.size(); ind++)
     {
-        float x = 1.5708f * sample_interval * ind / fade_time;
-        m_raised_cos_table[ind] = std::pow(std::cos(x), 2.f);
+        if (ind == m_flush_indx + 1)
+        {
+            m_raised_cos_table[ind] = m_raised_cos_table[ind - 1];
+        }
+        else if (ind < m_flush_indx)
+        {
+            float x = 1.5708f * sample_interval * ind / fade_time;
+            m_raised_cos_table[ind] = std::pow(std::cos(x), 2.f);
+        }
+        else if (ind > m_flush_indx)
+        {
+            float x = 1.5708f * sample_interval * (ind - 1)  / fade_time;
+            m_raised_cos_table[ind] = std::abs(std::pow(std::cos(x), 2.f));
+        }
     }
 
     m_flush = false;
-    m_flush_indx = static_cast<uint32_t>((m_raised_cos_table.size() - 1) / 2);
 
     //****************************** DSP Modules *****************************//
     for (uint32_t p = 0; p < m_voices; p++)
@@ -1170,14 +1179,13 @@ void dsp_host::initAudioEngine()
 /**
 *******************************************************************************/
 
-void dsp_host::makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint)
+void dsp_host::makePolySound(float *_signal, uint32_t _voiceID)
 {
-    m_soundgenerator[_voiceID].generate(m_feedbackmixer[_voiceID].m_out,
-                                        _signal);
+    m_soundgenerator[_voiceID].generate(m_feedbackmixer[_voiceID].m_out, _signal);
 
     m_combfilter[_voiceID].apply(m_soundgenerator[_voiceID].m_out_A,
                                  m_soundgenerator[_voiceID].m_out_B,
-                                 _signal, _fadePoint);
+                                 _signal);
 
     m_svfilter[_voiceID].apply(m_soundgenerator[_voiceID].m_out_A,
                                m_soundgenerator[_voiceID].m_out_B,
@@ -1202,51 +1210,21 @@ void dsp_host::makePolySound(float *_signal, uint32_t _voiceID, float _fadePoint
 /**
 *******************************************************************************/
 
-void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
+void dsp_host::makeMonoSound(float *_signal)
 {
-    //****************************** Fade n Flush ****************************//
-    if (m_flush)
-    {
-        if (m_table_indx == m_flush_indx)
-        {
-            for (uint32_t voiceNumber = 0; voiceNumber < dsp_number_of_voices; voiceNumber++)
-            {
-                std::fill(m_combfilter[voiceNumber].m_buffer.begin(), m_combfilter[voiceNumber].m_buffer.end(), 0.f);
-            }
+    float mst_gain = _signal[MST_VOL] * m_raised_cos_table[m_table_indx];
 
-            std::fill(m_echo.m_buffer_L.begin(), m_echo.m_buffer_L.end(), 0.f);
-            std::fill(m_echo.m_buffer_R.begin(), m_echo.m_buffer_R.end(), 0.f);
-            std::fill(m_flanger.m_buffer_L.begin(), m_flanger.m_buffer_L.end(), 0.f);
-            std::fill(m_flanger.m_buffer_R.begin(), m_flanger.m_buffer_R.end(), 0.f);
-            std::fill(m_reverb.m_buffer_L.begin(), m_reverb.m_buffer_L.end(), 0.f);
-            std::fill(m_reverb.m_buffer_R.begin(), m_reverb.m_buffer_R.end(), 0.f);
-
-        }
-
-        if (m_table_indx > m_raised_cos_table.size())
-        {
-            m_table_indx = 0;
-            m_flush = false;
-        }
-        else
-        {
-            m_table_indx++;
-        }
-    }
     //****************************** Mono Modules ****************************//
     m_outputmixer.filter_level(_signal);
-    m_flanger.apply(m_outputmixer.m_out_L, m_outputmixer.m_out_R, _signal, _fadePoint);
+    m_flanger.apply(m_outputmixer.m_out_L, m_outputmixer.m_out_R, _signal);
     m_cabinet.apply(m_flanger.m_out_L, m_flanger.m_out_R, _signal);
     m_gapfilter.apply(m_cabinet.m_out_L, m_cabinet.m_out_R, _signal);
-    m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal, _fadePoint);
-    m_reverb.apply(m_echo.m_out_L, m_echo.m_out_R, _signal, _fadePoint);
+    m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal);
+    m_reverb.apply(m_echo.m_out_L, m_echo.m_out_R, _signal);
 
     //******************************* Soft Clip ******************************//
-//    m_mainOut_L = m_outputmixer.m_sampleL * _signal[MST_VOL];
-//    m_mainOut_L = m_cabinet.m_sampleCabinet_L * _signal[MST_VOL];
-//    m_mainOut_L = m_gapfilter.m_out_L * _signal[MST_VOL];
-//    m_mainOut_L = m_echo.m_out_L * _signal[MST_VOL];
-    m_mainOut_L = m_reverb.m_out_L * _signal[MST_VOL];
+    //****************************** Left Channel ****************************//
+    m_mainOut_L = m_reverb.m_out_L * mst_gain;
 
     m_mainOut_L *= 0.1588f;
     m_mainOut_L = std::clamp(m_mainOut_L, -0.25f, 0.25f);
@@ -1259,11 +1237,8 @@ void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
     float sample_square = m_mainOut_L * m_mainOut_L;
     m_mainOut_L = m_mainOut_L * ((2.26548f * sample_square - 5.13274f) * sample_square + 3.14159f);
 
-//    m_mainOut_R = m_outputmixer.m_sampleR * _signal[MST_VOL];
-//    m_mainOut_R = m_cabinet.m_sampleCabinet_R * _signal[MST_VOL];
-//    m_mainOut_R = m_gapfilter.m_out_R * _signal[MST_VOL];
-//    m_mainOut_R = m_echo.m_out_R * _signal[MST_VOL];
-    m_mainOut_R = m_reverb.m_out_R * _signal[MST_VOL];
+    //****************************** Right Channel ****************************//
+    m_mainOut_R = m_reverb.m_out_R * mst_gain;
 
     m_mainOut_R *= 0.1588f;
     m_mainOut_R = std::clamp(m_mainOut_R, -0.25f, 0.25f);
@@ -1275,6 +1250,23 @@ void dsp_host::makeMonoSound(float *_signal, float _fadePoint)
 
     sample_square = m_mainOut_R * m_mainOut_R;
     m_mainOut_R = m_mainOut_R * ((2.26548f * sample_square - 5.13274f) * sample_square + 3.14159f);
+
+    //****************************** Fade n Flush ****************************//
+    if (m_flush)
+    {
+        if (m_table_indx == m_flush_indx)
+        {
+            resetDSP(false);
+        }
+
+        m_table_indx++;
+
+        if (m_table_indx == m_raised_cos_table.size())
+        {
+            m_table_indx = 0;
+            m_flush = false;
+        }
+    }
 }
 
 
@@ -1363,7 +1355,7 @@ void dsp_host::examineSignal()
 *******************************************************************************/
 
 /* Audio Engine Reset */
-void dsp_host::resetDSP()
+void dsp_host::resetDSP(bool _resetEnvs)
 {
     // if present, reset old envelopes
 #if test_whichEnvelope == 0
@@ -1378,49 +1370,59 @@ void dsp_host::resetDSP()
 #endif
     // iterate voices
     uint32_t v;
+
+    // reset Enevlopes
+    if (_resetEnvs)
+    {
+        for(v = 0; v < m_voices; v++)
+        {
+            // if present, reset new envelopes
+    #if test_whichEnvelope == 1
+            // reset new envelopes (Env A)
+            m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
+            m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
+            m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
+            m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
+            m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
+            m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
+            // reset new envelopes (Env B)
+            m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
+            m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
+            m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
+            m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
+            m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
+            m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
+            // reset new envelopes (Env C)
+            m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
+            m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
+            m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
+            m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
+            // reset new envelopes (Env G)
+            m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
+            m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
+            m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
+            m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
+    #endif
+        }
+        // mono flanger envelope (new envelopes only)
+    #if test_whichEnvelope == 1
+        // reset enw envelopes (Env F)
+        m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
+        m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
+    #endif
+    }
+
+    // reset: audio engine poly section (full flush included)
     for(v = 0; v < m_voices; v++)
     {
-        // if present, reset new envelopes
-#if test_whichEnvelope == 1
-        // reset new envelopes (Env A)
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env B)
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env C)
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env G)
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
-#endif
-        // reset: audio engine poly section (full flush included)
         m_soundgenerator[v].resetDSP();
         m_combfilter[v].resetDSP();
         m_svfilter[v].resetDSP();
         m_feedbackmixer[v].resetDSP();
     }
-    // mono flanger envelope (new envelopes only)
-#if test_whichEnvelope == 1
-    // reset enw envelopes (Env F)
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
-#endif
+
     // audio engine mono section (full flush included)
     m_outputmixer.resetDSP();
     m_flanger.resetDSP();
@@ -1428,6 +1430,7 @@ void dsp_host::resetDSP()
     m_gapfilter.resetDSP();
     m_echo.resetDSP();
     m_reverb.resetDSP();
+
     // null host output signal
     m_mainOut_L = 0.f;
     m_mainOut_R = 0.f;

@@ -79,7 +79,7 @@ void ae_combfilter::setDelaySmoother()
 /** @brief
 *******************************************************************************/
 
-void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal, float _fadePoint)
+void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal)
 {
     float tmpVar;
 
@@ -176,7 +176,6 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal, float 
     //******************************* Delay ********************************//
     float holdsample = m_out;                                  // for Bypass
 
-    m_out *= _fadePoint;
     m_buffer[m_buffer_indx] = m_out;
 
     /// hier kommt voicestealing hin!!
@@ -206,8 +205,6 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal, float 
                                         m_buffer[ind_t0],
                                         m_buffer[ind_tp1],
                                         m_buffer[ind_tp2]);
-
-    m_out *= _fadePoint;
 
     /// Envelope for voicestealingtmpVar
 
@@ -313,11 +310,11 @@ void ae_combfilter::set(float *_signal, float _samplerate)
 
     if (stateVar_r > 0.f)                                            // safe
     {
-        stateVar_r += 1e-12;
+        stateVar_r += 1e-12f;
     }
     else
     {
-        stateVar_r -= 1e-12;
+        stateVar_r -= 1e-12f;
     }
 
     tmpVar = NlToolbox::Math::arctan(stateVar_i / stateVar_r);        // arctan

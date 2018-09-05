@@ -10,9 +10,10 @@
 #pragma once
 
 #include <cmath>
-#include <common/tools.h>
+//#include <common/tools.h>
+#include <iostream>
+#include <stdint.h>
 #include <algorithm>
-//#include "nlglobaldefines.h"
 
 
 namespace NlToolbox {
