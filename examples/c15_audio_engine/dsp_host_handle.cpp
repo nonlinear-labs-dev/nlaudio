@@ -54,7 +54,7 @@ namespace DSP_HOST_HANDLE {
                     jh.debugBuffer->insert(pack<SharedStopWatchHandle>(sw));
                 break;
             case Nl::CommandBuffer::CMD_RESET:
-                    m_host.resetDSP(true);
+                    m_host.resetDSP();
                     jh.debugBuffer->insert(pack<std::string>("Reset executed"));
                 break;
             case Nl::CommandBuffer::CMD_NO_CMD:

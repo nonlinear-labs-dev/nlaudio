@@ -1256,7 +1256,7 @@ void dsp_host::makeMonoSound(float *_signal)
     {
         if (m_table_indx == m_flush_indx)
         {
-            resetDSP(false);
+            flushDSP();
         }
 
         m_table_indx++;
@@ -1350,12 +1350,14 @@ void dsp_host::examineSignal()
     }
 }
 
+
+
 /******************************************************************************/
 /**
 *******************************************************************************/
 
 /* Audio Engine Reset */
-void dsp_host::resetDSP(bool _resetEnvs)
+void dsp_host::resetDSP()
 {
     // if present, reset old envelopes
 #if test_whichEnvelope == 0
@@ -1372,47 +1374,44 @@ void dsp_host::resetDSP(bool _resetEnvs)
     uint32_t v;
 
     // reset Enevlopes
-    if (_resetEnvs)
+    for(v = 0; v < m_voices; v++)
     {
-        for(v = 0; v < m_voices; v++)
-        {
-            // if present, reset new envelopes
-    #if test_whichEnvelope == 1
-            // reset new envelopes (Env A)
-            m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
-            m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
-            m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
-            m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
-            m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
-            m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
-            // reset new envelopes (Env B)
-            m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
-            m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
-            m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
-            m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
-            m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
-            m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
-            // reset new envelopes (Env C)
-            m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
-            m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
-            m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
-            m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
-            // reset new envelopes (Env G)
-            m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
-            m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
-            m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
-            m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
-    #endif
-        }
-        // mono flanger envelope (new envelopes only)
-    #if test_whichEnvelope == 1
-        // reset enw envelopes (Env F)
-        m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
-        m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
-    #endif
+        // if present, reset new envelopes
+#if test_whichEnvelope == 1
+        // reset new envelopes (Env A)
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env B)
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env C)
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env G)
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
+#endif
     }
+    // mono flanger envelope (new envelopes only)
+#if test_whichEnvelope == 1
+    // reset enw envelopes (Env F)
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
+#endif
 
     // reset: audio engine poly section (full flush included)
     for(v = 0; v < m_voices; v++)
@@ -1434,4 +1433,45 @@ void dsp_host::resetDSP(bool _resetEnvs)
     // null host output signal
     m_mainOut_L = 0.f;
     m_mainOut_R = 0.f;
+}
+
+
+
+/******************************************************************************/
+/**
+*******************************************************************************/
+void dsp_host::flushDSP()
+{
+#if test_flushModeFlag == 1
+    // reset: audio engine poly section (full flush included)
+    for(uint32_t v = 0; v < m_voices; v++)
+    {
+        m_soundgenerator[v].resetDSP();
+        m_combfilter[v].resetDSP();
+        m_svfilter[v].resetDSP();
+        m_feedbackmixer[v].resetDSP();
+    }
+
+    // audio engine mono section (full flush included)
+    m_outputmixer.resetDSP();
+    m_flanger.resetDSP();
+    m_cabinet.resetDSP();
+    m_gapfilter.resetDSP();
+    m_echo.resetDSP();
+    m_reverb.resetDSP();
+#else
+    for(uint32_t v = 0; v < m_voices; v++)
+    {
+        std::fill(m_combfilter[v].m_buffer.begin(), m_combfilter[v].m_buffer.end(), 0.f);
+    }
+
+    std::fill(m_flanger.m_buffer_L.begin(), m_flanger.m_buffer_L.end(), 0.f);
+    std::fill(m_flanger.m_buffer_R.begin(), m_flanger.m_buffer_R.end(), 0.f);
+    std::fill(m_echo.m_buffer_L.begin(), m_echo.m_buffer_L.end(), 0.f);
+    std::fill(m_echo.m_buffer_R.begin(), m_echo.m_buffer_R.end(), 0.f);
+
+    std::fill(m_reverb.m_buffer_L.begin(), m_reverb.m_buffer_L.end(), 0.f);
+    std::fill(m_reverb.m_buffer_R.begin(), m_reverb.m_buffer_R.end(), 0.f);
+
+#endif
 }

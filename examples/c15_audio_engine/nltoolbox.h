@@ -10,7 +10,6 @@
 #pragma once
 
 #include <cmath>
-//#include <common/tools.h>
 #include <iostream>
 #include <stdint.h>
 #include <algorithm>
