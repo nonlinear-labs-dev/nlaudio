@@ -1154,8 +1154,10 @@ void paramengine::postProcessMono_slow(float *_signal)
     float tmp_Gap, tmp_Center, tmp_Stereo, tmp_Rate;
     const float tmp_SR = static_cast<float>(m_samplerate);
     /* - Flanger */
+#if test_flanger_phs == 0
     /*   - LFO/Envelope Rate, Phase */
     m_flangerLFO.m_phaseOffset = m_flaNormPhase * m_body[m_head[P_FLA_PHS].m_index].m_signal;
+#endif
     tmp_Rate = m_body[m_head[P_FLA_RTE].m_index].m_signal;
     m_flangerLFO.m_increment = m_reciprocal_samplerate * tmp_Rate;
     tmp_Rate *= m_flangerRateToDecay;
@@ -1242,6 +1244,10 @@ void paramengine::postProcessMono_fast(float *_signal)
     float tmp_val, tmp_dry, tmp_wet, tmp_hi_par, tmp_lo_par, tmp_hi_ser, tmp_lo_ser, tmp_fb;
     /* Effect Parameter Post Processing */
     /* - Flanger */
+#if test_flanger_phs == 1
+    /*   - LFO/Envelope Rate, Phase */
+    m_flangerLFO.m_phaseOffset = m_flaNormPhase * m_body[m_head[P_FLA_PHS].m_index].m_signal;
+#endif
     /*   - Feedback and Cross Feedback */
     tmp_fb = m_flaFeedbackCurve.applyCurve(m_body[m_head[P_FLA_FB].m_index].m_signal);
     tmp_val = m_body[m_head[P_FLA_CFB].m_index].m_signal;
@@ -1367,6 +1373,10 @@ void paramengine::postProcessMono_audio(float *_signal)
     tmp_env = (m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude * 2.f) - 1.f;
 #endif
     /* - Flanger */
+#if test_flanger_phs == 2
+    /*   - LFO/Envelope Rate, Phase */
+    m_flangerLFO.m_phaseOffset = m_flaNormPhase * m_body[m_head[P_FLA_PHS].m_index].m_signal;
+#endif
     /*   - render LFO, crossfade flanger envelope and pass left and right signals to array */
     m_flangerLFO.tick();
     float tmp_wet = m_body[m_head[P_FLA_ENV].m_index].m_signal;
