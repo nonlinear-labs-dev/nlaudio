@@ -224,7 +224,7 @@ const float param_definition[sig_number_of_params][10] = {
 #elif test_flanger_phs == 1
     {        214,    2,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE
 #elif test_flanger_phs == 2
-        {        214,    1,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE
+    {        214,    1,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE
 #endif
     {        216,    3,      0,      12500,  4,      50,     -1,     0,      0,      12500  },         // 158 FLANGER_TIME
     {        218,    3,      0,      160,    0,      0,      -1,     0,      1,      8000   },         // 159 FLANGER_STEREO
