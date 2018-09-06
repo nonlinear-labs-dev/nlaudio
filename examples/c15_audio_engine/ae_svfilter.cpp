@@ -58,6 +58,7 @@ void ae_svfilter::init(float _samplerate)
 void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal)
 {
     //******************************** Sample Mix ****************************//
+    float tmpRes = _signal[SVF_RES];   // new, direct resonance handling
     float tmpVar = _signal[SVF_AB];
     float firstSample = _sampleB * (1.f - tmpVar) + _sampleA * tmpVar;
     tmpVar = _signal[SVF_CMIX];
@@ -80,8 +81,13 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 //    omega = std::min(omega, 1.9f);
     omega = std::clamp(omega, 0.f, 1.5f);                                           /// new
 
+#if 0
     float attenuation = ((2.f + omega) * (2.f - omega) * m_resonance)               /// new
             / (((m_resonance * omega) + (2.f - omega)) * 2.f);
+#endif
+    // new resonance handling (directly from signal array)
+    float attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)               /// new
+            / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
     float firOut = (m_first_fir_stateVar + firstSample) * 0.25f;
     m_first_fir_stateVar = firstSample + DNC_const;
@@ -115,8 +121,13 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 //    omega = std::min(omega, 1.9f);
     omega = std::clamp(omega, 0.f, 1.5f);                   ///new
 
+#if 0
     attenuation = ((2.f + omega) * (2.f - omega) * m_resonance)     ///new
                          / (((m_resonance * omega) + (2.f - omega)) * 2.f);
+#endif
+    // new resonance handling (directly from signal array)
+    attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)               /// new
+            / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
     firOut = (m_second_fir_stateVar + secondSample) * 0.25f;
     m_second_fir_stateVar = secondSample + DNC_const;
@@ -156,13 +167,17 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 /** @brief
 *******************************************************************************/
 
+// seems obsolete now...
 void ae_svfilter::set(float *_signal)
 {
+    // resonance now directly applied in post processing, usable as signal now
+#if 0
     float resonance = _signal[SVF_RES];
     resonance = 1.f - resonance;
     resonance += resonance;
 //    resonance = std::max(resonance, 0.02f);
     m_resonance = std::max(resonance, 0.02f);
+#endif
 
 #if 0
     //****************************** 1st Stage ******************************//
@@ -190,7 +205,7 @@ void ae_svfilter::resetDSP()
 {
     m_out = 0.f;
 
-    m_resonance = 0.f;
+    m_resonance = 0.f;  // obsolete
 
     m_first_fir_stateVar = 0.f;
     m_second_fir_stateVar = 0.f;

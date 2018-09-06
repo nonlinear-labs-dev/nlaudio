@@ -26,7 +26,7 @@ struct ae_svfilter
     void set(float *_signal);
     void resetDSP();
 
-    float m_resonance;
+    float m_resonance;  // obsolete
 //    float m_first_attenuation, m_second_attenuation;
 
     //**************************** State Variables ****************************//
