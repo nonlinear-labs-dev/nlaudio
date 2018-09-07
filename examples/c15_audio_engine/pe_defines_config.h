@@ -20,6 +20,7 @@
 #define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
 #define test_reverbSmoother         1               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
 #define test_flanger_phs            0               // 0: slow (default), 1: fast, 2: audio
+#define test_initialize_time        1
 
 /* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */
 
@@ -94,7 +95,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 #define dsp_expon_time_factor       104.0781f       // measured value to produce exactly time of 16000 (equals highest time)
 #define dsp_comb_max_freqFactor     19.0166f        // measured value of highest frequency factor for the Comb Filter to run without bypass (corresponding to Pitch of 119.99 ST)
 #define dsp_render_min              1.e-9f          // minimal rendered value for exponential transitions
-#define dsp_initial_time            10              // initial smoothing time (in milliseconds)
+#define dsp_initial_time            10              // initial smoothing time (in milliseconds, no more than 340ms!)
 
 #define env_norm_peak               0.023766461f    // equals 1 / 42.0761 (taken from prototype)
 #define env_clip_peak               1.412537545f    // measured value for LevelKT Clipping, equals +3 dB (candidate)

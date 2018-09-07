@@ -67,6 +67,11 @@ void dsp_host::loadInitialPreset()
         evalMidi(5, 0, 0);                                                              // send destination 0
     }
     evalMidi(47, 0, 2);                                                                 // apply preloaded values
+    /* should time be initialized? */
+#if test_initialize_time == 1
+    uint32_t time = dsp_initial_time * static_cast<uint32_t>(m_params.m_millisecond);   // no clipping!!!
+    evalMidi(2, time >> 7, time & 127);
+#endif
     /* clear Selection */
     evalMidi(0, 0, 0);                                                                  // select voice 0
     evalMidi(1, 0, 0);                                                                  // select parameter 0
