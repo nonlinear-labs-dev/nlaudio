@@ -93,7 +93,7 @@ void ae_feedbackmixer::apply(float _sampleComb, float _sampleSVF, float _sampleF
 
     m_out = NlToolbox::Others::parAsym(m_out, tmpVar, _signal[FBM_ASM]);
 
-    m_out = tmpVar * _signal[FBM_LVL];
+    m_out = m_out * _signal[FBM_LVL];
 }
 
 /******************************************************************************/
