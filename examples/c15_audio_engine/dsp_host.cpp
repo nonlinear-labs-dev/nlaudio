@@ -67,6 +67,11 @@ void dsp_host::loadInitialPreset()
         evalMidi(5, 0, 0);                                                              // send destination 0
     }
     evalMidi(47, 0, 2);                                                                 // apply preloaded values
+    /* should time be initialized? */
+#if test_initialize_time == 1
+    uint32_t time = dsp_initial_time * static_cast<uint32_t>(m_params.m_millisecond);   // no clipping!!!
+    evalMidi(2, time >> 7, time & 127);
+#endif
     /* clear Selection */
     evalMidi(0, 0, 0);                                                                  // select voice 0
     evalMidi(1, 0, 0);                                                                  // select parameter 0
@@ -1326,15 +1331,16 @@ void dsp_host::examineParameter()
     uint32_t v;
     for(v = 0; v < m_param_status.m_size; v++)
     {
-        m_param_status.m_state[v] = m_params.m_body[m_param_status.m_index + v].m_state;
-        m_param_status.m_preload[v] = m_params.m_body[m_param_status.m_index + v].m_preload;
-        m_param_status.m_signal[v] = m_params.m_body[m_param_status.m_index + v].m_signal;
-        m_param_status.m_dx[v][0] = m_params.m_body[m_param_status.m_index + v].m_dx[0];
-        m_param_status.m_dx[v][1] = m_params.m_body[m_param_status.m_index + v].m_dx[1];
-        m_param_status.m_x[v] = m_params.m_body[m_param_status.m_index + v].m_x;
-        m_param_status.m_start[v] = m_params.m_body[m_param_status.m_index + v].m_start;
-        m_param_status.m_diff[v] = m_params.m_body[m_param_status.m_index + v].m_diff;
-        m_param_status.m_dest[v] = m_params.m_body[m_param_status.m_index + v].m_dest;
+        param_body * par = &m_params.m_body[m_param_status.m_index];
+        m_param_status.m_state[v] = par->m_state;
+        m_param_status.m_preload[v] = par->m_preload;
+        m_param_status.m_signal[v] = par->m_signal;
+        m_param_status.m_dx[v][0] = par->m_dx[0];
+        m_param_status.m_dx[v][1] = par->m_dx[1];
+        m_param_status.m_x[v] = par->m_x;
+        m_param_status.m_start[v] = par->m_start;
+        m_param_status.m_diff[v] = par->m_diff;
+        m_param_status.m_dest[v] = par->m_dest;
     }
 }
 

@@ -43,7 +43,7 @@ namespace DSP_HOST_HANDLE {
                     jh.debugBuffer->insert(pack<::examine_param>(m_host.m_param_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_SIGNAL:
-                m_host.examineSignal();
+                    m_host.examineSignal();
                     jh.debugBuffer->insert(pack<::examine_signal>(m_host.m_signal_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_TCD_INPUT:
