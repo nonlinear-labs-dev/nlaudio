@@ -18,7 +18,7 @@
 #define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
 #define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
-#define test_reverbSmoother         1               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
+#define test_reverbSmoother         0               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
 #define test_flanger_phs            0               // 0: slow (default), 1: fast, 2: audio
 #define test_initialize_time        1
 

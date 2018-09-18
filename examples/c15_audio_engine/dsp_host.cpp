@@ -431,22 +431,6 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
                 m_params.applyPreloaded(v, p);
             }
         }
-        /* apply preloaded values - key events */
-        if(m_params.m_event.m_mono.m_preload > 0)
-        {
-            m_params.m_event.m_mono.m_preload = 0;
-            m_params.keyApplyMono();
-        }
-        for(v = 0; v < m_voices; v++)
-        {
-            if(m_params.m_event.m_poly[v].m_preload > 0)
-            {
-                m_params.m_event.m_poly[v].m_preload = 0;
-                m_params.keyApply(v);
-                keyApply(v);
-            }
-        }
-        /* end of classical apply */
         /* Trigger Slow Rendering and Post Processing (Key Events should be effective immediately) */
         uint32_t i; // temporary item index
         /* render slow mono parameters and perform mono post processing */
@@ -474,6 +458,31 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
         setMonoSlowFilterCoeffs(m_paramsignaldata[0]);
         /* Reset Slow Clock counter (next slow clock tick will occur in 120 samples - @48kHz) */
         m_clockPosition[3] = 1;
+        /* apply preloaded values - key events */
+        if(m_params.m_event.m_mono.m_preload > 0)
+        {
+            m_params.m_event.m_mono.m_preload = 0;
+            m_params.keyApplyMono();
+        }
+        for(v = 0; v < m_voices; v++)
+        {
+            if(m_params.m_event.m_poly[v].m_preload > 0)
+            {
+                m_params.m_event.m_poly[v].m_preload = 0;
+                m_params.keyApply(v);
+                //m_params.postProcessPoly_slow(m_paramsignaldata[v], v);
+                keyApply(v);
+                //std::cout << "Voice: " << v;
+                //std::cout << " Pitch: " << m_params.m_body[m_params.m_head[P_KEY_NP].m_index + v].m_signal;
+                //std::cout << " Comb:\t";
+                //for(uint32_t t = CMB_AB; t <= CMB_PMAB; t++)
+                //{
+                    //std::cout << m_paramsignaldata[v][t] << "  ";
+                //}
+                //std::cout << std::endl;
+            }
+        }
+        /* end of classical apply */
         break;
     }
 }
