@@ -57,8 +57,8 @@ struct ae_reverb
     void apply(float _rawSample_L, float _rawSample_R, float *_signal);
     void resetDSP();
 
-    int32_t m_slow_tick;
-    int32_t m_slow_thrsh;
+    uint32_t m_slow_tick;
+    uint32_t m_slow_thrsh;
 
     //************************** Reverb Modulation ***************************//
     float m_mod_1a, m_mod_2a, m_mod_1b, m_mod_2b;
@@ -81,8 +81,8 @@ struct ae_reverb
     float m_absorb;
     float m_bal_half, m_bal_full;
 
-    int32_t m_buffer_indx;
-    int32_t m_buffer_sz_m1, m_buffer_sz_m2;
+    uint32_t m_buffer_indx;
+    uint32_t m_buffer_sz_m1, m_buffer_sz_m2;
 
     float m_preDel_L, m_preDel_R;
 

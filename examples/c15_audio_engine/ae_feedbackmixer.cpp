@@ -81,19 +81,16 @@ void ae_feedbackmixer::apply(float _sampleComb, float _sampleSVF, float _sampleF
     m_hp_stateVar_1 = tmpVar + DNC_const;
     m_hp_stateVar_2 = m_out + DNC_const;
 
-    float test = _signal[FBM_DRV];
     m_out *= _signal[FBM_DRV];
 
     tmpVar = m_out;
     m_out = NlToolbox::Math::sinP3_wrap(m_out);
     m_out = NlToolbox::Others::threeRanges(m_out, tmpVar, _signal[FBM_FLD]);
-    test = _signal[FBM_FLD];
 
     tmpVar  = m_out * m_out;
     tmpVar -= m_hp30hz_stateVar;                // HP 30Hz
     m_hp30hz_stateVar = tmpVar * m_hp30hz_b0 + m_hp30hz_stateVar + NlToolbox::Constants::DNC_const;
 
-    test = _signal[FBM_ASM];
     m_out = NlToolbox::Others::parAsym(m_out, tmpVar, _signal[FBM_ASM]);
 
     m_out = m_out * _signal[FBM_LVL];
