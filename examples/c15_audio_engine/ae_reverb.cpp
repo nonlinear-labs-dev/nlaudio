@@ -284,7 +284,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-//    ind_tm1 = ind_t0 - 1;
     ind_tm1 = ind_t0 + 1;
 
     ind_t0  = m_buffer_indx - ind_t0;
@@ -294,7 +293,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_tm1 &= m_buffer_sz_m1;
 
     wetSample_L = m_buffer_L[ind_t0] + tmpVar * (m_buffer_L[ind_tm1] - m_buffer_L[ind_t0]);
-//    wetSample_L += (m_stateVar_L9 * m_fb_amnt);
+
     wetSample_L += (m_stateVar_R9 * m_fb_amnt);
 
 
@@ -326,9 +325,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-//    ind_tm1 = std::max(ind_t0, 1) + 1;
-//    ind_tp1 = ind_t0 + -1;
-//    ind_tp2 = ind_t0 + -2;
     ind_tm1 = std::max(ind_t0, 1) - 1;
     ind_tp1 = ind_t0 + 1;
     ind_tp2 = ind_t0 + 2;
@@ -448,39 +444,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_stateVar_L8 = m_buffer_L8[ind_t0];
 
 
-    //***************************** Del 4p L9 ******************************//
-    m_buffer_L9[m_buffer_indx] = wetSample_L;
-
-    tmpVar = REV_DEL_L9 + m_mod_1a;
-    tmpVar = std::clamp(tmpVar, 0.f, static_cast<float>(m_buffer_sz_m2));
-
-    ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
-    tmpVar = tmpVar - static_cast<float>(ind_t0);
-
-//    ind_tm1 = std::max(ind_t0, 1) + 1;
-//    ind_tp1 = ind_t0 + -1;
-//    ind_tp2 = ind_t0 + -2;
-    ind_tm1 = std::max(ind_t0, 1) - 1;
-    ind_tp1 = ind_t0 + 1;
-    ind_tp2 = ind_t0 + 2;
-
-    ind_tm1 = m_buffer_indx - ind_tm1;
-    ind_t0  = m_buffer_indx - ind_t0;
-    ind_tp1 = m_buffer_indx - ind_tp1;
-    ind_tp2 = m_buffer_indx - ind_tp2;
-
-    ind_tm1 &= m_buffer_sz_m1;
-    ind_t0  &= m_buffer_sz_m1;
-    ind_tp1 &= m_buffer_sz_m1;
-    ind_tp2 &= m_buffer_sz_m1;
-
-    m_stateVar_L9 = NlToolbox::Math::interpolRT(tmpVar,
-                                                m_buffer_L9[ind_tm1],
-                                                m_buffer_L9[ind_t0],
-                                                m_buffer_L9[ind_tp1],
-                                                m_buffer_L9[ind_tp2]);
-
-
     //************************************************************************//
     //*************************** Right Channel ******************************//
     wetSample_R  = _rawSample_R * _signal[REV_FEED];
@@ -494,7 +457,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-//    ind_tm1 = ind_t0 - 1;
     ind_tm1 = ind_t0 + 1;
 
     ind_t0  = m_buffer_indx - ind_t0;
@@ -505,7 +467,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 
     wetSample_R = m_buffer_R[ind_t0] + tmpVar * (m_buffer_R[ind_tm1] - m_buffer_R[ind_t0]);
 
-//    wetSample_R += (m_stateVar_R9 * m_fb_amnt);
     wetSample_R += (m_stateVar_L9 * m_fb_amnt);
 
 
@@ -536,10 +497,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
-
-//    ind_tm1 = std::max(ind_t0, 1) + 1;
-//    ind_tp1 = ind_t0 + -1;
-//    ind_tp2 = ind_t0 + -2;
 
     ind_tm1 = std::max(ind_t0, 1) - 1;
     ind_tp1 = ind_t0 + 1;
@@ -661,6 +618,38 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_stateVar_R8 = m_buffer_R8[ind_t0];
 
 
+    //************************************************************************//
+    //*************************** Feedback Delay *****************************//
+    //****************************** Del 4p L9 *******************************//
+    m_buffer_L9[m_buffer_indx] = wetSample_L;
+
+    tmpVar = REV_DEL_L9 + m_mod_1a;
+    tmpVar = std::clamp(tmpVar, 0.f, static_cast<float>(m_buffer_sz_m2));
+
+    ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
+    tmpVar = tmpVar - static_cast<float>(ind_t0);
+
+    ind_tm1 = std::max(ind_t0, 1) - 1;
+    ind_tp1 = ind_t0 + 1;
+    ind_tp2 = ind_t0 + 2;
+
+    ind_tm1 = m_buffer_indx - ind_tm1;
+    ind_t0  = m_buffer_indx - ind_t0;
+    ind_tp1 = m_buffer_indx - ind_tp1;
+    ind_tp2 = m_buffer_indx - ind_tp2;
+
+    ind_tm1 &= m_buffer_sz_m1;
+    ind_t0  &= m_buffer_sz_m1;
+    ind_tp1 &= m_buffer_sz_m1;
+    ind_tp2 &= m_buffer_sz_m1;
+
+    m_stateVar_L9 = NlToolbox::Math::interpolRT(tmpVar,
+                                                m_buffer_L9[ind_tm1],
+                                                m_buffer_L9[ind_t0],
+                                                m_buffer_L9[ind_tp1],
+                                                m_buffer_L9[ind_tp2]);
+
+
     //***************************** Del 4p R9 ******************************//
     m_buffer_R9[m_buffer_indx] = wetSample_R;
 
@@ -670,9 +659,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-//    ind_tm1 = std::max(ind_t0, 1) + 1;
-//    ind_tp1 = ind_t0 + -1;
-//    ind_tp2 = ind_t0 + -2;
     ind_tm1 = std::max(ind_t0, 1) - 1;
     ind_tp1 = ind_t0 + 1;
     ind_tp2 = ind_t0 + 2;
@@ -694,7 +680,6 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
                                                 m_buffer_R9[ind_tp2]);
 
     m_buffer_indx = (m_buffer_indx + 1) & m_buffer_sz_m1;
-
 
 
     //************************************************************************//
