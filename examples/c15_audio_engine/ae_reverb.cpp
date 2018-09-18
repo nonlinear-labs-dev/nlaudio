@@ -294,7 +294,8 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_tm1 &= m_buffer_sz_m1;
 
     wetSample_L = m_buffer_L[ind_t0] + tmpVar * (m_buffer_L[ind_tm1] - m_buffer_L[ind_t0]);
-    wetSample_L += (m_stateVar_L9 * m_fb_amnt);
+//    wetSample_L += (m_stateVar_L9 * m_fb_amnt);
+    wetSample_L += (m_stateVar_R9 * m_fb_amnt);
 
 
     //**************************** Loop Filter L *****************************//
@@ -504,7 +505,8 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 
     wetSample_R = m_buffer_R[ind_t0] + tmpVar * (m_buffer_R[ind_tm1] - m_buffer_R[ind_t0]);
 
-    wetSample_R += (m_stateVar_R9 * m_fb_amnt);
+//    wetSample_R += (m_stateVar_R9 * m_fb_amnt);
+    wetSample_R += (m_stateVar_L9 * m_fb_amnt);
 
 
     //**************************** Loop Filter R *****************************//
