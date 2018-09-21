@@ -57,8 +57,96 @@ void ae_svfilter::init(float _samplerate)
 
 void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal)
 {
+    float tmpRes = _signal[SVF_RES];
+
     //******************************** Sample Mix ****************************//
-    float tmpRes = _signal[SVF_RES];   // new, direct resonance handling
+    float tmpVar = _signal[SVF_AB];
+    float mixSample = _sampleB * (1.f - tmpVar) + _sampleA * tmpVar;
+    tmpVar = _signal[SVF_CMIX];
+    mixSample = mixSample * (1.f - std::abs(tmpVar)) + _sampleComb * tmpVar;
+
+
+    //************************** Frequency Modulation ************************//
+    float fmVar = _sampleA * _signal[SVF_FMAB] + _sampleB * (1.f - _signal[SVF_FMAB]);
+
+
+    //************************** 1st Stage SV FILTER *************************//
+    float inputSample = mixSample + (m_first_sat_stateVar * 0.1f);
+
+    float omega = (_signal[SVF_F1_CUT] + fmVar * _signal[SVF_F1_FM]) * m_warpConst_2PI;
+    omega = std::clamp(omega, 0.f, 1.5f);
+
+    float attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
+            / (((tmpRes * omega) + (2.f - omega)) * 2.f);
+
+    float firOut = (m_first_fir_stateVar + inputSample) * 0.25f;
+    m_first_fir_stateVar = inputSample + DNC_const;
+
+    tmpVar = firOut - (attenuation * m_first_int1_stateVar + m_first_int2_stateVar);
+
+    float int1Out = tmpVar * omega + m_first_int1_stateVar;
+    float int2Out = int1Out * omega + m_first_int2_stateVar;
+
+    float lowpassOutput  = int2Out + m_first_int2_stateVar;
+    float bandpassOutput = int1Out + int1Out;
+    float highpassOutput = inputSample - (int1Out * attenuation + lowpassOutput);
+
+    m_first_int1_stateVar = int1Out + DNC_const;
+    m_first_int2_stateVar = int2Out + DNC_const;
+
+    float outputSample_1 = lowpassOutput  * std::max(-(_signal[SVF_LBH_1]), 0.f);
+    outputSample_1 += (bandpassOutput * (1.f - std::abs(_signal[SVF_LBH_1])));
+    outputSample_1 += (highpassOutput * std::max(_signal[SVF_LBH_1], 0.f));
+
+
+    //************************** 1st Stage Parabol Sat ***********************//
+    m_first_sat_stateVar = std::clamp(bandpassOutput, -2.f, 2.f);
+    m_first_sat_stateVar *= (1.f - std::abs(m_first_sat_stateVar) * 0.25f);
+
+
+    //************************** 2nd Stage SV FILTER *************************//
+    inputSample = (outputSample_1 * _signal[SVF_PAR_3])
+                + (mixSample * _signal[SVF_PAR_4])
+                + (m_second_sat_stateVar * 0.1f);
+
+    omega = (_signal[SVF_F2_CUT] + fmVar * _signal[SVF_F2_FM]) * m_warpConst_2PI;
+    omega = std::clamp(omega, 0.f, 1.5f);
+
+    attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
+            / (((tmpRes * omega) + (2.f - omega)) * 2.f);
+
+    firOut = (m_second_fir_stateVar + inputSample) * 0.25f;
+    m_second_fir_stateVar = inputSample + DNC_const;
+
+    tmpVar = firOut - (attenuation * m_second_int1_stateVar + m_second_int2_stateVar);
+
+    int1Out = tmpVar * omega + m_second_int1_stateVar;
+    int2Out = int1Out * omega + m_second_int2_stateVar;
+
+    lowpassOutput  = int2Out + m_second_int2_stateVar;
+    bandpassOutput = int1Out + int1Out;
+    highpassOutput = tmpVar - (int1Out * attenuation + lowpassOutput);
+
+    m_second_int1_stateVar = int1Out + DNC_const;
+    m_second_int2_stateVar = int2Out + DNC_const;
+
+    tmpVar  =  lowpassOutput  * std::max(-(_signal[SVF_LBH_2]), 0.f);
+    tmpVar += (bandpassOutput * (1.f - std::abs(_signal[SVF_LBH_2])));
+    tmpVar += (highpassOutput * std::max(_signal[SVF_LBH_2], 0.f));
+
+
+    //************************* 2nd Stage Parabol Sat ************************//
+    m_second_sat_stateVar = std::clamp(bandpassOutput, -2.f, 2.f);
+    m_second_sat_stateVar *= (1.f - std::abs(m_second_sat_stateVar) * 0.25f);
+
+
+    //****************************** Crossfades ******************************//
+    m_out = (outputSample_1 * _signal[SVF_PAR_1]) + (tmpVar * _signal[SVF_PAR_2]);
+
+#if 0
+    float tmpRes = _signal[SVF_RES];
+
+    //******************************** Sample Mix ****************************//
     float tmpVar = _signal[SVF_AB];
     float firstSample = _sampleB * (1.f - tmpVar) + _sampleA * tmpVar;
     tmpVar = _signal[SVF_CMIX];
@@ -72,36 +160,28 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 
 
     //************************** Frequency Modulation ************************//
-//    tmpVar = _sampleA * _signal[SVF_FMAB] + _sampleB * (1.f - _signal[SVF_FMAB]);
     float fmVar = _sampleA * _signal[SVF_FMAB] + _sampleB * (1.f - _signal[SVF_FMAB]);
 
 
     //************************** 1st Stage SV FILTER *************************//
     float omega = (_signal[SVF_F1_CUT] + fmVar * _signal[SVF_F1_FM]) * m_warpConst_2PI;
-//    omega = std::min(omega, 1.9f);
-    omega = std::clamp(omega, 0.f, 1.5f);                                           /// new
+    omega = std::clamp(omega, 0.f, 1.5f);
 
-#if 0
-    float attenuation = ((2.f + omega) * (2.f - omega) * m_resonance)               /// new
-            / (((m_resonance * omega) + (2.f - omega)) * 2.f);
-#endif
     // new resonance handling (directly from signal array)
-    float attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)               /// new
+    float attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
             / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
     float firOut = (m_first_fir_stateVar + firstSample) * 0.25f;
     m_first_fir_stateVar = firstSample + DNC_const;
 
-//    m_first_sv_sample = firOut - (m_first_attenuation * m_first_int1_stateVar + m_first_int2_stateVar);
-    tmpVar = firOut - (attenuation * m_first_int1_stateVar + m_first_int2_stateVar);     /// new
+    tmpVar = firOut - (attenuation * m_first_int1_stateVar + m_first_int2_stateVar);
 
     float int1Out = tmpVar * omega + m_first_int1_stateVar;
     float int2Out = int1Out * omega + m_first_int2_stateVar;
 
     float lowpassOutput  = int2Out + m_first_int2_stateVar;
     float bandpassOutput = int1Out + int1Out;
-//    float highpassOutput = firstSample - (int1Out * m_first_attenuation + lowpassOutput);
-    float highpassOutput = firstSample - (int1Out * attenuation + lowpassOutput);           ///new
+    float highpassOutput = firstSample - (int1Out * attenuation + lowpassOutput);
 
     m_first_int1_stateVar = int1Out + DNC_const;
     m_first_int2_stateVar = int2Out + DNC_const;
@@ -118,29 +198,22 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 
     //************************** 2nd Stage SV FILTER *************************//
     omega = (_signal[SVF_F2_CUT] + fmVar * _signal[SVF_F2_FM]) * m_warpConst_2PI;
-//    omega = std::min(omega, 1.9f);
-    omega = std::clamp(omega, 0.f, 1.5f);                   ///new
+    omega = std::clamp(omega, 0.f, 1.5f);
 
-#if 0
-    attenuation = ((2.f + omega) * (2.f - omega) * m_resonance)     ///new
-                         / (((m_resonance * omega) + (2.f - omega)) * 2.f);
-#endif
     // new resonance handling (directly from signal array)
-    attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)               /// new
+    attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
             / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
     firOut = (m_second_fir_stateVar + secondSample) * 0.25f;
     m_second_fir_stateVar = secondSample + DNC_const;
 
-//    tmpVar = firOut - (m_second_attenuation * m_second_int1_stateVar + m_second_int2_stateVar);
-    tmpVar = firOut - (attenuation * m_second_int1_stateVar + m_second_int2_stateVar);          ///new
+    tmpVar = firOut - (attenuation * m_second_int1_stateVar + m_second_int2_stateVar);
 
     int1Out = tmpVar * omega + m_second_int1_stateVar;
     int2Out = int1Out * omega + m_second_int2_stateVar;
 
     lowpassOutput  = int2Out + m_second_int2_stateVar;
     bandpassOutput = int1Out + int1Out;
-//    highpassOutput = tmpVar - (int1Out * m_second_attenuation + lowpassOutput);
     highpassOutput = tmpVar - (int1Out * attenuation + lowpassOutput);
 
     m_second_int1_stateVar = int1Out + DNC_const;
@@ -159,6 +232,7 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
     //****************************** Crossfades ******************************//
     m_out  = m_first_sv_sample * _signal[SVF_PAR_1];
     m_out += (tmpVar * _signal[SVF_PAR_2]);
+#endif
 }
 
 
