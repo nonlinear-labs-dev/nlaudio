@@ -77,7 +77,7 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
     omega = std::clamp(omega, 0.f, 1.5f);
 
     float attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
-            / (((tmpRes * omega) + (2.f - omega)) * 2.f);
+                      / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
     float firOut = (m_first_fir_stateVar + inputSample) * 0.25f;
     m_first_fir_stateVar = inputSample + DNC_const;
@@ -125,7 +125,7 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 
     lowpassOutput  = int2Out + m_second_int2_stateVar;
     bandpassOutput = int1Out + int1Out;
-    highpassOutput = tmpVar - (int1Out * attenuation + lowpassOutput);
+    highpassOutput = inputSample - (int1Out * attenuation + lowpassOutput);
 
     m_second_int1_stateVar = int1Out + DNC_const;
     m_second_int2_stateVar = int2Out + DNC_const;
