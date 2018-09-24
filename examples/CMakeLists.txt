@@ -5,6 +5,11 @@
 cmake_minimum_required(VERSION 3.2)
 project(nlaudio_examples)
 
+IF(NOT DEFINED SYSTEMD_CONFIGURATION_FILES_DIR)
+  set(SYSTEMD_CONFIGURATION_FILES_DIR "${CMAKE_INSTALL_PREFIX}/etc/systemd/system")
+ENDIF()
+
+
 ### libnlaudio
 set(NLAUDIO_LIBRARY_PATH /usr/local/lib64)
 set(NLAUDIO_LIBRARY ${NLAUDIO_LIBRARY_PATH}/libnlaudio.so)
@@ -51,9 +56,20 @@ FILE(GLOB_RECURSE C15_AUDIO_ENGINE_SOURCES "c15_audio_engine/*")
 add_executable(c15_audio_engine ${C15_AUDIO_ENGINE_SOURCES} c15_audio_engine.cpp)
 target_link_libraries(c15_audio_engine nlaudio)
 
+configure_file(${PROJECT_SOURCE_DIR}/systemd/c15.service.in
+	${PROJECT_BINARY_DIR}/systemd/c15.service @ONLY
+	)
+
+
 ############
 # Install
 
 INSTALL(TARGETS c15_audio_engine
-	RUNTIME DESTINATION bin)
+	RUNTIME DESTINATION bin
+	)
+
+INSTALL(FILES ${PROJECT_BINARY_DIR}/systemd/c15.service
+	DESTINATION ${SYSTEMD_CONFIGURATION_FILES_DIR} COMPONENT init
+	)
+
 
