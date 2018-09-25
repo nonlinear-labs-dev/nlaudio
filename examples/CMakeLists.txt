@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.2)
 project(nlaudio_examples)
 
 IF(NOT DEFINED SYSTEMD_CONFIGURATION_FILES_DIR)
-  set(SYSTEMD_CONFIGURATION_FILES_DIR "${CMAKE_INSTALL_PREFIX}/etc/systemd/system")
+  set(SYSTEMD_CONFIGURATION_FILES_DIR "/etc/systemd/system")
 ENDIF()
 
 
