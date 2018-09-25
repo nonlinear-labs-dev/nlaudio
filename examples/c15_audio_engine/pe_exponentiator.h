@@ -20,12 +20,12 @@ struct exponentiator
     uint32_t m_position_step;
     float m_position_fine;
     /* constants (table offsets, bases, exponent scalings, hyperbolic floor parameters) */
-    const float m_freqExponent_offset = 69;                             // pitch reference offset (where resulting frequency factor equals 1)
-    const float m_freqBase = 2;                                         // base for pitch to frequency conversion
-    const float m_scaleFreqExponent = 1.f / 12;                         // exponent normalization for pitch conversion
-    const float m_gainBase = 10;                                        // base for level to amplitude and time conversion
-    const float m_scaleGainExponent = 1.f / 20;                         // exponent normalization for level and time conversion
-    const float m_hyperfloor[2] = {(300.f / 13), (280.f / 13)};         // two parameters needed to generate the hyperbolic floor function of oscillator pitches
+    const float m_freqExponent_offset = 69.f;                           // pitch reference offset (where resulting frequency factor equals 1)
+    const float m_freqBase = 2.f;                                       // base for pitch to frequency conversion
+    const float m_scaleFreqExponent = 1.f / 12.f;                       // exponent normalization for pitch conversion
+    const float m_gainBase = 10.f;                                      // base for level to amplitude and time conversion
+    const float m_scaleGainExponent = 1.f / 20.f;                       // exponent normalization for level and time conversion
+    const float m_hyperfloor[2] = {(300.f / 13.f), (280.f / 13.f)};     // two parameters needed to generate the hyperbolic floor function of oscillator pitches
     /* constant input value ranges for (clipped) table access */        // (range values provided by pe_defines_config.h)
     const float m_linear_pitch_from = dsp_expon_lin_pitch_from;
     const float m_linear_pitch_to = dsp_expon_lin_pitch_range + dsp_expon_lin_pitch_from;

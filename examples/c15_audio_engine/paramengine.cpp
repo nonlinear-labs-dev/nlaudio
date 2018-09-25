@@ -318,7 +318,8 @@ void paramengine::keyUp(const uint32_t _voiceId, float _velocity)
 void paramengine::keyApply(const uint32_t _voiceId)
 {
     /* apply key event (update envelopes according to event type) */
-    const float pitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal;
+    const float pitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal
+                        + m_body[m_head[P_MA_T].m_index].m_signal;              // master tune is also effective here...
     const float velocity = m_event.m_poly[_voiceId].m_velocity;
     if(m_event.m_poly[_voiceId].m_type == 0)
     {
@@ -510,7 +511,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     envId = 0;                                                                                                          // setting the focus on envelope a
     envIndex = m_envIds[envId];                                                                                         // update index accordingly
 
-    timeKT = -m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                               // determine time key tracking according to pitch and parameter
+    timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
@@ -544,7 +545,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     envId = 1;                                                                                                          // setting the focus on envelope b
     envIndex = m_envIds[envId];                                                                                         // update index accordingly
 
-    timeKT = -m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                               // determine time key tracking according to pitch and parameter
+    timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
@@ -578,7 +579,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     envId = 2;                                                                                                          // setting the focus on envelope c
     envIndex = m_envIds[envId];                                                                                         // update index accordingly
 
-    timeKT = -m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                               // determine time key tracking according to pitch and parameter
+    timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
