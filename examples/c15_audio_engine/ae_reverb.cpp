@@ -134,47 +134,76 @@ void ae_reverb::init(float _samplerate, uint32_t _upsampleFactor)
 void ae_reverb::set(float *_signal)
 {
     float tmpVar;
-
+    float tmp_target;
 #if test_reverbSmoother == 1
 
     tmpVar = _signal[REV_SIZE];
-    m_depth_target = _signal[REV_CHO] * (tmpVar * -200.f + 311.f);
-    m_depth_inc = (m_depth_target - m_depth) * m_smooth_inc;
-    m_depth_max = std::max(m_depth, m_depth_target);
-    m_depth_min = std::min(m_depth, m_depth_target);
+    tmp_target = _signal[REV_CHO] * (tmpVar * -200.f + 311.f);
+    if (m_depth_target - tmp_target != 0.f)
+    {
+        m_depth_target = tmp_target;
+        m_depth_base = m_depth;
+        m_depth_diff = m_depth_target - m_depth_base;
+        m_depth_ramp = 0.f;
+    }
 
-    m_size_target = tmpVar * (0.5f - std::abs(tmpVar) * -0.5f);
-    m_size_inc = (m_size_target - m_size) * m_smooth_inc;
-    m_size_max = std::max(m_size, m_size_target);
-    m_size_min = std::min(m_size, m_size_target);
+    tmp_target = tmpVar * (0.5f - std::abs(tmpVar) * -0.5f);
+    if (m_size_target - tmp_target != 0.f)
+    {
+        m_size_target = tmp_target;
+        m_size_base = m_size;
+        m_size_diff = m_size_target - m_size_base;
+        m_size_ramp = 0.f;
+    }
 
-    m_bal_target = _signal[REV_BAL];
-    m_bal_inc = (m_bal_target - m_bal) * m_smooth_inc;
-    m_bal_max = std::max(m_bal, m_bal_target);
-    m_bal_min = std::min(m_bal, m_bal_target);
+    tmp_target = _signal[REV_BAL];
+    if (m_bal_target - tmp_target != 0.f)
+    {
+        m_bal_target = tmp_target;
+        m_bal_base = m_bal;
+        m_bal_diff = m_bal_target - m_bal_base;
+        m_bal_ramp = 0.f;
+    }
 
     tmpVar = _signal[REV_PRE];
-    m_preDel_L_target = std::round(tmpVar);
-    m_preDel_L_inc = (m_preDel_L_target - m_preDel_L) * m_smooth_inc;
-    m_preDel_L_max = std::max(m_preDel_L, m_preDel_L_target);
-    m_preDel_L_min = std::min(m_preDel_L, m_preDel_L_target);
+    tmp_target = std::round(tmpVar);
+    if (m_preDel_L_target - tmp_target != 0.f)
+    {
+        m_preDel_L_target = tmp_target;
+        m_preDel_L_base = m_preDel_L;
+        m_preDel_L_diff = m_preDel_L_target - m_preDel_L_base;
+        m_preDel_L_ramp = 0.f;
+    }
 
-    m_preDel_R_target = std::round(tmpVar * 1.18933f);
-    m_preDel_R_inc = (m_preDel_R_target - m_preDel_R) * m_smooth_inc;
-    m_preDel_R_max = std::max(m_preDel_R, m_preDel_R_target);
-    m_preDel_R_min = std::min(m_preDel_R, m_preDel_R_target);
+    tmp_target = std::round(tmpVar * 1.18933f);
+    if (m_preDel_R_target - tmp_target != 0.f)
+    {
+        m_preDel_R_target = tmp_target;
+        m_preDel_R_base = m_preDel_R;
+        m_preDel_R_diff = m_preDel_R_target - m_preDel_R_base;
+        m_preDel_R_ramp = 0.f;
+    }
 
-    tmpVar = std::clamp(_signal[REV_LPF], 0.1f, m_omegaClip_max);
-    m_lp_omega_target = NlToolbox::Math::tan(tmpVar * m_warpConst_PI);
-    m_lp_omega_inc = (m_lp_omega_target - m_lp_omega) * m_smooth_inc;
-    m_lp_omega_max = std::max(m_lp_omega, m_lp_omega_target);
-    m_lp_omega_min = std::min(m_lp_omega, m_lp_omega_target);
 
-    tmpVar = std::clamp(_signal[REV_HPF], 0.1f, m_omegaClip_max);
-    m_hp_omega_target = NlToolbox::Math::tan(tmpVar * m_warpConst_PI);
-    m_hp_omega_inc = (m_hp_omega_target - m_hp_omega) * m_smooth_inc;
-    m_hp_omega_max = std::max(m_hp_omega, m_hp_omega_target);
-    m_hp_omega_min = std::min(m_hp_omega, m_hp_omega_target);
+    tmp_target = std::clamp(_signal[REV_LPF], 0.1f, m_omegaClip_max);
+    tmp_target = NlToolbox::Math::tan(tmp_target * m_warpConst_PI);
+    if (m_lp_omega_target - tmp_target != 0.f)
+    {
+        m_lp_omega_target = tmp_target;
+        m_lp_omega_base = m_lp_omega;
+        m_lp_omega_diff = m_lp_omega_target - m_lp_omega_base;
+        m_lp_omega_ramp = 0.f;
+    }
+
+    tmp_target = std::clamp(_signal[REV_HPF], 0.1f, m_omegaClip_max);
+    tmp_target = NlToolbox::Math::tan(tmp_target * m_warpConst_PI);
+    if (m_hp_omega_target - tmp_target != 0.f)
+    {
+        m_hp_omega_target = tmp_target;
+        m_hp_omega_base = m_hp_omega;
+        m_hp_omega_diff = m_hp_omega_target - m_hp_omega_base;
+        m_hp_omega_ramp = 0.f;
+    }
 
 #endif
 
@@ -226,26 +255,84 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     if (!m_slow_tick)
     {
 #if test_reverbSmoother == 1
-        m_depth = std::clamp(m_depth + m_depth_inc, m_depth_min, m_depth_max);
 
-        m_size = std::clamp(m_size + m_size_inc, m_size_min, m_size_max);
+        if(m_depth_ramp > 1.f)                                  // Depth Smth.
+        {
+            m_depth = m_depth_target;
+        }
+        else
+        {
+            m_depth = m_depth_base + (m_depth_diff * m_depth_ramp);
+            m_depth_ramp += m_smooth_inc;
+        }
+
+        if(m_size_ramp > 1.f)                                   // Size Smth.
+        {
+            m_size = m_size_target;
+        }
+        else
+        {
+            m_size = m_size_base + (m_size_diff * m_size_ramp);
+            m_size_ramp += m_smooth_inc;
+        }
         m_absorb  = m_size * 0.334f + 0.666f;
         m_fb_amnt = m_size * 0.667f + 0.333f;
 
-        m_bal = std::clamp(m_bal + m_bal_inc, m_size_min, m_bal_max);
+        if(m_bal_ramp > 1.f)                                    // Balance Smth.
+        {
+            m_bal = m_bal_target;
+        }
+        else
+        {
+            m_bal = m_bal_base + (m_bal_diff * m_bal_ramp);
+            m_bal_ramp += m_smooth_inc;
+        }
         tmpVar = m_bal;
         m_bal_full = tmpVar * (2.f - tmpVar);
         tmpVar = 1.f - tmpVar;
         m_bal_half = tmpVar * (2.f - tmpVar);
 
-        m_preDel_L = std::clamp(m_preDel_L + m_preDel_L_inc, m_preDel_L_min, m_preDel_L_max);
-        m_preDel_R = std::clamp(m_preDel_R + m_preDel_R_inc, m_preDel_R_min, m_preDel_R_max);
+        if(m_preDel_L_ramp > 1.f)                               // PreDelay L Smth.
+        {
+            m_preDel_L = m_preDel_L_target;
+        }
+        else
+        {
+            m_preDel_L = m_preDel_L_base + (m_preDel_L_diff * m_preDel_L_ramp);
+            m_preDel_L_ramp += m_smooth_inc;
+        }
 
-        m_lp_omega = std::clamp(m_lp_omega + m_lp_omega_inc, m_lp_omega_min, m_lp_omega_max);
+        if(m_preDel_R_ramp > 1.f)                               // PreDelay R Smth.
+        {
+            m_preDel_R = m_preDel_R_target;
+        }
+        else
+        {
+            m_preDel_R = m_preDel_R_base + (m_preDel_R_diff * m_preDel_R_ramp);
+            m_preDel_R_ramp += m_smooth_inc;
+        }
+
+        if(m_lp_omega_ramp > 1.f)                                  // LP Omega Smth.
+        {
+            m_lp_omega = m_lp_omega_target;
+        }
+        else
+        {
+            m_lp_omega = m_lp_omega_base + (m_lp_omega_diff * m_lp_omega_ramp);
+            m_lp_omega_ramp += m_smooth_inc;
+        }
         m_lp_a0 = 1.f / (m_lp_omega + 1.f);
         m_lp_a1 = m_lp_omega - 1.f;
 
-        m_hp_omega = std::clamp(m_hp_omega + m_hp_omega_inc, m_hp_omega_min, m_hp_omega_max);
+        if(m_hp_omega_ramp > 1.f)                                  // HP Omega Smth.
+        {
+            m_hp_omega = m_hp_omega_target;
+        }
+        else
+        {
+            m_hp_omega = m_hp_omega_base + (m_hp_omega_diff * m_hp_omega_ramp);
+            m_hp_omega_ramp += m_smooth_inc;
+        }
         m_hp_a0 = 1.f / (m_hp_omega + 1.f);
         m_hp_a1 = m_hp_omega - 1.f;
 #endif

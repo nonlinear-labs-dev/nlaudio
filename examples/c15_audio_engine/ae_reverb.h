@@ -122,30 +122,41 @@ struct ae_reverb
     //******************************* Smoothing ******************************//
     float m_smooth_inc;
 
-    float m_depth_max, m_depth_min;
+    float m_depth_ramp;
     float m_depth_target;
-    float m_depth_inc;
+    float m_depth_base;
+    float m_depth_diff;
 
-    float m_size_max, m_size_min;
     float m_size;
+    float m_size_ramp;
     float m_size_target;
-    float m_size_inc;
+    float m_size_base;
+    float m_size_diff;
 
-    float m_bal_max, m_bal_min;
     float m_bal;
+    float m_bal_ramp;
     float m_bal_target;
-    float m_bal_inc;
+    float m_bal_base;
+    float m_bal_diff;
 
-    float m_preDel_L_max, m_preDel_L_min;
+    float m_preDel_L_ramp;
     float m_preDel_L_target;
-    float m_preDel_L_inc;
+    float m_preDel_L_base;
+    float m_preDel_L_diff;
 
-    float m_preDel_R_max, m_preDel_R_min;
+    float m_preDel_R_ramp;
     float m_preDel_R_target;
-    float m_preDel_R_inc;
+    float m_preDel_R_base;
+    float m_preDel_R_diff;
 
-    float m_lp_omega_max, m_lp_omega_min;
-    float m_hp_omega_max, m_hp_omega_min;
-    float m_lp_omega_target, m_hp_omega_target;
-    float m_lp_omega_inc, m_hp_omega_inc;
+    float m_lp_omega_ramp;
+    float m_lp_omega_target;
+    float m_lp_omega_base;
+    float m_lp_omega_diff;
+
+
+    float m_hp_omega_ramp;
+    float m_hp_omega_target;
+    float m_hp_omega_base;
+    float m_hp_omega_diff;
 };

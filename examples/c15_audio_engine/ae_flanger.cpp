@@ -246,7 +246,7 @@ void ae_flanger::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     m_ap_StateVar_L7 = tmpVar_2 + DNC_const;
 
 
-    m_stateVar_L  = m_hp_b0 * tmpVar_2;                         // HP R
+    m_stateVar_L  = m_hp_b0 * tmpVar_2;                         // HP L
     m_stateVar_L += m_hp_b1 * m_hp_stateVar_L1;
     m_stateVar_L += m_hp_a1 * m_hp_stateVar_L2;
 
