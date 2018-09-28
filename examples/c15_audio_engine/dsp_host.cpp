@@ -431,6 +431,7 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
                 m_params.applyPreloaded(v, p);
             }
         }
+#if test_preload_update == 0
         /* Trigger Slow Rendering and Post Processing (Key Events should be effective immediately) */
         uint32_t i; // temporary item index
         /* render slow mono parameters and perform mono post processing */
@@ -483,6 +484,27 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
             }
         }
         /* end of classical apply */
+#elif test_preload_update == 1
+        /* in theory, only post processing in active voices has to be done -> paramengine::postProcessPoly_key(_s, _v) */
+        /* apply preloaded values - key events - mono */
+        if(m_params.m_event.m_mono.m_preload > 0)
+        {
+            m_params.m_event.m_mono.m_preload = 0;                          // reset preload counter
+            m_params.keyApplyMono();                                        // trigger env_engine
+        }
+        /* apply preloaded values - key events - poly */
+        for(v = 0; v < m_voices; v++)
+        {
+            if(m_params.m_event.m_poly[v].m_preload > 0)
+            {
+                m_params.m_event.m_poly[v].m_preload = 0;                   // reset preload counter
+                m_params.postProcessPoly_key(m_paramsignaldata[v], v);      // update key-related parameters/signals
+                setPolySlowFilterCoeffs(m_paramsignaldata[v], v);           // update filter coefficients
+                m_params.keyApply(v);                                       // trigger env_engine
+                keyApply(v);                                                // update comb filter delay smoother, phase, (determine voice steal)
+            }
+        }
+#endif
         break;
     }
 }

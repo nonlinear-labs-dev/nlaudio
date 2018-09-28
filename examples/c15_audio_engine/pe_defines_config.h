@@ -14,6 +14,7 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
+#define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
 #define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)

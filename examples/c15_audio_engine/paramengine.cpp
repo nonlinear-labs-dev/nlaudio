@@ -1142,6 +1142,84 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     _signal[CMB_FEC] = m_convert.eval_lin_pitch(69.f - (tmp_amt * _signal[ENV_C_UNCL]));
 }
 
+/* Poly KEY Post Processing */
+void paramengine::postProcessPoly_key(float *_signal, const uint32_t _voiceId)
+{
+    /* Pitch Updates */
+    const float basePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+    float keyTracking, unitPitch, envMod, unitSign, unitSpread, unitMod;
+    /* Oscillator A */
+    /* - Oscillator A Frequency in Hz (Base Pitch, Master Tune, Key Tracking, Osc Pitch, Envelope C) */
+    keyTracking = m_body[m_head[P_OA_PKT].m_index].m_signal;
+    unitPitch = m_body[m_head[P_OA_P].m_index].m_signal;
+    envMod = _signal[ENV_C_UNCL] * m_body[m_head[P_OA_PEC].m_index].m_signal;
+    _signal[OSC_A_FRQ] = evalNyquist(m_pitch_reference * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod));
+    /* - Oscillator A Fluctuation (Envelope C) */
+    envMod = m_body[m_head[P_OA_FEC].m_index].m_signal;
+    _signal[OSC_A_FLUEC] = m_body[m_head[P_OA_F].m_index].m_signal * NlToolbox::Crossfades::unipolarCrossFade(1.f, _signal[ENV_C_CLIP], envMod);
+    /* - Oscillator A Chirp Frequency in Hz */
+    _signal[OSC_A_CHI] = evalNyquist(m_body[m_head[P_OA_CHI].m_index].m_signal * 440.f);
+    /* Oscillator B */
+    /* - Oscillator B Frequency in Hz (Base Pitch, Master Tune, Key Tracking, Osc Pitch, Envelope C) */
+    keyTracking = m_body[m_head[P_OB_PKT].m_index].m_signal;
+    unitPitch = m_body[m_head[P_OB_P].m_index].m_signal;
+    envMod = _signal[ENV_C_UNCL] * m_body[m_head[P_OB_PEC].m_index].m_signal;
+    _signal[OSC_B_FRQ] = evalNyquist(m_pitch_reference * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod));
+    /* - Oscillator B Fluctuation (Envelope C) */
+    envMod = m_body[m_head[P_OB_FEC].m_index].m_signal;
+    _signal[OSC_B_FLUEC] = m_body[m_head[P_OB_F].m_index].m_signal * NlToolbox::Crossfades::unipolarCrossFade(1.f, _signal[ENV_C_CLIP], envMod);
+    /* - Oscillator B Chirp Frequency in Hz */
+    _signal[OSC_B_CHI] = evalNyquist(m_body[m_head[P_OB_CHI].m_index].m_signal * 440.f);
+    /* Comb Filter */
+    /* - Comb Filter Pitch as Frequency in Hz (Base Pitch, Master Tune, Key Tracking, Comb Pitch) */
+    keyTracking = m_body[m_head[P_CMB_PKT].m_index].m_signal;
+    unitPitch = m_body[m_head[P_CMB_P].m_index].m_signal;
+    // as a tonal component, the reference tone frequency is applied (instead of const 440 Hz)
+    _signal[CMB_FRQ] = evalNyquist(m_pitch_reference * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking)));
+    /* - Comb Filter Bypass (according to Pitch parameter - without key tracking or reference freq) */
+    _signal[CMB_BYP] = unitPitch > dsp_comb_max_freqFactor ? 1.f : 0.f; // check for bypassing comb filter, max_freqFactor corresponds to Pitch of 119.99 ST
+    /* - Comb Filter Decay Time (Base Pitch, Master Tune, Gate Env, Dec Time, Key Tracking, Gate Amount) */
+    keyTracking = m_body[m_head[P_CMB_DKT].m_index].m_signal;
+    envMod = 1.f - ((1.f - _signal[ENV_G_SIG]) * m_combDecayCurve.applyCurve(m_body[m_head[P_CMB_DG].m_index].m_signal));
+    unitPitch = (-0.5f * basePitch * keyTracking) + (std::abs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
+    unitSign = m_body[m_head[P_CMB_D].m_index].m_signal < 0 ? -1.f : 1.f;
+    _signal[CMB_DEC] = 0.001f * m_convert.eval_level(unitPitch) * unitSign;
+    /* - Comb Filter Allpass Frequency (Base Pitch, Master Tune, Key Tracking, AP Tune, Env C) */
+    keyTracking = m_body[m_head[P_CMB_APKT].m_index].m_signal;
+    unitPitch = m_body[m_head[P_CMB_APT].m_index].m_signal;
+    envMod = _signal[ENV_C_UNCL] * m_body[m_head[P_CMB_APEC].m_index].m_signal;
+    _signal[CMB_APF] = evalNyquist(440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod));      // not sure if APF needs Nyquist Clipping?
+    //_signal[CMB_APF] = 440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod);                   // currently APF without Nyquist Clipping
+    /* - Comb Filter Lowpass ('Hi Cut') Frequency (Base Pitch, Master Tune, Key Tracking, Hi Cut, Env C) */
+    keyTracking = m_body[m_head[P_CMB_LPKT].m_index].m_signal;
+    unitPitch = m_body[m_head[P_CMB_LP].m_index].m_signal;
+    envMod = _signal[ENV_C_UNCL] * m_body[m_head[P_CMB_LPEC].m_index].m_signal;
+    _signal[CMB_LPF] = evalNyquist(440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod));      // not sure if LPF needs Nyquist Clipping?
+    //_signal[CMB_LPF] = 440.f * unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod);                   // currently LPF without Nyquist Clipping
+    /* State Variable Filter */
+    /* - Cutoff Frequencies */
+    keyTracking = m_body[m_head[P_SVF_CKT].m_index].m_signal;                       // get Key Tracking
+    envMod = _signal[ENV_C_UNCL] * m_body[m_head[P_SVF_CEC].m_index].m_signal;       // get Envelope C Modulation (amount * envelope_c_signal)
+    unitPitch = m_pitch_reference * m_body[m_head[P_SVF_CUT].m_index].m_signal;     // as a tonal component, the Reference Tone frequency is applied (instead of const 440 Hz)
+    unitSpread = m_body[m_head[P_SVF_SPR].m_index].m_signal;                        // get the Spread parameter (already scaled to 50%)
+    unitMod = m_body[m_head[P_SVF_FM].m_index].m_signal;                            // get the FM parameter
+    /*   now, calculate the actual filter frequencies and put them in the shared signal array */
+    _signal[SVF_F1_CUT] = evalNyquist(unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod + unitSpread));    // SVF upper 2PF Cutoff Frequency
+    _signal[SVF_F2_CUT] = evalNyquist(unitPitch * m_convert.eval_lin_pitch(69.f + (basePitch * keyTracking) + envMod - unitSpread));    // SVF lower 2PF Cutoff Frequency
+    _signal[SVF_F1_FM] = _signal[SVF_F1_CUT] * unitMod;                                                                                 // SVF upper 2PF FM Amount (Frequency)
+    _signal[SVF_F2_FM] = _signal[SVF_F2_CUT] * unitMod;                                                                                 // SVF lower 2PF FM Amount (Frequency)
+    /* - Resonance */
+    keyTracking = m_body[m_head[P_SVF_RKT].m_index].m_signal * m_svfResFactor;
+    envMod = _signal[ENV_C_CLIP] * m_body[m_head[P_SVF_REC].m_index].m_signal;
+    unitPitch = m_body[m_head[P_SVF_RES].m_index].m_signal + envMod + (basePitch * keyTracking);
+    //_signal[SVF_RES] = m_svfResonanceCurve.applyCurve(std::clamp(unitPitch, 0.f, 1.f));
+    float res = 1.f - m_svfResonanceCurve.applyCurve(std::clamp(unitPitch, 0.f, 1.f));  // NEW resonance handling directly in post processing
+    _signal[SVF_RES] = std::max(res + res, 0.02f);
+    /* - Feedback Mixer */
+    /*   - determine Highpass Filter Frequency */
+    _signal[FBM_HPF] = evalNyquist(m_convert.eval_lin_pitch(12.f + basePitch) * 440.f);
+}
+
 /* Mono Post Processing - slow parameters */
 void paramengine::postProcessMono_slow(float *_signal)
 {
