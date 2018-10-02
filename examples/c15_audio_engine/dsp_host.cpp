@@ -659,7 +659,7 @@ void dsp_host::keyApply(uint32_t _voiceId)
         //float phaseB = m_params.m_body[m_params.m_head[P_KEY_PB].m_index + _voiceId].m_signal;
         float uniPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
         //m_soundgenerator[_voiceId].resetPhase(phaseA, phaseB);
-        m_soundgenerator[_voiceId].resetPhase(uniPhase, uniPhase);                                  // function could be reduced to one argument
+        m_soundgenerator[_voiceId].resetPhase(uniPhase);                                  // function could be reduced to one argument
     }
 }
 

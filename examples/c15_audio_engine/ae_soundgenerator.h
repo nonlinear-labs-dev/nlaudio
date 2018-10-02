@@ -15,6 +15,8 @@
 #include "nltoolbox.h"
 #include "dsp_defines_signallabels.h"
 
+#define test_phase_reset    1       // 0: reset phase only, 1: reset phase, self- & cross-mix, chirp state var
+
 struct ae_soundgenerator
 {
     ae_soundgenerator();            // Default Constructor
@@ -24,7 +26,7 @@ struct ae_soundgenerator
     void init(float _samplerate, uint32_t _vn);
     void generate(float _feedbackSample, float *_signal);
     void set(float *_signal);
-    void resetPhase(float _phaseA, float _phaseB);
+    void resetPhase(float _phase);
     void resetDSP();
 
     //************************** Shared Variables *****************************//
