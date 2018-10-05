@@ -27,6 +27,7 @@ namespace DSP_HOST_HANDLE {
         if (sw == nullptr) {
             sw.reset(new StopWatch("AudioCallback", 100, StopWatch::SUMMARY, sampleSpecs.latency));
         }
+        //                                              (could take DETAILED for SUMMARY)
         //TODO: Fixme. This RAII variant seems not to work
         //StopBlockTime(sw, "dsp_host");
         sw->start("callback");
