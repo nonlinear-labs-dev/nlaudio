@@ -122,6 +122,7 @@ struct ae_reverb
     //******************************* Smoothing ******************************//
     float m_smooth_inc;
 
+    float m_depth_inc;
     float m_depth_ramp;
     float m_depth_target;
     float m_depth_base;
