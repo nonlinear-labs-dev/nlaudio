@@ -77,10 +77,20 @@ void ae_soundgenerator::set(float *_signal)
 /** @brief
 *******************************************************************************/
 
-void ae_soundgenerator::resetPhase(float _phaseA, float _phaseB)
+void ae_soundgenerator::resetPhase(float _phase)
 {
-   m_oscA_phase = _phaseA;
-   m_oscB_phase = _phaseB;
+   m_oscA_phase = _phase;
+   m_oscB_phase = _phase;
+#if test_phase_reset == 1
+   /* */
+   m_oscA_selfmix = 0.f;
+   m_oscA_crossmix = 0.f;
+   m_chiA_stateVar = 0.f;
+   /* */
+   m_oscB_selfmix = 0.f;
+   m_oscB_crossmix = 0.f;
+   m_chiB_stateVar = 0.f;
+#endif
 }
 
 

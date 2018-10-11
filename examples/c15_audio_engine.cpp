@@ -44,9 +44,6 @@
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
 
-
-#include <chrono>
-
 using namespace std;
 
 //
@@ -131,7 +128,7 @@ int main(int argc, char **argv)
     auto availableCards = Nl::AlsaAudioCardIdentifier::getCardIdentifiers();
     int32_t numDevices = availableCards.size();
 
-    if (opts[OPT_AUDIODEVICE] < numDevices && opts[OPT_AUDIODEVICE] > 0) {
+    if (opts[OPT_AUDIODEVICE] < numDevices) {
         std::stringstream ss;
         ss << availableCards.at(opts[OPT_AUDIODEVICE]);
         strAudioDevive = ss.str();
@@ -163,7 +160,7 @@ int main(int argc, char **argv)
         Nl::AlsaAudioCardIdentifier audioOut = availableCards.at(opts[OPT_AUDIODEVICE]);
         Nl::AlsaMidiCardIdentifier midiIn(opts[OPT_MIDIDEVICE],0,0, "Midi In"); //TODO: Add lib function to look for midi devices
 
-        const int buffersize = 256;
+        const int buffersize = 64;
         const int samplerate = opts[OPT_SAMPLERATE];
         // Matthias: require number of voices, too (implemented)
         const int polyphony = opts[OPT_VOICECOUNT];

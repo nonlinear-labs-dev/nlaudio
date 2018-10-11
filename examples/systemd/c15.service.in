@@ -1,0 +1,13 @@
+[Unit]
+Description=Nonlinear-Labs C15 Audioengine
+After=syslog.target network.target systemd-modules-load.service
+
+[Service]
+#ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/c15-audio-engine
+# TODO: The above does not work. Path is always replaced by empty string?!
+ExecStart=/usr/bin/c15-audio-engine
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

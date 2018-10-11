@@ -115,6 +115,7 @@ public:
     void makePolySound(float *_signal, uint32_t _voiceID);
     void makeMonoSound(float *_signal);
 
+    // inline?
     inline void setPolySlowFilterCoeffs(float *_signal, uint32_t _voiceID);
     inline void setMonoSlowFilterCoeffs(float *_signal);
     inline void setMonoFastFilterCoeffs(float *_signal);

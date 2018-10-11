@@ -14,12 +14,14 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
+#define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
+#define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
-#define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
+#define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
 #define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
 #define test_reverbSmoother         0               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
-#define test_flanger_phs            0               // 0: slow (default), 1: fast, 2: audio
+#define test_flanger_phs            2               // 0: slow (default), 1: fast, 2: audio
 #define test_initialize_time        1
 
 /* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */

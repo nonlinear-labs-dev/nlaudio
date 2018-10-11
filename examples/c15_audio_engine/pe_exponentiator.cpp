@@ -57,7 +57,7 @@ void exponentiator::init()
 float exponentiator::hyperfloor(float _value)
 {
     /* the hyperbolic floor function of oscillator pitches */
-    return((m_hyperfloor[0] * _value) / m_hyperfloor[1] + _value);
+    return((m_hyperfloor[0] * _value) / (m_hyperfloor[1] + _value));
 }
 
 float exponentiator::clip(float _min, float _max, float _value)

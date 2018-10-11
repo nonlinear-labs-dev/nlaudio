@@ -97,8 +97,13 @@ const float param_definition[sig_number_of_params][10] = {
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        71,     2,      0,      200,    10,     0.18f,  -1,     0,      0,      10000  },         // 60  SHP_A_DRIVE
     {        73,     3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 61  SHP_A_DRIVE_ENV_A (later maybe fast type)
+#if test_fast_fold_asym == 0
     {        74,     3,      0,      16000,  0,      0,      17,     1,      0,      16000  },         // 62  SHP_A_FOLD (later maybe fast type)
     {        75,     3,      0,      16000,  0,      0,      18,     1,      0,      16000  },         // 63  SHP_A_ASYMETRY (later maybe fast type)
+#elif test_fast_fold_asym == 1
+    {        74,     2,      0,      16000,  0,      0,      17,     1,      0,      16000  },         // 62  SHP_A_FOLD (later maybe fast type)
+    {        75,     2,      0,      16000,  0,      0,      18,     1,      0,      16000  },         // 63  SHP_A_ASYMETRY (later maybe fast type)
+#endif
     {        76,     2,      0,      8000,   0,      0,      19,     1,      1,      8000   },         // 64  SHP_A_MIX
     {        78,     2,      0,      16000,  5,      0,      20,     1,      0,      16000  },         // 65  SHP_A_FEEDBACK_MIX
     {        80,     3,      0,      16000,  0,      0,      -1,     1,      0,      16000  },         // 66  SHP_A_FEEDBACK_ENV_C
@@ -126,8 +131,13 @@ const float param_definition[sig_number_of_params][10] = {
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        101,    2,      0,      200,    10,     0.18f,  -1,     0,      0,      10000  },         // 83  SHP_B_DRIVE
     {        103,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 84  SHP_B_DRIVE_ENV_B (later maybe fast type)
+#if test_fast_fold_asym == 0
     {        104,    3,      0,      16000,  0,      0,      33,     1,      0,      16000  },         // 85  SHP_B_FOLD (later maybe fast type)
     {        105,    3,      0,      16000,  0,      0,      34,     1,      0,      16000  },         // 86  SHP_B_ASYMETRY (later maybe fast type)
+#elif test_fast_fold_asym == 1
+    {        104,    2,      0,      16000,  0,      0,      33,     1,      0,      16000  },         // 85  SHP_B_FOLD (later maybe fast type)
+    {        105,    2,      0,      16000,  0,      0,      34,     1,      0,      16000  },         // 86  SHP_B_ASYMETRY (later maybe fast type)
+#endif
     {        106,    2,      0,      8000,   0,      0,      35,     1,      1,      8000   },         // 87  SHP_B_MIX
     {        108,    2,      0,      16000,  5,      0,      36,     1,      0,      16000  },         // 88  SHP_B_FEEDBACK_MIX
     {        110,    3,      0,      16000,  0,      0,      -1,     1,      0,      16000  },         // 89  SHP_B_FEEDBACK_ENV_C
@@ -175,8 +185,13 @@ const float param_definition[sig_number_of_params][10] = {
     {        160,    2,      0,      8000,   3,      0,      65,     1,      1,      8000   },         // 122 FBM_EFFECTS_MIX
     {        162,    2,      0,      16000,  0,      0,      66,     0,      0,      16000  },         // 123 FBM_REVERB_MIX
     {        164,    2,      0,      200,    11,     2.5f,   67,     1,      0,      10000  },         // 124 FBM_DRIVE
+#if test_fast_fold_asym == 0
     {        166,    3,      0,      16000,  0,      0,      68,     1,      0,      16000  },         // 125 FBM_FOLD
     {        167,    3,      0,      16000,  0,      0,      69,     1,      0,      16000  },         // 126 FBM_ASYM
+#elif test_fast_fold_asym == 1
+    {        166,    2,      0,      16000,  0,      0,      68,     1,      0,      16000  },         // 125 FBM_FOLD
+    {        167,    2,      0,      16000,  0,      0,      69,     1,      0,      16000  },         // 126 FBM_ASYM
+#endif
     {        168,    3,      0,      8000,   0,      0,      -1,     1,      1,      8000   },         // 127 FBM_LEVEL_KT
     {        299,    2,      0,      16000,  4,      4,      -1,     1,      0,      16000  },         // 128 FBM_LEVEL
 
@@ -191,15 +206,25 @@ const float param_definition[sig_number_of_params][10] = {
     {        178,    2,      0,      4000,   0,      0,      -1,     0,      1,      8000   },         // 135 OUT_SVF_LEVEL
     {        180,    2,      0,      16000,  0,      0.5f,   -1,     0,      1,      8000   },         // 136 OUT_SVF_PAN
     {        181,    2,      0,      200,    11,     0.25f,  80,     1,      0,      10000  },         // 137 OUT_DRIVE
+#if test_fast_fold_asym == 0
     {        183,    3,      0,      16000,  0,      0,      81,     1,      0,      16000  },         // 138 OUT_FOLD (later maybe fast type)
     {        184,    3,      0,      16000,  0,      0,      82,     1,      0,      16000  },         // 139 OUT_ASYMETRY (later maybe fast type)
+#elif test_fast_fold_asym == 1
+    {        183,    2,      0,      16000,  0,      0,      81,     1,      0,      16000  },         // 138 OUT_FOLD (later maybe fast type)
+    {        184,    2,      0,      16000,  0,      0,      82,     1,      0,      16000  },         // 139 OUT_ASYMETRY (later maybe fast type)
+#endif
     {        185,    2,      0,      16000,  4,      2.56f,  83,     0,      0,      16000  },         // 140 OUT_LEVEL
 
     // - - - CABINET  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        188,    2,      0,      200,    12,     0,      84,     0,      0,      10000  },         // 141 CABINET_DRIVE
+#if test_fast_fold_asym == 0
     {        190,    3,      0,      16000,  0,      0,      85,     0,      0,      16000  },         // 142 CABINET_FOLD (later maybe fast type)
     {        191,    3,      0,      16000,  0,      0,      86,     0,      0,      16000  },         // 143 CABINET_ASYMETRY (later maybe fast type)
+#elif test_fast_fold_asym == 1
+    {        190,    2,      0,      16000,  0,      0,      85,     0,      0,      16000  },         // 142 CABINET_FOLD (later maybe fast type)
+    {        191,    2,      0,      16000,  0,      0,      86,     0,      0,      16000  },         // 143 CABINET_ASYMETRY (later maybe fast type)
+#endif
     {        192,    2,      0,      80,     0,      0,      -1,     0,      1,      8000   },         // 144 CABINET_TILT (implement fast and slow handling)
     {        194,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 145 CABINET_HI_CUT
     {        196,    3,      0,      200,    9,      20,     -1,     0,      0,      16000  },         // 146 CABINET_LOW_CUT

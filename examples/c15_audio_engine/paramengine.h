@@ -146,6 +146,7 @@ struct paramengine
     void postProcessPoly_slow(float *_signal, const uint32_t _voiceId);                         // poly slow post processing (distribution, copy, env c event signal!)
     void postProcessPoly_fast(float *_signal, const uint32_t _voiceId);                         // poly fast post processing (distribution, copy)
     void postProcessPoly_audio(float *_signal, const uint32_t _voiceId);                        // poly audio post processing (distribution, copy, envelopes, param combination)
+    void postProcessPoly_key(float *_signal, const uint32_t _voiceId);                          // NEW poly key post processing (only required signals should be updated)
     void postProcessMono_slow(float *_signal);                                                  // mono slow post processing
     void postProcessMono_fast(float *_signal);                                                  // mono fast post processing
     void postProcessMono_audio(float *_signal);                                                 // mono audio post processing
