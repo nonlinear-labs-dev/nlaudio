@@ -14,6 +14,8 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
+#define test_svf_types              0               // 0: SVF first Proto NAN, 1: SVF noFIR, 2: SVF FIR, 3: SVF Original Primary (later)
+#define test_svf_fm_limit           1.5f            // SVF fm clipping maximum
 #define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
 #define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
