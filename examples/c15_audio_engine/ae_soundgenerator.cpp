@@ -34,6 +34,8 @@ void ae_soundgenerator::init(float _samplerate, uint32_t _vn)
     m_sample_interval = 1.f / _samplerate;
     m_warpConst_PI = 3.14159f / _samplerate;
 
+    m_feedback_phase = 0.f;
+
     m_chiA_stateVar = 0.f;
     m_chiB_stateVar = 0.f;
 
@@ -90,6 +92,8 @@ void ae_soundgenerator::resetPhase(float _phase)
    m_oscB_selfmix = 0.f;
    m_oscB_crossmix = 0.f;
    m_chiB_stateVar = 0.f;
+   /* */
+   m_feedback_phase = 0.f;
 #endif
 }
 
@@ -106,7 +110,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     //**************************** Modulation A ******************************//
     float oscSampleA = m_oscA_selfmix * _signal[OSC_A_PMSEA];
     oscSampleA = oscSampleA + m_oscB_crossmix * _signal[OSC_A_PMBEB];
-    oscSampleA = oscSampleA + _feedbackSample * _signal[OSC_A_PMFEC];
+    oscSampleA = oscSampleA + m_feedback_phase * _signal[OSC_A_PMFEC];
 
 
     //**************************** Oscillator A ******************************//
@@ -144,7 +148,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     //**************************** Modulation B ******************************//
     float oscSampleB = m_oscB_selfmix * _signal[OSC_B_PMSEB];
     oscSampleB = oscSampleB + m_oscA_crossmix * _signal[OSC_B_PMAEA];
-    oscSampleB = oscSampleB + _feedbackSample * _signal[OSC_B_PMFEC];
+    oscSampleB = oscSampleB + m_feedback_phase * _signal[OSC_B_PMFEC];
 
 
     //**************************** Oscillator B ******************************//

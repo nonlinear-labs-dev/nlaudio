@@ -31,6 +31,7 @@ struct ae_soundgenerator
 
     //************************** Shared Variables *****************************//
     float m_sample_interval;
+    float m_feedback_phase;
 
     //*********************** Oscillator A Variables **************************//
     float m_oscA_selfmix;
