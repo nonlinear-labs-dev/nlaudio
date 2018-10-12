@@ -3,7 +3,8 @@
     @date           2018-07-05
     @version        1.0
     @author         Anton Schmied
-    @brief          Combfilter with no FIR Filter Version and FM+F clipping
+    @brief          Combfilter with FIR Filter Version, FM and F are clipped with
+                    1.9 and only F is used for attenuation calculation
     @todo
 *******************************************************************************/
 
@@ -16,9 +17,10 @@ using namespace NlToolbox::Constants;
 
 #include "pe_defines_config.h" /// for testing the clipping limits
 
-struct ae_svfilter
+class ae_svfilter_proto
 {
-    ae_svfilter();      // Default Constructor
+public:
+    ae_svfilter_proto();
 
     float m_out;
     float m_warpConst_2PI;
@@ -28,6 +30,7 @@ struct ae_svfilter
     void resetDSP();
 
     //**************************** State Variables ****************************//
+    float m_first_fir_stateVar, m_second_fir_stateVar;
     float m_first_int1_stateVar, m_first_int2_stateVar;
     float m_second_int1_stateVar, m_second_int2_stateVar;
 

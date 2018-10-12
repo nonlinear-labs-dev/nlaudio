@@ -24,9 +24,13 @@
 #endif
 
 /* Audio Engine */
+/// Include All SVF Filter types for testing
+#include "ae_svfilter.h"
+#include "ae_svfilter_fir.h"
+#include "ae_svfilter_proto.h"
+
 #include "ae_soundgenerator.h"
 #include "ae_combfilter.h"
-#include "ae_svfilter.h"
 #include "ae_outputmixer.h"
 #include "ae_cabinet.h"
 #include "ae_gapfilter.h"
@@ -102,7 +106,18 @@ public:
     /* Audio Engine */
     ae_soundgenerator m_soundgenerator[dsp_number_of_voices];
     ae_combfilter m_combfilter[dsp_number_of_voices];
+
+    /// Activate the SV Filter in pe_defines_config.h -> test_svf_types
+#if test_svf_types == 0     /// Proto
+    ae_svfilter_proto m_svfilter[dsp_number_of_voices];
+#elif test_svf_types == 1   /// noFir
     ae_svfilter m_svfilter[dsp_number_of_voices];
+#elif test_svf_types == 2   /// Fir
+    ae_svfilter_fir m_svfilter[dsp_number_of_voices];
+#elif test_svf_types == 3   /// Primary
+
+#endif
+
     ae_feedbackmixer m_feedbackmixer[dsp_number_of_voices];
     ae_outputmixer m_outputmixer;
     ae_cabinet m_cabinet;

@@ -1,9 +1,9 @@
 /******************************************************************************/
 /** @file           ae_svfilter.h
-    @date           2018-07-05
+    @date           2018-10-11
     @version        1.0
     @author         Anton Schmied
-    @brief          Combfilter with no FIR Filter Version and FM+F clipping
+    @brief          Combfilter with FIR Filter Version and FM+F clipping
     @todo
 *******************************************************************************/
 
@@ -14,11 +14,12 @@
 
 using namespace NlToolbox::Constants;
 
+
 #include "pe_defines_config.h" /// for testing the clipping limits
 
-struct ae_svfilter
+struct ae_svfilter_fir
 {
-    ae_svfilter();      // Default Constructor
+    ae_svfilter_fir();
 
     float m_out;
     float m_warpConst_2PI;
@@ -28,6 +29,7 @@ struct ae_svfilter
     void resetDSP();
 
     //**************************** State Variables ****************************//
+    float m_first_fir_stateVar, m_second_fir_stateVar;
     float m_first_int1_stateVar, m_first_int2_stateVar;
     float m_second_int1_stateVar, m_second_int2_stateVar;
 

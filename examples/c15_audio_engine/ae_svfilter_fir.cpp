@@ -3,18 +3,18 @@
     @date           2018-05-10
     @version        1.0
     @author         Anton Schmied
-    @brief          Combfilter with no FIR Filter Version and FM+F clipping
+    @brief          Combfilter with FIR Filter Version and FM+F clipping
     @todo
 *******************************************************************************/
 
 
-#include "ae_svfilter.h"
+#include "ae_svfilter_fir.h"
 
 /******************************************************************************/
 /** @brief
 *******************************************************************************/
 
-ae_svfilter::ae_svfilter()
+ae_svfilter_fir::ae_svfilter_fir()
 {
 
 }
@@ -25,12 +25,14 @@ ae_svfilter::ae_svfilter()
 /** @brief
 *******************************************************************************/
 
-void ae_svfilter::init(float _samplerate)
+void ae_svfilter_fir::init(float _samplerate)
 {
     m_out = 0.f;
 
     m_warpConst_2PI = 6.28319f / _samplerate;
 
+    m_first_fir_stateVar = 0.f;
+    m_second_fir_stateVar = 0.f;
     m_first_int1_stateVar = 0.f;
     m_first_int2_stateVar = 0.f;
     m_second_int1_stateVar = 0.f;
@@ -47,7 +49,7 @@ void ae_svfilter::init(float _samplerate)
 /** @brief
 *******************************************************************************/
 
-void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal)
+void ae_svfilter_fir::apply(float _sampleA, float _sampleB, float _sampleComb, float *_signal)
 {
     float tmpRes = _signal[SVF_RES];
 
@@ -71,12 +73,20 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
     float attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
                       / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
-    float highpassOutput = inputSample - (m_first_int1_stateVar * attenuation + m_first_int2_stateVar);
-    float bandpassOutput = highpassOutput * omega + m_first_int1_stateVar;
-    float lowpassOutput  = bandpassOutput * omega + m_first_int2_stateVar;
+    float firOut = (m_first_fir_stateVar + inputSample) * 0.25f;
+    m_first_fir_stateVar = inputSample + DNC_const;
 
-    m_first_int1_stateVar = bandpassOutput + DNC_const;
-    m_first_int2_stateVar = lowpassOutput + DNC_const;
+    tmpVar = firOut - (attenuation * m_first_int1_stateVar + m_first_int2_stateVar);
+
+    float int1Out = tmpVar * omega + m_first_int1_stateVar;
+    float int2Out = int1Out * omega + m_first_int2_stateVar;
+
+    float lowpassOutput  = int2Out + m_first_int2_stateVar;
+    float bandpassOutput = int1Out + int1Out;
+    float highpassOutput = inputSample - (int1Out * attenuation + lowpassOutput);
+
+    m_first_int1_stateVar = int1Out + DNC_const;
+    m_first_int2_stateVar = int2Out + DNC_const;
 
     float outputSample_1 = lowpassOutput  * std::max(-(_signal[SVF_LBH_1]), 0.f);
     outputSample_1 += (bandpassOutput * (1.f - std::abs(_signal[SVF_LBH_1])));
@@ -99,12 +109,20 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
     attenuation = ((2.f + omega) * (2.f - omega) * tmpRes)
             / (((tmpRes * omega) + (2.f - omega)) * 2.f);
 
-    highpassOutput = inputSample - (m_second_int1_stateVar * attenuation + m_second_int2_stateVar);
-    bandpassOutput = highpassOutput * omega + m_second_int1_stateVar;
-    lowpassOutput  = bandpassOutput * omega + m_second_int2_stateVar;
+    firOut = (m_second_fir_stateVar + inputSample) * 0.25f;
+    m_second_fir_stateVar = inputSample + DNC_const;
 
-    m_second_int1_stateVar = bandpassOutput + DNC_const;
-    m_second_int2_stateVar = lowpassOutput + DNC_const;
+    tmpVar = firOut - (attenuation * m_second_int1_stateVar + m_second_int2_stateVar);
+
+    int1Out = tmpVar * omega + m_second_int1_stateVar;
+    int2Out = int1Out * omega + m_second_int2_stateVar;
+
+    lowpassOutput  = int2Out + m_second_int2_stateVar;
+    bandpassOutput = int1Out + int1Out;
+    highpassOutput = inputSample - (int1Out * attenuation + lowpassOutput);
+
+    m_second_int1_stateVar = int1Out + DNC_const;
+    m_second_int2_stateVar = int2Out + DNC_const;
 
     tmpVar  =  lowpassOutput  * std::max(-(_signal[SVF_LBH_2]), 0.f);
     tmpVar += (bandpassOutput * (1.f - std::abs(_signal[SVF_LBH_2])));
@@ -126,10 +144,12 @@ void ae_svfilter::apply(float _sampleA, float _sampleB, float _sampleComb, float
 /** @brief
 *******************************************************************************/
 
-void ae_svfilter::resetDSP()
+void ae_svfilter_fir::resetDSP()
 {
     m_out = 0.f;
 
+    m_first_fir_stateVar = 0.f;
+    m_second_fir_stateVar = 0.f;
     m_first_int1_stateVar = 0.f;
     m_first_int2_stateVar = 0.f;
     m_second_int1_stateVar = 0.f;

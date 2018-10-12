@@ -1315,7 +1315,6 @@ inline void dsp_host::setPolySlowFilterCoeffs(float *_signal, uint32_t _voiceID)
 {
     m_soundgenerator[_voiceID].set(_signal);
     m_combfilter[_voiceID].set(_signal, static_cast<float>(m_samplerate));
-    m_svfilter[_voiceID].set(_signal);
     m_feedbackmixer[_voiceID].set(_signal);
 }
 
