@@ -1207,6 +1207,7 @@ void dsp_host::initAudioEngine()
     m_echo.init(static_cast<float>(m_samplerate), m_upsampleFactor);
     m_flanger.init(static_cast<float>(m_samplerate), m_upsampleFactor);
     m_reverb.init(static_cast<float>(m_samplerate), m_upsampleFactor);
+    m_test_tone.init(static_cast<float>(m_samplerate));
 }
 
 
@@ -1259,10 +1260,13 @@ void dsp_host::makeMonoSound(float *_signal)
     m_gapfilter.apply(m_cabinet.m_out_L, m_cabinet.m_out_R, _signal);
     m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal);
     m_reverb.apply(m_echo.m_out_L, m_echo.m_out_R, _signal);
+    // new: Test Tone application
+    m_test_tone.tick(m_reverb.m_out_L * mst_gain, m_reverb.m_out_R * mst_gain);
 
     //******************************* Soft Clip ******************************//
     //****************************** Left Channel ****************************//
-    m_mainOut_L = m_reverb.m_out_L * mst_gain;
+    //m_mainOut_L = m_reverb.m_out_L * mst_gain;
+    m_mainOut_L = m_test_tone.m_left;
 
     m_mainOut_L *= 0.1588f;
     m_mainOut_L = std::clamp(m_mainOut_L, -0.25f, 0.25f);
@@ -1276,7 +1280,8 @@ void dsp_host::makeMonoSound(float *_signal)
     m_mainOut_L = m_mainOut_L * ((2.26548f * sample_square - 5.13274f) * sample_square + 3.14159f);
 
     //****************************** Right Channel ****************************//
-    m_mainOut_R = m_reverb.m_out_R * mst_gain;
+    //m_mainOut_R = m_reverb.m_out_R * mst_gain;
+    m_mainOut_R = m_test_tone.m_right;
 
     m_mainOut_R *= 0.1588f;
     m_mainOut_R = std::clamp(m_mainOut_R, -0.25f, 0.25f);
