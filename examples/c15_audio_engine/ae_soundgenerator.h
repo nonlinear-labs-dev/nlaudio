@@ -14,8 +14,7 @@
 #include <cmath>
 #include "nltoolbox.h"
 #include "dsp_defines_signallabels.h"
-
-#define test_phase_reset    1       // 0: reset phase only, 1: reset phase, self- & cross-mix, chirp state var
+#include "pe_defines_config.h"
 
 struct ae_soundgenerator
 {
@@ -31,6 +30,7 @@ struct ae_soundgenerator
 
     //************************** Shared Variables *****************************//
     float m_sample_interval;
+    float m_feedback_phase;
 
     //*********************** Oscillator A Variables **************************//
     float m_oscA_selfmix;

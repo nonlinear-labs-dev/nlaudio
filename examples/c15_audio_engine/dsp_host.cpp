@@ -1233,6 +1233,8 @@ void dsp_host::makePolySound(float *_signal, uint32_t _voiceID)
                                     m_reverb.m_out_FX,
                                     _signal);
 
+    m_soundgenerator[_voiceID].m_feedback_phase = m_feedbackmixer[_voiceID].m_out;
+
     m_outputmixer.combine(m_soundgenerator[_voiceID].m_out_A,
                           m_soundgenerator[_voiceID].m_out_B,
                           m_combfilter[_voiceID].m_out,
