@@ -58,6 +58,52 @@ namespace DSP_HOST_HANDLE {
                     m_host.resetDSP();
                     jh.debugBuffer->insert(pack<std::string>("Reset executed"));
                 break;
+            case Nl::CommandBuffer::CMD_TOGGLE_TEST_TONE:
+                m_host.m_test_tone.set_state(1 - m_host.m_test_tone.m_state);
+                std::cout << "Test Tone toggled(" << m_host.m_test_tone.m_state << ")" << std::endl;
+                break;
+            case Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_FREQ:
+                m_host.m_test_tone.m_focus = 0;
+                std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" <<std::endl;
+                break;
+            case Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_AMP:
+                m_host.m_test_tone.m_focus = 1;
+                std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                break;
+            case Nl::CommandBuffer::CMD_EDIT_TEST_TONE_PLUS:
+                switch(m_host.m_test_tone.m_focus)
+                {
+                case 0:
+                    m_host.m_decoder.m_utilityId = 2;
+                    m_host.m_test_tone.a_frequency = std::clamp(m_host.m_test_tone.a_frequency + 10.f, 0.f, 1000.f);
+                    m_host.utilityUpdate(m_host.m_test_tone.a_frequency);
+                    std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" << std::endl;
+                    break;
+                case 1:
+                    m_host.m_decoder.m_utilityId = 3;
+                    m_host.m_test_tone.a_amplitude = std::clamp(m_host.m_test_tone.a_amplitude + 1.f, -60.f, 0.f);
+                    m_host.utilityUpdate(m_host.m_test_tone.a_amplitude);
+                    std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                    break;
+                }
+                break;
+            case Nl::CommandBuffer::CMD_EDIT_TEST_TONE_MINUS:
+                switch(m_host.m_test_tone.m_focus)
+                {
+                case 0:
+                    m_host.m_decoder.m_utilityId = 2;
+                    m_host.m_test_tone.a_frequency = std::clamp(m_host.m_test_tone.a_frequency - 10.f, 0.f, 1000.f);
+                    m_host.utilityUpdate(m_host.m_test_tone.a_frequency);
+                    std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" << std::endl;
+                    break;
+                case 1:
+                    m_host.m_decoder.m_utilityId = 3;
+                    m_host.m_test_tone.a_amplitude = std::clamp(m_host.m_test_tone.a_amplitude - 1.f, -60.f, 0.f);
+                    m_host.utilityUpdate(m_host.m_test_tone.a_amplitude);
+                    std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                    break;
+                }
+                break;
             case Nl::CommandBuffer::CMD_NO_CMD:
                 // Just to suppress the warning (NEVER use this element)
                 break;

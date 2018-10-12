@@ -224,6 +224,21 @@ int main(int argc, char **argv)
                 }
 
                 break;
+            case 't':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_TOGGLE_TEST_TONE);
+                break;
+            case 'z':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_FREQ);
+                break;
+            case 'u':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_AMP);
+                break;
+            case '+':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_EDIT_TEST_TONE_PLUS);
+                break;
+            case '-':
+                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_EDIT_TEST_TONE_MINUS);
+                break;
             case 'q':
                 exit = true;
                 break;

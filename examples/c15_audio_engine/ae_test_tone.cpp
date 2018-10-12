@@ -5,11 +5,11 @@ void ae_test_tone::init(const float _samplerate)
     m_sample_increment = 1.f / _samplerate;
     m_phase = 0.f;
     m_signal = 0.f;
-    m_left = 0.f;
-    m_right = 0.f;
-    set_amplitude(test_tone_initial_gain);
-    set_frequency(test_tone_initial_freq);
-    set_fade(test_tone_initial_fade);
+    m_focus = 0;
+    a_frequency = test_tone_initial_freq;
+    a_amplitude = test_tone_initial_gain;
+    set_frequency(a_frequency);
+    set_amplitude(a_amplitude);
     set_state(test_tone_initial_state);
 }
 
@@ -26,15 +26,18 @@ void ae_test_tone::set_frequency(const float _frequency)
 void ae_test_tone::set_state(const uint32_t _state)
 {
     m_state = _state;
-    if(m_state == 0) m_signal = 0.f;
+    if(m_state == 0)
+    {
+        m_signal = 0.f;
+    }
+    else
+    {
+        set_frequency(a_frequency);
+        set_amplitude(a_amplitude);
+    }
 }
 
-void ae_test_tone::set_fade(const float _fade)
-{
-    m_fade = _fade;
-}
-
-void ae_test_tone::tick(const float _left, const float _right)
+void ae_test_tone::tick()
 {
     if(m_state)
     {
@@ -46,7 +49,4 @@ void ae_test_tone::tick(const float _left, const float _right)
         m_phase += m_sample_increment * m_frequency;
         m_phase -= NlToolbox::Conversion::float2int(m_phase);
     }
-    // application
-    m_left = NlToolbox::Crossfades::unipolarCrossFade(_left, m_signal, m_fade);
-    m_right = NlToolbox::Crossfades::unipolarCrossFade(_right, m_signal, m_fade);
 }

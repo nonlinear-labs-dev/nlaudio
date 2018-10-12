@@ -563,6 +563,17 @@ void dsp_host::utilityUpdate(float _value)
         _value *= m_params.m_utilities[1].m_normalize;
         m_params.m_pitch_reference = m_params.scale(m_params.m_utilities[1].m_scaleId, m_params.m_utilities[1].m_scaleArg, _value);
         /* update pitch related values? */
+        break;
+    case 2:
+        /* set test tone frequency */
+        _value *= m_params.m_utilities[2].m_normalize;
+        m_test_tone.set_frequency(m_params.scale(m_params.m_utilities[2].m_scaleId, m_params.m_utilities[2].m_scaleArg, _value));
+        break;
+    case 3:
+        /* set test tone amplitude */
+        _value *= m_params.m_utilities[3].m_normalize;
+        m_test_tone.set_amplitude(m_params.scale(m_params.m_utilities[3].m_scaleId, m_params.m_utilities[3].m_scaleArg, _value));
+        break;
     }
 }
 
@@ -1260,13 +1271,10 @@ void dsp_host::makeMonoSound(float *_signal)
     m_gapfilter.apply(m_cabinet.m_out_L, m_cabinet.m_out_R, _signal);
     m_echo.apply(m_gapfilter.m_out_L, m_gapfilter.m_out_R, _signal);
     m_reverb.apply(m_echo.m_out_L, m_echo.m_out_R, _signal);
-    // new: Test Tone application
-    m_test_tone.tick(m_reverb.m_out_L * mst_gain, m_reverb.m_out_R * mst_gain);
 
     //******************************* Soft Clip ******************************//
     //****************************** Left Channel ****************************//
-    //m_mainOut_L = m_reverb.m_out_L * mst_gain;
-    m_mainOut_L = m_test_tone.m_left;
+    m_mainOut_L = m_reverb.m_out_L * mst_gain;
 
     m_mainOut_L *= 0.1588f;
     m_mainOut_L = std::clamp(m_mainOut_L, -0.25f, 0.25f);
@@ -1280,8 +1288,7 @@ void dsp_host::makeMonoSound(float *_signal)
     m_mainOut_L = m_mainOut_L * ((2.26548f * sample_square - 5.13274f) * sample_square + 3.14159f);
 
     //****************************** Right Channel ****************************//
-    //m_mainOut_R = m_reverb.m_out_R * mst_gain;
-    m_mainOut_R = m_test_tone.m_right;
+    m_mainOut_R = m_reverb.m_out_R * mst_gain;
 
     m_mainOut_R *= 0.1588f;
     m_mainOut_R = std::clamp(m_mainOut_R, -0.25f, 0.25f);
@@ -1310,6 +1317,10 @@ void dsp_host::makeMonoSound(float *_signal)
             m_flush = false;
         }
     }
+    //****************************** Test Tone ****************************//
+    m_test_tone.tick();
+    m_mainOut_L = std::clamp(m_mainOut_L + m_test_tone.m_signal, -1.f, 1.f);
+    m_mainOut_L = std::clamp(m_mainOut_R + m_test_tone.m_signal, -1.f, 1.f);
 }
 
 

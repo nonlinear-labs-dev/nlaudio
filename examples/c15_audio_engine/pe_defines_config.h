@@ -16,8 +16,7 @@
 
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
 #define test_tone_initial_gain      -6.0f           // Test Tone initial Gain (in decibel)
-#define test_tone_initial_fade      0.5f            // Test Tone initial Fade (0: C15 ... 1: Tone)
-#define test_tone_initial_state     1               // Test Tone initial State (0: disabled, 1: enabled)
+#define test_tone_initial_state     0               // Test Tone initial State (0: disabled, 1: enabled)
 #define test_svf_types              1               // 0: SVF first Proto NAN, 1: SVF noFIR, 2: SVF FIR, 3: SVF Original Primary (later)
 #define test_svf_fm_limit           1.5f            // SVF fm clipping maximum
 #define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
@@ -76,7 +75,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Utility Parameters and Envelope Definition */
 
-#define sig_number_of_utilities     2               // two Utility Parameters: Velocity, Reference Tone
+#define sig_number_of_utilities     4               // four Utility Parameters: Velocity, Reference Tone, Test Tone Freq, Amp
 #define sig_number_of_envelopes     5               // five Envelope Units: A, B, C, Gate, Flanger
 #define sig_number_of_env_items     81              // 4 POLY Envelopes (A..Gate) = 4 * 20 = 80 items, 1 MONO (Flanger Decay), total: 81 items
 #define sig_number_of_env_segments  4               // four segments for ADBDSR-type Envelopes (A, B, C): Attack, Decay 1, Decay 2, Release

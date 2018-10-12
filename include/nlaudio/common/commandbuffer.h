@@ -37,6 +37,11 @@ public:
         CMD_GET_PARAM,
         CMD_GET_CPU_LOAD,
         CMD_RESET,
+        CMD_TOGGLE_TEST_TONE,
+        CMD_FOCUS_TEST_TONE_FREQ,
+        CMD_FOCUS_TEST_TONE_AMP,
+        CMD_EDIT_TEST_TONE_PLUS,
+        CMD_EDIT_TEST_TONE_MINUS,
         CMD_NO_CMD = std::numeric_limits<int>::max() // Sentinel
     };
 

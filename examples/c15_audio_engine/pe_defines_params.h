@@ -306,5 +306,7 @@ const float param_definition[sig_number_of_params][10] = {
 const float utility_definition[sig_number_of_utilities][3] = {
     //       RANGE   SCALE   (ARG)
     {        4096,   0,      0          },                                      // velocity definition (for now: tcd range 4096)
-    {        100,    0,      400        }                                       // pitch reference (A3)
+    {        100,    0,      400        },                                      // pitch reference (A3)
+    {        1,      0,      0          },                                      // Test Tone Frequency (400 ... 1000 Hz)
+    {        1,      0,      0          },                                      // Test Tone Ampltude (-60 ... 0 dB)
 };
