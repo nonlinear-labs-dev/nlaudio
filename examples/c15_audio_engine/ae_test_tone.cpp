@@ -39,14 +39,11 @@ void ae_test_tone::set_state(const uint32_t _state)
 
 void ae_test_tone::tick()
 {
-    if(m_state)
-    {
-        // signal forming
-        float phs = m_phase - 0.25f;
-        phs -= NlToolbox::Conversion::float2int(phs);
-        m_signal = m_amplitude * NlToolbox::Math::sinP3_noWrap(phs);
-        // phase increment and wrapping
-        m_phase += m_sample_increment * m_frequency;
-        m_phase -= NlToolbox::Conversion::float2int(m_phase);
-    }
+    // signal forming
+    float phs = m_phase - 0.25f;
+    phs -= NlToolbox::Conversion::float2int(phs);
+    m_signal = m_amplitude * NlToolbox::Math::sinP3_noWrap(phs);
+    // phase increment and wrapping
+    m_phase += m_sample_increment * m_frequency;
+    m_phase -= NlToolbox::Conversion::float2int(m_phase);
 }

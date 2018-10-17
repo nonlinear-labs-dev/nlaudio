@@ -1318,9 +1318,12 @@ void dsp_host::makeMonoSound(float *_signal)
         }
     }
     //****************************** Test Tone ****************************//
-    m_test_tone.tick();
-    m_mainOut_L = std::clamp(m_mainOut_L + m_test_tone.m_signal, -1.f, 1.f);
-    m_mainOut_L = std::clamp(m_mainOut_R + m_test_tone.m_signal, -1.f, 1.f);
+    if(m_test_tone.m_state)
+    {
+        m_test_tone.tick();
+        m_mainOut_L = std::clamp(m_mainOut_L + m_test_tone.m_signal, -1.f, 1.f);
+        m_mainOut_L = std::clamp(m_mainOut_R + m_test_tone.m_signal, -1.f, 1.f);
+    }
 }
 
 
