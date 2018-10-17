@@ -154,4 +154,6 @@ struct paramengine
     void postProcessMono_slow(float *_signal);                                                  // mono slow post processing
     void postProcessMono_fast(float *_signal);                                                  // mono fast post processing
     void postProcessMono_audio(float *_signal);                                                 // mono audio post processing
+    /* temporary tests */
+    void testLevelVelocity();
 };

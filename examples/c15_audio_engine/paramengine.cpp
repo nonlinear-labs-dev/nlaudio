@@ -109,7 +109,8 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     /* initializing and testing new envelopes here... */
     m_new_envelopes.init(_voices, gateRelease);
 #endif
-    /* */
+    /* temporary Level Velocity testing */
+    //testLevelVelocity();
 }
 
 /* helper - nyquist clip */
@@ -1480,4 +1481,39 @@ void paramengine::postProcessMono_audio(float *_signal)
     float tmp_dry = 1.f - tmp_wet;
     _signal[FLA_LFO_L] = (tmp_dry * m_flangerLFO.m_left) + (tmp_wet * tmp_env);
     _signal[FLA_LFO_R] = (tmp_dry * m_flangerLFO.m_right) + (tmp_wet * tmp_env);
+}
+
+void paramengine::testLevelVelocity()
+{
+    //
+    float LV[5];
+    LV[0] = 0.f;
+    LV[1] = 15.f;
+    LV[2] = 30.f;
+    LV[3] = 45.f;
+    LV[4] = 60.f;
+    //
+    float KV[5];
+    KV[0] = 0.f;
+    KV[1] = 0.25f;
+    KV[2] = 0.5f;
+    KV[3] = 0.75f;
+    KV[4] = 1.f;
+    //
+    uint32_t LVI, KVI;
+    float peak;
+    //
+    std::cout << "Test Level Velocities:" << std::endl;
+    std::cout << "\t0\t15\t30\t45\t60\t(dB Level Velocity)" << std::endl;
+    for(KVI = 0; KVI < 5; KVI++)
+    {
+        std::cout << 100 * KV[KVI] << "\t";
+        for(LVI = 0; LVI < 5; LVI++)
+        {
+            peak = m_convert.eval_level((1.f - KV[KVI]) * -LV[LVI]);
+            std::cout << peak << "\t";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "\n(% Key Velocity)\n" << std::endl;
 }
