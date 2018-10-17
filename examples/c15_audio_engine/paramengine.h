@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include "pe_defines_params.h"
 #include "pe_exponentiator.h"
+#include "pe_defines_config.h"
 
 #if test_whichEnvelope == 0
 #include "pe_env_engine.h"
@@ -97,6 +98,9 @@ struct paramengine
     env_engine2 m_new_envelopes;
 #endif
     poly_key_event m_event;
+#if test_comb_decay_gate_mode == 1
+    float m_comb_decay_times[2];
+#endif
     NlToolbox::Curves::Shaper_1_BP m_combDecayCurve;
     NlToolbox::Curves::Shaper_1_BP m_svfLBH1Curve;
     NlToolbox::Curves::Shaper_1_BP m_svfLBH2Curve;

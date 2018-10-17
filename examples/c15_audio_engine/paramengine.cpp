@@ -909,10 +909,20 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     _signal[CMB_BYP] = unitPitch > dsp_comb_max_freqFactor ? 1.f : 0.f; // check for bypassing comb filter, max_freqFactor corresponds to Pitch of 119.99 ST
     /* - Comb Filter Decay Time (Base Pitch, Master Tune, Gate Env, Dec Time, Key Tracking, Gate Amount) */
     keyTracking = m_body[m_head[P_CMB_DKT].m_index].m_signal;
+    unitSign = 0.001f * (m_body[m_head[P_CMB_D].m_index].m_signal < 0 ? -1.f : 1.f);
+#if test_comb_decay_gate_mode == 0
+    // apply decay time directly
     envMod = 1.f - ((1.f - _signal[ENV_G_SIG]) * m_combDecayCurve.applyCurve(m_body[m_head[P_CMB_DG].m_index].m_signal));
     unitPitch = (-0.5f * basePitch * keyTracking) + (std::abs(m_body[m_head[P_CMB_D].m_index].m_signal) * envMod);
-    unitSign = m_body[m_head[P_CMB_D].m_index].m_signal < 0 ? -1.f : 1.f;
-    _signal[CMB_DEC] = 0.001f * m_convert.eval_level(unitPitch) * unitSign;
+    _signal[CMB_DEC] = m_convert.eval_level(unitPitch) * unitSign;
+#elif test_comb_decay_gate_mode == 1
+    // determine decay times min, max before crossfading them by gate signal (audio post processing)
+    envMod = 1.f - m_combDecayCurve.applyCurve(m_body[m_head[P_CMB_DG].m_index].m_signal);
+    unitMod = std::abs(m_body[m_head[P_CMB_D].m_index].m_signal);
+    unitPitch = (-0.5f * basePitch * keyTracking);
+    m_comb_decay_times[0] = m_convert.eval_level(unitPitch + (unitMod * envMod)) * unitSign;
+    m_comb_decay_times[1] = m_convert.eval_level(unitPitch + unitMod) * unitSign;
+#endif
     /* - Comb Filter Allpass Frequency (Base Pitch, Master Tune, Key Tracking, AP Tune, Env C) */
     keyTracking = m_body[m_head[P_CMB_APKT].m_index].m_signal;
     unitPitch = m_body[m_head[P_CMB_APT].m_index].m_signal;
@@ -1140,6 +1150,12 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     /* - Comb Filter Pitch Envelope C, converted into Frequency Factor */
     tmp_amt = m_body[m_head[P_CMB_PEC].m_index].m_signal;
     _signal[CMB_FEC] = m_convert.eval_lin_pitch(69.f - (tmp_amt * _signal[ENV_C_UNCL]));
+    /* Decay Time - Gate Signal crossfading */
+#if test_comb_decay_gate_mode == 1
+    _signal[CMB_DEC] = NlToolbox::Crossfades::unipolarCrossFade(m_comb_decay_times[0],
+                                                                m_comb_decay_times[1],
+                                                                _signal[ENV_G_SIG]);
+#endif
 }
 
 /* Poly KEY Post Processing */

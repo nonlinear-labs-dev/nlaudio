@@ -17,15 +17,21 @@
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
 #define test_tone_initial_gain      -6.0f           // Test Tone initial Gain (in decibel)
 #define test_tone_initial_state     0               // Test Tone initial State (0: disabled, 1: enabled)
+
+#define test_comb_decay_gate_mode   1               // 0: apply in slow post processing (like prototype), 1: audio fade min, max by gate signal (recommended)
+
 #define test_svf_types              1               // 0: SVF first Proto NAN, 1: SVF noFIR, 2: SVF FIR, 3: SVF Original Primary (later)
 #define test_svf_fm_limit           1.5f            // SVF fm clipping maximum
+
 #define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
 #define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
 #define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
+
 #define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
 #define test_reverbSmoother         0               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
+
 #define test_phase_reset            1               // 0: reset phase only, 1: reset phase, self- & cross-mix and feedback, chirp state var
 #define test_flanger_phs            2               // 0: slow (default), 1: fast, 2: audio
 #define test_initialize_time        1
