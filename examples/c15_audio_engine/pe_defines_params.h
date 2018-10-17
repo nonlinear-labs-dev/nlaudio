@@ -243,21 +243,27 @@ const float param_definition[sig_number_of_params][10] = {
     // - - - FLANGER  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        211,    2,      0,      8000,   4,      1,      104,    0,      1,      8000   },         // 155 FLANGER_TIME_MOD
-    {        213,    3,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
 #if test_flanger_phs == 0
-    {        214,    3,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE (slow)
+    {        213,    3,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
 #elif test_flanger_phs == 1
-    {        214,    2,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE (fast)
+    {        213,    2,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
 #elif test_flanger_phs == 2
-    {        214,    1,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE (audio)
+    {        213,    1,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
 #endif
+    {        214,    1,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE (audio)
     {        216,    3,      0,      12500,  4,      50,     -1,     0,      0,      12500  },         // 158 FLANGER_TIME
     {        218,    3,      0,      160,    0,      0,      -1,     0,      1,      8000   },         // 159 FLANGER_STEREO
     {        219,    2,      0,      16000,  0,      0.5f,   -1,     0,      1,      8000   },         // 160 FLANGER_FEEDBACK
     {        221,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 161 FLANGER_CROSS_FEEDBACK
     {        222,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 162 FLANGER_HI_CUT
     {        223,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 163 FLANGER_MIX
+#if test_flanger_env == 0
     {        307,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 164 FLANGER_ENVELOPE
+#elif test_flanger_env == 1
+    {        307,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 164 FLANGER_ENVELOPE
+#elif test_flanger_env == 2
+    {        307,    1,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 164 FLANGER_ENVELOPE
+#endif
     {        308,    3,      0,      8000,   1,      70,     -1,     0,      1,      8000   },         // 165 FLANGER_ALLPASS_MOD
     {        310,    3,      0,      100,    0,      0,      -1,     0,      0,      14000  },         // 166 FLANGER_ALLPASS_TUNE
 

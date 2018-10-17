@@ -33,7 +33,8 @@
 #define test_reverbSmoother         0               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
 
 #define test_phase_reset            1               // 0: reset phase only, 1: reset phase, self- & cross-mix and feedback, chirp state var
-#define test_flanger_phs            2               // 0: slow (default), 1: fast, 2: audio
+#define test_flanger_phs            1               // 0: slow (default, artifacts), 1: fast (seems okay), 2: audio (optimum)
+#define test_flanger_env            2               // 0: slow (default, artifacts), 1: fast (artifacts), 2: audio ()
 #define test_initialize_time        1
 
 /* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */
