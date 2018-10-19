@@ -29,12 +29,12 @@
 #define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
 
-#define test_reverbParams           0               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
-#define test_reverbSmoother         0               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
+#define test_reverbParams           1               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
+#define test_reverbSmoother         1               // 0: no internal smoothers (experimental), 1: internal smoothers (like Reaktor)
 
 #define test_phase_reset            1               // 0: reset phase only, 1: reset phase, self- & cross-mix and feedback, chirp state var
 #define test_flanger_phs            1               // 0: slow (default, artifacts), 1: fast (seems okay), 2: audio (optimum)
-#define test_flanger_env            2               // 0: slow (default, artifacts), 1: fast (artifacts), 2: audio ()
+#define test_flanger_env            2               // 0: slow (default, artifacts), 1: fast (artifacts), 2: audio (recommended)
 #define test_initialize_time        1
 
 /* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */

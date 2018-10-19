@@ -156,4 +156,16 @@ struct paramengine
     void postProcessMono_audio(float *_signal);                                                 // mono audio post processing
     /* temporary tests */
     void testLevelVelocity();
+    const float roundingValues[65] = {
+        -8.f, -7.75f, -7.5f, -7.25f, -7.f, -6.75f, -6.5f, -6.25f,
+        -6.f, -5.75f, -5.5f, -5.25f, -5.f, -4.75f, -4.5f, -4.25f,
+        -4.f, -3.75f, -3.5f, -3.25f, -3.f, -2.75f, -2.5f, -2.25f,
+        -2.f, -1.75f, -1.5f, -1.25f, -1.f, -0.75f, -0.5f, -0.25f,
+        0.f,
+        0.25f, 0.5f, 0.75f, 1.f, 1.25f, 1.5f, 1.75f, 2.f,
+        2.25f, 2.5f, 2.75f, 3.f, 3.25f, 3.5f, 3.75f, 4.f,
+        4.25f, 4.5f, 4.75f, 5.f, 5.25f, 5.5f, 5.75f, 6.f,
+        6.25f, 6.5f, 6.75f, 7.f, 7.25f, 7.5f, 7.75f, 8.f,
+    };
+    void testRounding();
 };

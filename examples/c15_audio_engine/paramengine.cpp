@@ -109,8 +109,9 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     /* initializing and testing new envelopes here... */
     m_new_envelopes.init(_voices, gateRelease);
 #endif
-    /* temporary Level Velocity testing */
+    /* temporary testing */
     //testLevelVelocity();
+    //testRounding();
 }
 
 /* helper - nyquist clip */
@@ -1503,7 +1504,7 @@ void paramengine::testLevelVelocity()
     uint32_t LVI, KVI;
     float peak;
     //
-    std::cout << "Test Level Velocities:" << std::endl;
+    std::cout << "\nTest Level Velocities:" << std::endl;
     std::cout << "\t0\t15\t30\t45\t60\t(dB Level Velocity)" << std::endl;
     for(KVI = 0; KVI < 5; KVI++)
     {
@@ -1516,4 +1517,20 @@ void paramengine::testLevelVelocity()
         std::cout << std::endl;
     }
     std::cout << "\n(% Key Velocity)\n" << std::endl;
+}
+
+void paramengine::testRounding()
+{
+    std::cout << "\nTesting Round Mechanism" << std::endl;
+    std::cout << "\tidx\tfloat\tint\tround\tint+\tint-\tR5?" << std::endl;
+    float f;
+    for(uint32_t i = 0; i < 65; i++)
+    {
+        f = roundingValues[i];
+        std::cout << "\t" << i << "\t" << f << "\t" << static_cast<int>(f) << "\t";
+        std::cout << static_cast<int>(std::round(f - 0.5f)) << "\t" << static_cast<int>(f + 0.5f) << "\t";
+        std::cout << static_cast<int>(f - 0.5f) << std::endl;
+        // reaktor algorithm???
+    }
+    std::cout << std::endl;
 }
