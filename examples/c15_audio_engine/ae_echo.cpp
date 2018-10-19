@@ -115,7 +115,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     int32_t ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    int32_t ind_tm1 = ind_t0 - 1;
+    int32_t ind_tm1 = std::max(ind_t0 - 1, 0);
     int32_t ind_tp1 = ind_t0 + 1;
     int32_t ind_tp2 = ind_t0 + 2;
 
@@ -167,7 +167,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     ind_t0 = static_cast<int32_t>(std::round(tmpVar - 0.5f));
     tmpVar = tmpVar - static_cast<float>(ind_t0);
 
-    ind_tm1 = ind_t0 - 1;
+    ind_tm1 = std::max(ind_t0 - 1, 0);
     ind_tp1 = ind_t0 + 1;
     ind_tp2 = ind_t0 + 2;
 
