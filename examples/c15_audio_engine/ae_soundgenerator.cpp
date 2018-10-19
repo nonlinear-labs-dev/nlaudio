@@ -256,4 +256,6 @@ void ae_soundgenerator::resetDSP()
     m_oscB_selfmix = 0.f;
     m_oscB_crossmix = 0.f;
     m_oscB_phase_stateVar = 0.f;
+
+    m_feedback_phase = 0.f;
 }
