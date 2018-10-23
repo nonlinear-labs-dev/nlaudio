@@ -138,6 +138,7 @@
 #define P_OM_FLD    138
 #define P_OM_ASM    139
 #define P_OM_LVL    140
+// P_OM_KP
 
 #define P_CAB_DRV   141
 #define P_CAB_FLD   142
@@ -174,15 +175,19 @@
 #define P_DLY_CFB   170
 #define P_DLY_LPF   171
 #define P_DLY_MIX   172
+// P_DLY_SND
 
 #define P_REV_SIZE  173
 #define P_REV_PRE   174
 #define P_REV_COL   175
 #define P_REV_CHO   176
 #define P_REV_MIX   177
+// P_REV_SND
 
 #define P_MA_V      178
 #define P_MA_T      179
+
+// UNISON...
 
 #define P_KEY_PH    180
 #define P_KEY_NP    181

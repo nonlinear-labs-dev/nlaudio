@@ -24,7 +24,7 @@
 #define OSC_A_FRQ       7           // Oscillator A Frequency (Pitch, Pitch KT, Pitch Env C Amount, Env C, Master Tune, Reference, Key Pitch)
 #define OSC_A_FLUEC     8           // Oscillator A Fluctuation (Amount, Env C Amount, Env C)
 #define OSC_A_PMSEA     9           // Oscillator A PM Self (Amount, Env A Amount, Env A)
-#define OSC_A_PMSSH     10           // Oscillator A PM Self Shaper (Amount)
+#define OSC_A_PMSSH     10          // Oscillator A PM Self Shaper (Amount)
 #define OSC_A_PMBEB     11          // Oscillator A PM B (Amount, Env B Amount, Env B)
 #define OSC_A_PMBSH     12          // Oscillator A PM B Shaper (Amount)
 #define OSC_A_PMFEC     13          // Oscillator A PM FB (Amount, Env C Amount, Env C)
@@ -170,6 +170,7 @@
 #define DLY_LPF         120         // Echo Lowpass Frequency (Hi Cut)
 #define DLY_DRY         121         // Echo Dry Amount (Mix)
 #define DLY_WET         122         // Echo Wet Amount (Mix)
+// Echo Send Amount
 
 /* Reverb Signals                   -- monophonic */
 
@@ -182,6 +183,7 @@
 #define REV_CHO         129         // Reverb Chorus (Chorus)
 #define REV_DRY         130         // Reverb Dry Amount (Mix)
 #define REV_WET         131         // Reverb Wet Amount (Mix)
+// Reverb Send Amount
 
 /* Master Signals                   -- monophonic */
 

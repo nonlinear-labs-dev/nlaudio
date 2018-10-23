@@ -14,6 +14,8 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
+#define test_milestone              1.5             //
+
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
 #define test_tone_initial_gain      -6.0f           // Test Tone initial Gain (in decibel)
 #define test_tone_initial_state     0               // Test Tone initial State (0: disabled, 1: enabled)

@@ -55,7 +55,7 @@ const float param_definition[sig_number_of_params][10] = {
     {        37,     0,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 26  ENV_B_TIME_KEYTRACK
     {        295,    0,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 27  ENV_B_ATTACK_CURVE
     {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 28  (RETRIGGER HARDNESS PLACEHOLDER)
-    {        329,    0,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 29  ENV_B_SPLIT
+    {        330,    0,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 29  ENV_B_SPLIT
 
     // - - - ENVELOPE C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
@@ -72,7 +72,7 @@ const float param_definition[sig_number_of_params][10] = {
     {        51,     0,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 40  ENV_C_LEVEL_KEYTRACK
     {        52,     0,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 41  ENV_C_TIME_KEYTRACK
     {        296,    0,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 42  ENV_C_ATTACK_CURVE
-    {        330,    0,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 43  ENV_C_RETRIGGER_HARDNESS
+    {        332,    0,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 43  ENV_C_RETRIGGER_HARDNESS
     {        -1,     0,      0,      1,      0,      0,      -1,     0,      0,      0      },         // 44  (SPLIT PLACEHOLDER)
 
     // - - - OSCILLATOR A - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,6 +214,7 @@ const float param_definition[sig_number_of_params][10] = {
     {        184,    2,      0,      16000,  0,      0,      82,     1,      0,      16000  },         // 139 OUT_ASYMETRY (later maybe fast type)
 #endif
     {        185,    2,      0,      16000,  4,      2.56f,  83,     0,      0,      16000  },         // 140 OUT_LEVEL
+    // OUT_KEY_PAN
 
     // - - - CABINET  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
@@ -275,6 +276,8 @@ const float param_definition[sig_number_of_params][10] = {
     {        231,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 170 ECHO_CROSS_FEEDBACK
     {        232,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 171 ECHO_HI_CUT
     {        233,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 172 ECHO_MIX
+    // ECHO_SEND
+
     // - - - REVERB - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* should the parameters run with fast clock? (except chorus) - see pe_defines_config.h */
 #if test_reverbParams == 0
@@ -293,10 +296,14 @@ const float param_definition[sig_number_of_params][10] = {
     {        240,    3,      0,      16000,  4,      1,      129,    0,      0,      16000  },         // 176 REVERB_CHORUS
     {        241,    3,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 177 REVERB_MIX
 #endif
+    // REVERB_SEND
+
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        247,    2,      0,      16000,  4,      4,      132,    0,      0,      16000  },         // 178 MASTER_VOLUME
     {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 179 MASTER_TUNE
+
+    // - - - UNISON
 
     // - - - POLY KEY EVENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
