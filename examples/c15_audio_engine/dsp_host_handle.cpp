@@ -37,6 +37,7 @@ namespace DSP_HOST_HANDLE {
         JobHandle jh = std::any_cast<JobHandle>(ptr);
 
         Nl::CommandBuffer::Command c;
+        float tmp = 0.f;
         while ((c = jh.cmdBuffer->get()) != Nl::CommandBuffer::CMD_NO_CMD) {
             switch (c) {
             case Nl::CommandBuffer::CMD_GET_PARAM:
@@ -59,7 +60,9 @@ namespace DSP_HOST_HANDLE {
                     jh.debugBuffer->insert(pack<std::string>("Reset executed"));
                 break;
             case Nl::CommandBuffer::CMD_TOGGLE_TEST_TONE:
-                m_host.m_test_tone.set_state(1 - m_host.m_test_tone.m_state);
+                tmp = static_cast<float>(1 - m_host.m_test_tone.m_state);
+                m_host.m_decoder.m_utilityId = 4;
+                m_host.utilityUpdate(tmp);
                 std::cout << "Test Tone toggled(" << m_host.m_test_tone.m_state << ")" << std::endl;
                 break;
             case Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_FREQ:
@@ -75,15 +78,15 @@ namespace DSP_HOST_HANDLE {
                 {
                 case 0:
                     m_host.m_decoder.m_utilityId = 2;
-                    m_host.m_test_tone.a_frequency = std::clamp(m_host.m_test_tone.a_frequency + 10.f, 0.f, 1000.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_frequency);
-                    std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_frequency + 10.f, 0.f, 1000.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Frequency:\t" << tmp << " Hz" << std::endl;
                     break;
                 case 1:
                     m_host.m_decoder.m_utilityId = 3;
-                    m_host.m_test_tone.a_amplitude = std::clamp(m_host.m_test_tone.a_amplitude + 1.f, -60.f, 0.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_amplitude);
-                    std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_amplitude + 1.f, -60.f, 0.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Amplitude:\t" << tmp << " dB" << std::endl;
                     break;
                 }
                 break;
@@ -92,15 +95,15 @@ namespace DSP_HOST_HANDLE {
                 {
                 case 0:
                     m_host.m_decoder.m_utilityId = 2;
-                    m_host.m_test_tone.a_frequency = std::clamp(m_host.m_test_tone.a_frequency - 10.f, 0.f, 1000.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_frequency);
-                    std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_frequency - 10.f, 0.f, 1000.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Frequency:\t" << tmp << " Hz" << std::endl;
                     break;
                 case 1:
                     m_host.m_decoder.m_utilityId = 3;
-                    m_host.m_test_tone.a_amplitude = std::clamp(m_host.m_test_tone.a_amplitude - 1.f, -60.f, 0.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_amplitude);
-                    std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_amplitude - 1.f, -60.f, 0.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Amplitude:\t" << tmp << " dB" << std::endl;
                     break;
                 }
                 break;

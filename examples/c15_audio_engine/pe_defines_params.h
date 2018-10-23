@@ -322,4 +322,5 @@ const float utility_definition[sig_number_of_utilities][3] = {
     {        100,    0,      400        },                                      // pitch reference (A3)
     {        1,      0,      0          },                                      // Test Tone Frequency (400 ... 1000 Hz)
     {        1,      0,      0          },                                      // Test Tone Ampltude (-60 ... 0 dB)
+    {        1,      0,      0          }                                       // Test Tone State (0, 1)
 };

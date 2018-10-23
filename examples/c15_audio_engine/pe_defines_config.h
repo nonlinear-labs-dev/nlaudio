@@ -14,7 +14,7 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
-#define test_milestone              1.5             //
+#define test_milestone              150             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echor/reverb sends)
 
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
 #define test_tone_initial_gain      -6.0f           // Test Tone initial Gain (in decibel)
@@ -84,7 +84,7 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Utility Parameters and Envelope Definition */
 
-#define sig_number_of_utilities     4               // four Utility Parameters: Velocity, Reference Tone, Test Tone Freq, Amp
+#define sig_number_of_utilities     5               // four Utility Parameters: Velocity, Reference Tone, Test Tone Freq, Amp, State
 #define sig_number_of_envelopes     5               // five Envelope Units: A, B, C, Gate, Flanger
 #define sig_number_of_env_items     81              // 4 POLY Envelopes (A..Gate) = 4 * 20 = 80 items, 1 MONO (Flanger Decay), total: 81 items
 #define sig_number_of_env_segments  4               // four segments for ADBDSR-type Envelopes (A, B, C): Attack, Decay 1, Decay 2, Release

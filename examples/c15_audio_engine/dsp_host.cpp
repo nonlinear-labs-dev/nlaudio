@@ -567,12 +567,18 @@ void dsp_host::utilityUpdate(float _value)
     case 2:
         /* set test tone frequency */
         _value *= m_params.m_utilities[2].m_normalize;
+        m_test_tone.a_frequency = _value;
         m_test_tone.set_frequency(m_params.scale(m_params.m_utilities[2].m_scaleId, m_params.m_utilities[2].m_scaleArg, _value));
         break;
     case 3:
         /* set test tone amplitude */
         _value *= m_params.m_utilities[3].m_normalize;
+        m_test_tone.a_amplitude = _value;
         m_test_tone.set_amplitude(m_params.scale(m_params.m_utilities[3].m_scaleId, m_params.m_utilities[3].m_scaleArg, _value));
+        break;
+    case 4:
+        _value *= m_params.m_utilities[4].m_normalize;
+        m_test_tone.set_state(static_cast<uint32_t>(_value));
         break;
     }
 }
