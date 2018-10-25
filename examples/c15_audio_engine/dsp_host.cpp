@@ -337,7 +337,11 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 17:
         /* setUtility */
-        f = static_cast<float>(m_decoder.unsigned14(_data0, _data1));
+        f = static_cast<float>(m_decoder.unsigned14(_data0 & 63, _data1));
+        if((_data0 & 64) > 0)
+        {
+            f *= -1.f;
+        }
         utilityUpdate(f);
         break;
     }
@@ -813,7 +817,7 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
         case 7:
             /* Flush */
             std::cout << "triggered FLUSH" << std::endl;
-            testFlush();
+            testReset(0);
             break;
         case 8:
             /* Preset 0 */
@@ -854,6 +858,23 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             /* Preset 7 */
             std::cout << "load PRESET 7" << std::endl;
             testLoadPreset(7);
+            break;
+        case 16:
+            // Envelope Stop
+            std::cout << "triggered ENV_STOP" << std::endl;
+            testReset(1);
+            break;
+        case 17:
+            // DSP Reset
+            std::cout << "triggered DSP_RESET" << std::endl;
+            testReset(2);
+            break;
+        case 18:
+            // Trigger Test Tone
+            m_test_tone_state = 1 - m_test_tone_state;
+            std::cout << "triggered TEST_TONE_STATE(" << m_test_tone_state << ")" << std::endl;
+            evalMidi(8, 0, 4);                                          // select utility (test tone state)
+            evalMidi(24, 0, m_test_tone_state);                         // update utility
             break;
         }
         break;
@@ -960,6 +981,14 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             case 2:
                 /* transition time */
                 testSetGlobalTime(_value);
+                break;
+            case 3:
+                // test tone frequency
+                testSetToneFreq(_value);
+                break;
+            case 4:
+                // test tone amplitude
+                testSetToneAmp(_value);
                 break;
             }
         }
@@ -1070,6 +1099,32 @@ void dsp_host::testSetReference(uint32_t _value)
     evalMidi(24, val >> 7, val & 127);                          // update utility
 }
 
+/* set test tone frequency  */
+void dsp_host::testSetToneFreq(uint32_t _value)
+{
+    _value += 400;
+    std::cout << "Set_TestTone_Frequency(" << _value << ") [Hz]" << std::endl;
+    evalMidi(8, 0, 2);                                          // select utility (test tone freq)
+    evalMidi(24, _value >> 7, _value & 127);                    // update utility
+}
+
+/* set test tone amplitude */
+void dsp_host::testSetToneAmp(uint32_t _value)
+{
+    int32_t val = static_cast<int32_t>(_value) - 127;
+    std::cout << "Set_TestTone_Amplitude(" << val << ") [dB]" << std::endl;
+    if(val < 0)
+    {
+        _value = 8192 + static_cast<uint32_t>(val * -1);
+    }
+    else
+    {
+        _value = static_cast<uint32_t>(val);
+    }
+    evalMidi(8, 0, 3);                                          // select utility (test tone amp)
+    evalMidi(24, _value >> 7, _value & 127);                    // update utility
+}
+
 /* preset recall approach */
 void dsp_host::testLoadPreset(uint32_t _presetId)
 {
@@ -1086,11 +1141,11 @@ void dsp_host::testLoadPreset(uint32_t _presetId)
 }
 
 /* trigger flush */
-void dsp_host::testFlush()
+void dsp_host::testReset(uint32_t _mode)
 {
-    std::cout << "\nFLUSH" << std::endl;
+    std::cout << "\nRESET(" << _mode << ")" << std::endl;
     /* pass the trigger TCD message */
-    evalMidi(39, 0, 0);                                         // flush
+    evalMidi(39, 0, _mode);                                         // flush/env_stop/dsp_reset
 }
 
 /* glance at current signals */

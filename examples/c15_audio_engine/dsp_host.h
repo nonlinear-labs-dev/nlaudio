@@ -84,14 +84,17 @@ public:
     uint32_t m_test_selectedGroup = 0;                                  // a group selector
     uint32_t m_test_midiMode = 1;                                       // a mode selector (init to GLOBAL MODE)
     int32_t m_test_selectedParam = 0;                                   // a param selector
+    uint32_t m_test_tone_state = 0;                                     // test tone state
     void testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1);  // testing the engine
     void testRouteControls(uint32_t _id, uint32_t _value);              // control routing
     void testNoteOn(uint32_t _pitch, uint32_t _velocity);               // testing note on messages
     void testNoteOff(uint32_t _pitch, uint32_t _velocity);              // testing note off messages
     void testSetGlobalTime(uint32_t _value);                            // testing times
     void testSetReference(uint32_t _value);                             // testing reference tone
+    void testSetToneFreq(uint32_t _value);                              // test tone frequency setter
+    void testSetToneAmp(uint32_t _value);                               // test tone amplitude setter
     void testLoadPreset(uint32_t _presetId);                            // testing simple preset recall sequence
-    void testFlush();                                                   // testing flush
+    void testReset(uint32_t _mode);                                     // testing reset (flush, env stop, dsp reset)
     void testGetSignalData();                                           // print signal
     void testGetParamHeadData();                                        // print param configuration
     void testGetParamRenderData();                                      // print param rendering state
