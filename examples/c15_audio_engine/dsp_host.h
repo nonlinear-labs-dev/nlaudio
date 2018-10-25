@@ -72,6 +72,7 @@ public:
     void timeUpdate(float _value);                                      // distribution of an incoming time (to selection)
     void utilityUpdate(float _value);                                   // evaluation of the utility mechanism
     void listUpdate(float _dest);                                       // evaluation of the list mechanism
+    void resetUpdate(uint32_t _mode);                                   // evaluation of the reset mechanism
     void keyUp(uint32_t _voiceId, float _velocity);                     // key up event trigger
     void keyDown(uint32_t _voiceId, float _velocity);                   // key down event trigger
     void keyApply(uint32_t _voiceId);                                   // key application and distribution (to voice selection)
@@ -146,4 +147,7 @@ public:
 
     /* Audio Engine Reset */
     void resetDSP();
+
+    /* Envelope Reset */
+    void resetEnv();
 };

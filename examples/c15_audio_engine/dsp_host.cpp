@@ -327,7 +327,8 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 15:
         /* flush (audio_engine trigger needed) */
-        m_flush = true;
+        //m_flush = true;
+        resetUpdate(_data1);
         break;
     case 16:
         /* selectUtility */
@@ -599,6 +600,26 @@ void dsp_host::listUpdate(float _dest)
     case 2:
         /* key event traversal (polyphonic - voice selection up to sender! */
         m_params.setDest(m_decoder.m_voiceFrom, m_decoder.traverseKeyEvent(), _dest);
+        break;
+    }
+}
+
+/* */
+void dsp_host::resetUpdate(uint32_t _mode)
+{
+    switch(_mode)
+    {
+    case 0:
+        // execute flush
+        m_flush = true;
+        break;
+    case 1:
+        // execute envelope stop
+        resetEnv();
+        break;
+    case 2:
+        // execute dsp reset
+        resetDSP();
         break;
     }
 }
@@ -1422,61 +1443,10 @@ void dsp_host::examineSignal()
 /* Audio Engine Reset */
 void dsp_host::resetDSP()
 {
-    // if present, reset old envelopes
-#if test_whichEnvelope == 0
-    uint32_t e;
-    // reset old envelopes (A, B, C, G, F) -- not tested yet!
-    for(e = 0; e < sig_number_of_env_items; e++)
-    {
-        m_params.m_envelopes.m_body[e].m_index = 0;
-        m_params.m_envelopes.m_body[e].m_signal = 0.f;
-        m_params.m_envelopes.m_body[e].m_start = 0.f;
-    }
-#endif
-    // iterate voices
-    uint32_t v;
-
-    // reset Enevlopes
-    for(v = 0; v < m_voices; v++)
-    {
-        // if present, reset new envelopes
-#if test_whichEnvelope == 1
-        // reset new envelopes (Env A)
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env B)
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env C)
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env G)
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
-#endif
-    }
-    // mono flanger envelope (new envelopes only)
-#if test_whichEnvelope == 1
-    // reset enw envelopes (Env F)
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
-#endif
-
+    // reset: envlopes
+    resetEnv();
     // reset: audio engine poly section (full flush included)
+    uint32_t v;
     for(v = 0; v < m_voices; v++)
     {
         m_soundgenerator[v].resetDSP();
@@ -1536,5 +1506,63 @@ void dsp_host::flushDSP()
     std::fill(m_reverb.m_buffer_L.begin(), m_reverb.m_buffer_L.end(), 0.f);
     std::fill(m_reverb.m_buffer_R.begin(), m_reverb.m_buffer_R.end(), 0.f);
 
+#endif
+}
+
+/******************************************************************************/
+/**
+*******************************************************************************/
+
+/* */
+void dsp_host::resetEnv()
+{
+    // if present, reset old envelopes
+#if test_whichEnvelope == 0
+    uint32_t e;
+    // reset old envelopes (A, B, C, G, F) -- not tested yet!
+    for(e = 0; e < sig_number_of_env_items; e++)
+    {
+        m_params.m_envelopes.m_body[e].m_index = 0;
+        m_params.m_envelopes.m_body[e].m_signal = 0.f;
+        m_params.m_envelopes.m_body[e].m_start = 0.f;
+    }
+#elif test_whichEnvelope == 1
+    // if present, reset new envelopes
+    // iterate voices
+    uint32_t v;
+
+    // reset Enevlopes
+    for(v = 0; v < m_voices; v++)
+    {
+        // reset new envelopes (Env A)
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env B)
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env C)
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env G)
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
+    }
+    // mono flanger envelope (new envelopes only)
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
 #endif
 }
