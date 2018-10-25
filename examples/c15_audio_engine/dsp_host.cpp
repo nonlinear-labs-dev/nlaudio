@@ -51,6 +51,7 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     m_signal_status.m_selected = log_signal_id;
     m_signal_status.m_size = m_voices;
 #endif
+    std::cout << "sizeof(dsp_host):\t" << sizeof(dsp_host) << " bytes" << std::endl;
 }
 
 /* */

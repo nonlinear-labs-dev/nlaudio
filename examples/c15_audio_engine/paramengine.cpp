@@ -109,6 +109,61 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     /* initializing and testing new envelopes here... */
     m_new_envelopes.init(_voices, gateRelease);
 #endif
+    // initialize unison spread tables
+    int32_t u_voice, u_index;
+    for(i = 0; i < dsp_number_of_voices; i++)
+    {
+        // prepare for unison voice
+        u_voice = static_cast<int32_t>(i) + 1;
+        // unison detune
+        u_index = -(static_cast<int32_t>(i) >> 1);
+        for(p = 0; p <= i; p++)
+        {
+            m_unison_detune[i][p] = static_cast<float>(u_index);
+            u_index += 1;
+        }
+        // unison phase and pan
+        u_index = -static_cast<int32_t>(i);
+        for(p = 0; p <= i; p++)
+        {
+            m_unison_phase[i][p] = static_cast<float>(u_index) / static_cast<float>(2 * u_voice);
+            m_unison_pan[i][p] = static_cast<float>(u_index) / static_cast<float>(i < 1 ? 1 : i);
+            u_index += 2;
+        }
+        // zero padding
+        for(p = i + 1; p < dsp_number_of_voices; p++)
+        {
+            m_unison_detune[i][p] = 0.f;
+            m_unison_phase[i][p] = 0.f;
+            m_unison_pan[i][p] = 0.f;
+        }
+    }
+    // print unison spread values - checked, values are correct
+    /*
+    std::cout << "Unison Spread Values" << std::endl;
+    for(i = 0; i < dsp_number_of_voices; i++)
+    {
+        std::cout << "Voice:\t" << i + 1 << std::endl;
+        std::cout << "\tDetune:\t";
+        for(p = 0; p < dsp_number_of_voices; p++)
+        {
+            std::cout << m_unison_detune[i][p] << ", ";
+        }
+        std::cout << std::endl;
+        std::cout << "\tPhase:\t";
+        for(p = 0; p < dsp_number_of_voices; p++)
+        {
+            std::cout << m_unison_phase[i][p] << ", ";
+        }
+        std::cout << std::endl;
+        std::cout << "\tPan:\t";
+        for(p = 0; p < dsp_number_of_voices; p++)
+        {
+            std::cout << m_unison_pan[i][p] << ", ";
+        }
+        std::cout << std::endl;
+    }
+    */
     /* temporary testing */
     //testLevelVelocity();
     //testRounding();
