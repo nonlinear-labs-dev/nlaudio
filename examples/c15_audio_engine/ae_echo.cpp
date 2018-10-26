@@ -103,7 +103,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
     float tmpVar;
 
     //***************************** Left Channel *****************************//
-    tmpVar = _rawSample_L + (m_stateVar_L * _signal[DLY_FB_LOC]) + (m_stateVar_R * _signal[DLY_FB_CR]);
+    tmpVar = (_rawSample_L * _signal[DLY_SND]) + (m_stateVar_L * _signal[DLY_FB_LOC]) + (m_stateVar_R * _signal[DLY_FB_CR]);
 
     m_buffer_L[m_buffer_indx] = tmpVar;
 
@@ -155,7 +155,7 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 
 
     //**************************** Right Channel *****************************//
-    tmpVar = _rawSample_R + (m_stateVar_R * _signal[DLY_FB_LOC]) + (m_stateVar_L * _signal[DLY_FB_CR]);
+    tmpVar = (_rawSample_R * _signal[DLY_SND]) + (m_stateVar_R * _signal[DLY_FB_LOC]) + (m_stateVar_L * _signal[DLY_FB_CR]);
 
     m_buffer_R[m_buffer_indx] = tmpVar;
 

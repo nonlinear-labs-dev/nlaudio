@@ -68,6 +68,13 @@ void dsp_host::loadInitialPreset()
         evalMidi(5, 0, 0);                                                              // send destination 0
     }
     evalMidi(47, 0, 2);                                                                 // apply preloaded values
+#if test_initialize_fx_sends
+    /* temporarily initialize echo and reverb sends to 100% (because compability) */
+    evalMidi(1, 334 >> 7, 334 & 127);                                                   // select echo send (ID 334)
+    evalMidi(5, 16000 >> 7, 16000 & 127);                                               // set destination (16000 <-> 100%)
+    evalMidi(1, 336 >> 7, 336 & 127);                                                   // select reverb send (ID 336)
+    evalMidi(5, 16000 >> 7, 16000 & 127);                                               // set destination (16000 <-> 100%)
+#endif
     /* should time be initialized? */
 #if test_initialize_time == 1
     uint32_t time = dsp_initial_time * static_cast<uint32_t>(m_params.m_millisecond);   // no clipping!!!

@@ -37,7 +37,9 @@
 #define test_phase_reset            1               // 0: reset phase only, 1: reset phase, self- & cross-mix and feedback, chirp state var
 #define test_flanger_phs            1               // 0: slow (default, artifacts), 1: fast (seems okay), 2: audio (optimum)
 #define test_flanger_env            2               // 0: slow (default, artifacts), 1: fast (artifacts), 2: audio (recommended)
-#define test_initialize_time        1
+
+#define test_initialize_time        1               // leave at 1 until LPC transmits full init sequence (including time)
+#define test_initialize_fx_sends    1               // leave at 1 until LPC can handle fx sends (echo, reverb) (inits sends to 100%, maintaining compability)
 
 /* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */
 
