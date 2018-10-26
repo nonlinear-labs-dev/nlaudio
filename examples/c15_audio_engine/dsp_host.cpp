@@ -327,8 +327,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         }
         break;
     case 15:
-        /* flush (audio_engine trigger needed) */
-        //m_flush = true;
+        /* reset command (flush / env_stop / dsp_reset) */
         resetUpdate(_data1);
         break;
     case 16:
@@ -337,11 +336,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 17:
         /* setUtility */
-        f = static_cast<float>(m_decoder.unsigned14(_data0 & 63, _data1));
-        if((_data0 & 64) > 0)
-        {
-            f *= -1.f;
-        }
+        f = static_cast<float>(m_decoder.signed14(_data0, _data1));
         utilityUpdate(f);
         break;
     }
