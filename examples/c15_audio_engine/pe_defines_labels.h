@@ -138,59 +138,68 @@
 #define P_OM_FLD    138
 #define P_OM_ASM    139
 #define P_OM_LVL    140
-// P_OM_KP
+#define P_OM_KP     141
 
-#define P_CAB_DRV   141
-#define P_CAB_FLD   142
-#define P_CAB_ASM   143
-#define P_CAB_TILT  144
-#define P_CAB_LPF   145
-#define P_CAB_HPF   146
-#define P_CAB_LVL   147
-#define P_CAB_MIX   148
+#define P_CAB_DRV   142
+#define P_CAB_FLD   143
+#define P_CAB_ASM   144
+#define P_CAB_TILT  145
+#define P_CAB_LPF   146
+#define P_CAB_HPF   147
+#define P_CAB_LVL   148
+#define P_CAB_MIX   149
 
-#define P_GAP_CNT   149
-#define P_GAP_STE   150
-#define P_GAP_GAP   151
-#define P_GAP_RES   152
-#define P_GAP_BAL   153
-#define P_GAP_MIX   154
+#define P_GAP_CNT   150
+#define P_GAP_STE   151
+#define P_GAP_GAP   152
+#define P_GAP_RES   153
+#define P_GAP_BAL   154
+#define P_GAP_MIX   155
 
-#define P_FLA_TMOD  155
-#define P_FLA_PHS   156
-#define P_FLA_RTE   157
-#define P_FLA_TIME  158
-#define P_FLA_STE   159
-#define P_FLA_FB    160
-#define P_FLA_CFB   161
-#define P_FLA_LPF   162
-#define P_FLA_MIX   163
-#define P_FLA_ENV   164
-#define P_FLA_APM   165
-#define P_FLA_APT   166
+#define P_FLA_TMOD  156
+#define P_FLA_PHS   157
+#define P_FLA_RTE   158
+#define P_FLA_TIME  159
+#define P_FLA_STE   160
+#define P_FLA_FB    161
+#define P_FLA_CFB   162
+#define P_FLA_LPF   163
+#define P_FLA_MIX   164
+#define P_FLA_ENV   165
+#define P_FLA_APM   166
+#define P_FLA_APT   167
 
-#define P_DLY_TIME  167
-#define P_DLY_STE   168
-#define P_DLY_FB    169
-#define P_DLY_CFB   170
-#define P_DLY_LPF   171
-#define P_DLY_MIX   172
-// P_DLY_SND
+#define P_DLY_TIME  168
+#define P_DLY_STE   169
+#define P_DLY_FB    170
+#define P_DLY_CFB   171
+#define P_DLY_LPF   172
+#define P_DLY_MIX   173
+#define P_DLY_SND   174
 
-#define P_REV_SIZE  173
-#define P_REV_PRE   174
-#define P_REV_COL   175
-#define P_REV_CHO   176
-#define P_REV_MIX   177
-// P_REV_SND
+#define P_REV_SIZE  175
+#define P_REV_PRE   176
+#define P_REV_COL   177
+#define P_REV_CHO   178
+#define P_REV_MIX   179
+#define P_REV_SND   180
 
-#define P_MA_V      178
-#define P_MA_T      179
+#define P_MA_V      181
+#define P_MA_T      182
 
-// UNISON...
+#define P_UN_V      183
+#define P_UN_DET    184
+#define P_UN_PHS    185
+#define P_UN_PAN    186
 
-#define P_KEY_PH    180
-#define P_KEY_NP    181
-#define P_KEY_VP    182
-#define P_KEY_EC    183
-#define P_KEY_VS    184
+/* milestone 1.5 POLY KEY params */
+#define P_KEY_PH    187
+#define P_KEY_NP    188
+#define P_KEY_VP    189
+#define P_KEY_VS    190
+//#define P_KEY_EC    191
+
+/* milestone 1.55 POLY KEY params */
+#define P_KEY_POS   187
+#define P_KEY_IDX   188
+#define P_KEY_STL   189

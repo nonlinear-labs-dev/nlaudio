@@ -28,7 +28,7 @@
 #define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
 #define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
-#define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
+#define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
 
 #define test_reverbParams           1               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
@@ -69,18 +69,35 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 };
 
-/* Main Parameter Definition                        -> see Linux Engine - Test 5 */
+#if test_milestone == 150
 
-#define sig_number_of_params        184             // 3 * (15 ENV params) + 2 * (15 OSC + 8 SHP params) + (16 CMB params) + (13 SVF params) + (9 FB Mix params) + (12 OUT params)
-                                                    // + (8 CABINET params) + (6 GAP params) + (12 FLANGER params) (6 ECHO params) + (5 REVERB params) + (2 MASTER params) + (4 KEY params)
-#define sig_number_of_param_items   260             // (45 + 46 + 16 + 13 + 9 + 12 + 8 + 6 + 12 + 6 + 5 + 2 (* 1 Voice) MONO params) + (4 (* 20 Voices) POLY params)
-#define sig_number_of_signal_items  133             // 133 shared signals
+/* Main Parameter Definition                        -> see Linux Engine LPC Status */
+
+#define sig_number_of_params        191             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   267             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  135             // signals shared between the parameter and audio engine
 
 /* TCD List Handling */
 
-#define lst_recall_length           176             // 176 preset-relevant parameters
+#define lst_recall_length           183             // preset-relevant parameters
 #define lst_keyEvent_length         4               // 4 key event parameters
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
+
+#elif test_milestone == 155
+
+/* Main Parameter Definition                        -> see Linux Engine LPC Status */
+
+#define sig_number_of_params        190             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   247             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  135             // signals shared between the parameter and audio engine
+
+/* TCD List Handling */
+
+#define lst_recall_length           183             // preset-relevant parameters
+#define lst_keyEvent_length         3               // 3 key event parameters
+#define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
+
+#endif
 
 /* Utility Parameters and Envelope Definition */
 

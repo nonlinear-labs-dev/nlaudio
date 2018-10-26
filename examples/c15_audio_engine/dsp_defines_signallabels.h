@@ -170,21 +170,21 @@
 #define DLY_LPF         120         // Echo Lowpass Frequency (Hi Cut)
 #define DLY_DRY         121         // Echo Dry Amount (Mix)
 #define DLY_WET         122         // Echo Wet Amount (Mix)
-// Echo Send Amount
+#define DLY_SND         123         // Echo Send Amount
 
 /* Reverb Signals                   -- monophonic */
 
-#define REV_SIZE        123         // Reverb Size (Size)
-#define REV_FEED        124         // Reverb Feedback Amount (Size)
-#define REV_BAL         125         // Reverb Balance (Size)
-#define REV_PRE         126         // Reverb Pre Delay (Pre Delay)
-#define REV_HPF         127         // Reverb Highpass Frequency (Color)
-#define REV_LPF         128         // Reverb Lowpass Frequency (Color)
-#define REV_CHO         129         // Reverb Chorus (Chorus)
-#define REV_DRY         130         // Reverb Dry Amount (Mix)
-#define REV_WET         131         // Reverb Wet Amount (Mix)
-// Reverb Send Amount
+#define REV_SIZE        124         // Reverb Size (Size)
+#define REV_FEED        125         // Reverb Feedback Amount (Size)
+#define REV_BAL         126         // Reverb Balance (Size)
+#define REV_PRE         127         // Reverb Pre Delay (Pre Delay)
+#define REV_HPF         128         // Reverb Highpass Frequency (Color)
+#define REV_LPF         129         // Reverb Lowpass Frequency (Color)
+#define REV_CHO         130         // Reverb Chorus (Chorus)
+#define REV_DRY         131         // Reverb Dry Amount (Mix)
+#define REV_WET         132         // Reverb Wet Amount (Mix)
+#define REV_SND         133         // Reverb Send Amount
 
 /* Master Signals                   -- monophonic */
 
-#define MST_VOL         132         // Master Volume (Volume)
+#define MST_VOL         134         // Master Volume (Volume)

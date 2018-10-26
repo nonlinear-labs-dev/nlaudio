@@ -214,103 +214,112 @@ const float param_definition[sig_number_of_params][10] = {
     {        184,    2,      0,      16000,  0,      0,      82,     1,      0,      16000  },         // 139 OUT_ASYMETRY (later maybe fast type)
 #endif
     {        185,    2,      0,      16000,  4,      2.56f,  83,     0,      0,      16000  },         // 140 OUT_LEVEL
-    // OUT_KEY_PAN
+    {        187,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 141 OUT_KEY_PAN
 
     // - - - CABINET  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        188,    2,      0,      200,    12,     0,      84,     0,      0,      10000  },         // 141 CABINET_DRIVE
+    {        188,    2,      0,      200,    12,     0,      84,     0,      0,      10000  },         // 142 CABINET_DRIVE
 #if test_fast_fold_asym == 0
-    {        190,    3,      0,      16000,  0,      0,      85,     0,      0,      16000  },         // 142 CABINET_FOLD (later maybe fast type)
-    {        191,    3,      0,      16000,  0,      0,      86,     0,      0,      16000  },         // 143 CABINET_ASYMETRY (later maybe fast type)
+    {        190,    3,      0,      16000,  0,      0,      85,     0,      0,      16000  },         // 143 CABINET_FOLD (later maybe fast type)
+    {        191,    3,      0,      16000,  0,      0,      86,     0,      0,      16000  },         // 144 CABINET_ASYMETRY (later maybe fast type)
 #elif test_fast_fold_asym == 1
-    {        190,    2,      0,      16000,  0,      0,      85,     0,      0,      16000  },         // 142 CABINET_FOLD (later maybe fast type)
-    {        191,    2,      0,      16000,  0,      0,      86,     0,      0,      16000  },         // 143 CABINET_ASYMETRY (later maybe fast type)
+    {        190,    2,      0,      16000,  0,      0,      85,     0,      0,      16000  },         // 143 CABINET_FOLD (later maybe fast type)
+    {        191,    2,      0,      16000,  0,      0,      86,     0,      0,      16000  },         // 144 CABINET_ASYMETRY (later maybe fast type)
 #endif
-    {        192,    2,      0,      80,     0,      0,      -1,     0,      1,      8000   },         // 144 CABINET_TILT (implement fast and slow handling)
-    {        194,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 145 CABINET_HI_CUT
-    {        196,    3,      0,      200,    9,      20,     -1,     0,      0,      16000  },         // 146 CABINET_LOW_CUT
-    {        197,    2,      0,      200,    12,     -50,    -1,     0,      0,      10000  },         // 147 CABINET_CAB_LEVEL
-    {        199,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 148 CABINET_MIX
+    {        192,    2,      0,      80,     0,      0,      -1,     0,      1,      8000   },         // 145 CABINET_TILT (implement fast and slow handling)
+    {        194,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 146 CABINET_HI_CUT
+    {        196,    3,      0,      200,    9,      20,     -1,     0,      0,      16000  },         // 147 CABINET_LOW_CUT
+    {        197,    2,      0,      200,    12,     -50,    -1,     0,      0,      10000  },         // 148 CABINET_CAB_LEVEL
+    {        199,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 149 CABINET_MIX
 
     // - - - GAP FILTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        201,    3,      0,      100,    0,      24,     -1,     0,      0,      9600   },         // 149 GAP_FILTER_CENTER
-    {        203,    3,      0,      200,    1,      0.5f,   -1,     0,      1,      7200   },         // 150 GAP_FILTER_STEREO
-    {        204,    3,      0,      100,    1,      0.5f,   -1,     0,      0,      9600   },         // 151 GAP_FILTER_GAP
-    {        206,    3,      0,      16000,  1,      0.9f,   98,     0,      0,      16000  },         // 152 GAP_FILTER_RESONANCE
-    {        207,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 153 GAP_FILTER_BALANCE
-    {        209,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 154 GAP_FILTER_MIX
+    {        201,    3,      0,      100,    0,      24,     -1,     0,      0,      9600   },         // 150 GAP_FILTER_CENTER
+    {        203,    3,      0,      200,    1,      0.5f,   -1,     0,      1,      7200   },         // 151 GAP_FILTER_STEREO
+    {        204,    3,      0,      100,    1,      0.5f,   -1,     0,      0,      9600   },         // 152 GAP_FILTER_GAP
+    {        206,    3,      0,      16000,  1,      0.9f,   98,     0,      0,      16000  },         // 153 GAP_FILTER_RESONANCE
+    {        207,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 154 GAP_FILTER_BALANCE
+    {        209,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 155 GAP_FILTER_MIX
 
     // - - - FLANGER  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        211,    2,      0,      8000,   4,      1,      104,    0,      1,      8000   },         // 155 FLANGER_TIME_MOD
+    {        211,    2,      0,      8000,   4,      1,      104,    0,      1,      8000   },         // 156 FLANGER_TIME_MOD
 #if test_flanger_phs == 0
-    {        213,    3,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
+    {        213,    3,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 157 FLANGER_PHASE
 #elif test_flanger_phs == 1
-    {        213,    2,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
+    {        213,    2,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 157 FLANGER_PHASE
 #elif test_flanger_phs == 2
-    {        213,    1,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 156 FLANGER_PHASE
+    {        213,    1,      0,      80,     0,      0,      -1,     0,      0,      14400  },         // 157 FLANGER_PHASE
 #endif
-    {        214,    1,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 157 FLANGER_RATE (audio)
-    {        216,    3,      0,      12500,  4,      50,     -1,     0,      0,      12500  },         // 158 FLANGER_TIME
-    {        218,    3,      0,      160,    0,      0,      -1,     0,      1,      8000   },         // 159 FLANGER_STEREO
-    {        219,    2,      0,      16000,  0,      0.5f,   -1,     0,      1,      8000   },         // 160 FLANGER_FEEDBACK
-    {        221,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 161 FLANGER_CROSS_FEEDBACK
-    {        222,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 162 FLANGER_HI_CUT
-    {        223,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 163 FLANGER_MIX
+    {        214,    1,      0,      16000,  4,      10,     -1,     0,      0,      16000  },         // 158 FLANGER_RATE (audio)
+    {        216,    3,      0,      12500,  4,      50,     -1,     0,      0,      12500  },         // 159 FLANGER_TIME
+    {        218,    3,      0,      160,    0,      0,      -1,     0,      1,      8000   },         // 160 FLANGER_STEREO
+    {        219,    2,      0,      16000,  0,      0.5f,   -1,     0,      1,      8000   },         // 161 FLANGER_FEEDBACK
+    {        221,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 162 FLANGER_CROSS_FEEDBACK
+    {        222,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 163 FLANGER_HI_CUT
+    {        223,    2,      0,      8000,   0,      0,      -1,     0,      1,      8000   },         // 164 FLANGER_MIX
 #if test_flanger_env == 0
-    {        307,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 164 FLANGER_ENVELOPE
+    {        307,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 165 FLANGER_ENVELOPE
 #elif test_flanger_env == 1
-    {        307,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 164 FLANGER_ENVELOPE
+    {        307,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 165 FLANGER_ENVELOPE
 #elif test_flanger_env == 2
-    {        307,    1,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 164 FLANGER_ENVELOPE
+    {        307,    1,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 165 FLANGER_ENVELOPE
 #endif
-    {        308,    3,      0,      8000,   1,      70,     -1,     0,      1,      8000   },         // 165 FLANGER_ALLPASS_MOD
-    {        310,    3,      0,      100,    0,      0,      -1,     0,      0,      14000  },         // 166 FLANGER_ALLPASS_TUNE
+    {        308,    3,      0,      8000,   1,      70,     -1,     0,      1,      8000   },         // 166 FLANGER_ALLPASS_MOD
+    {        310,    3,      0,      100,    0,      0,      -1,     0,      0,      14000  },         // 167 FLANGER_ALLPASS_TUNE
 
     // - - - ECHO - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        225,    3,      0,      16000,  4,      2,      -1,     0,      0,      16000  },         // 167 ECHO_DELAY_TIME
-    {        227,    3,      0,      200,    0,      0,      -1,     0,      1,      6600   },         // 168 ECHO_STEREO
-    {        229,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 169 ECHO_FEEDBACK
-    {        231,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 170 ECHO_CROSS_FEEDBACK
-    {        232,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 171 ECHO_HI_CUT
-    {        233,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 172 ECHO_MIX
-    // ECHO_SEND
+    {        225,    3,      0,      16000,  4,      2,      -1,     0,      0,      16000  },         // 168 ECHO_DELAY_TIME
+    {        227,    3,      0,      200,    0,      0,      -1,     0,      1,      6600   },         // 169 ECHO_STEREO
+    {        229,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 170 ECHO_FEEDBACK
+    {        231,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 171 ECHO_CROSS_FEEDBACK
+    {        232,    3,      0,      200,    9,      60,     -1,     0,      0,      16000  },         // 172 ECHO_HI_CUT
+    {        233,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 173 ECHO_MIX
+    {        334,    2,      0,      16000,  0,      0,      123,    0,      0,      16000  },         // 174 ECHO_SEND
 
     // - - - REVERB - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/* should the parameters run with fast clock? (except chorus) - see pe_defines_config.h */
+    //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
 #if test_reverbParams == 0
-    //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        235,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 173 REVERB_SIZE
-    {        237,    2,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 174 REVERB_PRE_DELAY
-    {        238,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 175 REVERB_COLOR
-    {        240,    3,      0,      16000,  4,      1,      129,    0,      0,      16000  },         // 176 REVERB_CHORUS
-    {        241,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 177 REVERB_MIX
-/* should the parameters run with slow clock? - see pe_defines_config.h */
+    /* should the parameters run with fast clock? (except chorus) - see pe_defines_config.h */
+    {        235,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 175 REVERB_SIZE
+    {        237,    2,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 176 REVERB_PRE_DELAY
+    {        238,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 177 REVERB_COLOR
+    {        240,    3,      0,      16000,  4,      1,      130,    0,      0,      16000  },         // 178 REVERB_CHORUS
 #elif test_reverbParams == 1
-    //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        235,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 173 REVERB_SIZE
-    {        237,    3,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 174 REVERB_PRE_DELAY
-    {        238,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 175 REVERB_COLOR
-    {        240,    3,      0,      16000,  4,      1,      129,    0,      0,      16000  },         // 176 REVERB_CHORUS
-    {        241,    3,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 177 REVERB_MIX
+    /* should the parameters run with slow clock? - see pe_defines_config.h */
+    {        235,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 175 REVERB_SIZE
+    {        237,    3,      0,      16000,  5,      0,      -1,     0,      0,      16000  },         // 176 REVERB_PRE_DELAY
+    {        238,    3,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 177 REVERB_COLOR
+    {        240,    3,      0,      16000,  4,      1,      130,    0,      0,      16000  },         // 178 REVERB_CHORUS
 #endif
-    // REVERB_SEND
+    {        241,    2,      0,      16000,  4,      1,      -1,     0,      0,      16000  },         // 179 REVERB_MIX
+    {        336,    2,      0,      16000,  0,      0,      133,    0,      0,      16000  },         // 180 REVERB_SEND
 
     // - - - MASTER - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        247,    2,      0,      16000,  4,      4,      132,    0,      0,      16000  },         // 178 MASTER_VOLUME
-    {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 179 MASTER_TUNE
+    {        247,    2,      0,      16000,  4,      4,      134,    0,      0,      16000  },         // 181 MASTER_VOLUME
+    {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 182 MASTER_TUNE
 
-    // - - - UNISON
+    // - - - UNISON - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
+    {        249,    0,      0,      1,      0,      0,      -1,     0,      0,      11     },         // 183 UNISON_VOICES
+    {        250,    3,      0,      1000,   0,      0,      -1,     0,      0,      12000  },         // 184 UNISON_DETUNE
+    {        252,    1,      0,      14400,  0,      0,      -1,     0,      0,      14400  },         // 185 UNISON_PHASE
+    {        253,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 186 UNISON_PAN
 
     // - - - POLY KEY EVENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
-    {        400,    0,      1,      14400,  0,      0,      -1,     0,      1,      7200   },         // 180 KEY_UNISON_PHASE
-    {        406,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 181 KEY_NOTE_PITCH
-    {        407,    0,      1,      8000,   0,      0,      -1,     0,      1,      8000   },         // 182 KEY_VOICE_PAN
-    {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 183 KEY_VOICE_STEAL
+#if test_milestone == 150
+    {        400,    0,      1,      14400,  0,      0,      -1,     0,      1,      7200   },         // 187 KEY_UNISON_PHASE
+    {        406,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 188 KEY_NOTE_PITCH
+    {        407,    0,      1,      8000,   0,      0,      -1,     0,      1,      8000   },         // 189 KEY_VOICE_PAN
+    {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 190 KEY_VOICE_STEAL
+#elif test_milestone == 155
+    {        416,    0,      1,      1,      0,      0,      -1,     0,      1,      1      },         // 187 KEY_POSITION
+    {        417,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 188 KEY_UNISON_IDX
+    {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 189 KEY_VOICE_STEAL
+#endif
 
 };
 
