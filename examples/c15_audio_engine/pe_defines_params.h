@@ -303,7 +303,11 @@ const float param_definition[sig_number_of_params][10] = {
 
     // - - - UNISON - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
+#if test_inputModeFlag == 0
+    {        249,    0,      0,      1,      0,      -1,     -1,     0,      0,      11     },         // 183 UNISON_VOICES
+#elif test_inputModeFlag == 1
     {        249,    0,      0,      1,      0,      0,      -1,     0,      0,      11     },         // 183 UNISON_VOICES
+#endif
     {        250,    3,      0,      1000,   0,      0,      -1,     0,      0,      12000  },         // 184 UNISON_DETUNE
     {        252,    1,      0,      14400,  0,      0,      -1,     0,      0,      14400  },         // 185 UNISON_PHASE
     {        253,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 186 UNISON_PAN

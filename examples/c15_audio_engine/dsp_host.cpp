@@ -730,14 +730,21 @@ void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
             printf("ooooooh ... exp %d \n", _data0);
 
         }
-
+#if test_milestone == 150
         testNoteOff(_data0, _data1);
+#elif test_milestone == 155
+        testNewNoteOff(_data0, _data1);
+#endif
         break;
     case 1:
         /* NOTE ON (if velocity > 0) */
         if(_data1 > 0)
         {
+#if test_milestone == 150
             testNoteOn(_data0, _data1);
+#elif test_milestone == 155
+            testNewNoteOn(_data0, _data1);
+#endif
         }
         else
         {
@@ -746,7 +753,11 @@ void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
                 printf("ooooooh ... exp %d \n", _data0);
 
             }
+#if test_milestone == 150
             testNoteOff(_data0, _data1);
+#elif test_milestone == 155
+            testNewNoteOff(_data0, _data1);
+#endif
         }
         break;
     case 3:
@@ -965,9 +976,15 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
                     val = (2 * val) - 1;
                 }
                 val *= rng;
+                std::cout << "edit PARAM " << tcdId << " (" << val << ")" << std::endl;
+                /* get unison voices trigger and stop envelopes */
+                if(tcdId == 249)
+                {
+                    std::cout << "\tEnvelope Stop" << std::endl;
+                    resetEnv();
+                }
                 evalMidi(1, tcdId >> 7, tcdId & 127);
                 testParseDestination(static_cast<int32_t>(val));
-                std::cout << "edit PARAM " << tcdId << " (" << val << ")" << std::endl;
                 m_test_selectedParam = static_cast<int32_t>(tcdId);
             }
         }
@@ -1001,6 +1018,7 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
 /* test key down */
 void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
 {
+    //std::cout << "Unison: " << m_params.m_body[m_params.m_head[183].m_index].m_signal << std::endl;
     /* get current voiceId and trigger list sequence for key event */
     m_test_noteId[_pitch] = m_test_voiceId + 1;             // (plus one in order to distinguish from zero)
     /* prepare pitch and velocity */
@@ -1036,6 +1054,28 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
 #endif
 }
 
+/* key down for milestone 1.55 */
+void dsp_host::testNewNoteOn(uint32_t _pitch, uint32_t _velocity)
+{
+    m_test_noteId[_pitch] = m_test_voiceId + 1;             // (plus one in order to distinguish from zero)
+    /* prepare pitch, velocity und unison */
+    int32_t keyPos = static_cast<int32_t>(_pitch) - 60;
+    uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
+    m_test_unison_voices = static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_UN_V].m_index].m_signal) + 1;
+    evalMidi(47, 2, 1);                                     // enable preload (key event list mode)
+    evalMidi(0, 0, m_test_voiceId);                         // select voice: current
+    for(uint32_t uIndex = 0; uIndex < m_test_unison_voices; uIndex++)
+    {
+        testParseDestination(keyPos);                       // key position
+        evalMidi(5, 0, uIndex);                             // unison index
+        evalMidi(5, 0, 0);                                  // voice steal (0)
+        evalMidi(23, noteVel >> 7, noteVel & 127);          // key down: velocity
+    }
+    evalMidi(47, 0, 2);                                     // apply preloaded values
+    /* take current voiceId and increase it (wrapped around polyphony) - sloppy approach */
+    m_test_voiceId = (m_test_voiceId + m_test_unison_voices) % m_voices;
+}
+
 /* test key up */
 void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
 {
@@ -1062,6 +1102,33 @@ void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
         evalMidi(7, noteVel >> 7, noteVel & 127);                               // key up: velocity
         evalMidi(47, 0, 2);                                                     // apply preloaded values
 #endif
+    }
+}
+
+/* */
+void dsp_host::testNewNoteOff(uint32_t _pitch, uint32_t _velocity)
+{
+    /* rigorous safety mechanism */
+    int32_t checkVoiceId = static_cast<int32_t>(m_test_noteId[_pitch]) - 1;     // (subtract one in order to get real id)
+    int32_t v = static_cast<int32_t>(m_voices);                                 // number of voices represented as signed integer (for correct comparisons)
+    if((checkVoiceId < 0) || (checkVoiceId >= v))
+    {
+        std::cout << "detected Note Off that shouldn't have happened..." << std::endl;
+    }
+    else
+    {
+        uint32_t usedVoiceId = static_cast<uint32_t>(checkVoiceId);             // copy valid voiceId
+        m_test_noteId[_pitch] = 0;                                              // clear voiceId assignment
+        /* prepare velocity */
+        uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
+        /* key event sequence */
+        evalMidi(47, 2, 1);                                                     // enable preload (key event list mode)
+        evalMidi(0, 0, usedVoiceId);                                            // select voice: used voice (by note number)
+        for(uint32_t uIndex = 0; uIndex < m_test_unison_voices; uIndex++)
+        {
+            evalMidi(7, noteVel >> 7, noteVel & 127);                           // key up: velocity
+        }
+        evalMidi(47, 0, 2);                                                     // apply preloaded values
     }
 }
 

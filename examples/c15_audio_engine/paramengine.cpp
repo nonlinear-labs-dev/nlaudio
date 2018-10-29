@@ -932,7 +932,15 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
     newEnvUpdateTimes(_voiceId);
 #endif
     /* Pitch Updates */
+#if test_milestone == 150
     const float basePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+#elif test_milestone == 155
+    const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
+    const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
+    const float basePitch   = m_body[m_head[P_KEY_POS].m_index + _voiceId].m_signal
+                            + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
+                            + m_body[m_head[P_MA_T].m_index].m_signal;
+#endif
     float keyTracking, unitPitch, envMod, unitSign, unitSpread, unitMod;
     /* Oscillator A */
     /* - Oscillator A Frequency in Hz (Base Pitch, Master Tune, Key Tracking, Osc Pitch, Envelope C) */
@@ -1059,7 +1067,15 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
 #endif
     /* temporary variables */
     float tmp_lvl, tmp_pan, tmp_abs;
+#if test_milestone == 150
     const float basePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+#elif test_milestone == 155
+    const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
+    const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
+    const float basePitch   = m_body[m_head[P_KEY_POS].m_index + _voiceId].m_signal
+                            + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
+                            + m_body[m_head[P_MA_T].m_index].m_signal;
+#endif
     /* State Variable Filter */
     /* - LBH */
     tmp_lvl = m_body[m_head[P_SVF_LBH].m_index].m_signal;
@@ -1219,7 +1235,15 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
 void paramengine::postProcessPoly_key(float *_signal, const uint32_t _voiceId)
 {
     /* Pitch Updates */
+#if test_milestone == 150
     const float basePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+#elif test_milestone == 155
+    const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
+    const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
+    const float basePitch   = m_body[m_head[P_KEY_POS].m_index + _voiceId].m_signal
+                            + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
+                            + m_body[m_head[P_MA_T].m_index].m_signal;
+#endif
     float keyTracking, unitPitch, envMod, unitSign, unitSpread, unitMod;
     /* Oscillator A */
     /* - Oscillator A Frequency in Hz (Base Pitch, Master Tune, Key Tracking, Osc Pitch, Envelope C) */

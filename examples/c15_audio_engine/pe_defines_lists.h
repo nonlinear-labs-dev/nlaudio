@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include "pe_defines_config.h"
 
-#if test_milestone == 150
-
 // consecutive paramIds for MONO recall update (defining tcd order of destinations) - listId = 1
 // NOTE:    - recall param id order by PLAYGROUND, list mechanism fragile/risky in this case -> discard
 
@@ -43,15 +41,13 @@ const uint32_t paramIds_recall[lst_recall_length] = {
 // consecutive paramIds for POLY key event update (defining tcd order of destinations) - listId = 2
 // NOTE:    - keyEvent param id order by LPC, list mechanism usable -> keep
 
+#if test_milestone == 150
+
 const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
     187, 188, 189, 190
 };
 
 #elif test_milestone == 155
-
-const uint32_t paramIds_recall[lst_recall_length] = {
-    //
-};
 
 const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
     187, 188, 189
