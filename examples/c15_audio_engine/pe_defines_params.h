@@ -214,7 +214,7 @@ const float param_definition[sig_number_of_params][10] = {
     {        184,    2,      0,      16000,  0,      0,      82,     1,      0,      16000  },         // 139 OUT_ASYMETRY (later maybe fast type)
 #endif
     {        185,    2,      0,      16000,  4,      2.56f,  83,     0,      0,      16000  },         // 140 OUT_LEVEL
-    {        187,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 141 OUT_KEY_PAN
+    {        187,    2,      0,      960000, 0,      0,      -1,     0,      0,      16000  },         // 141 OUT_KEY_PAN
 
     // - - - CABINET  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
@@ -300,29 +300,30 @@ const float param_definition[sig_number_of_params][10] = {
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        247,    2,      0,      16000,  4,      4,      134,    0,      0,      16000  },         // 181 MASTER_VOLUME
     {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 182 MASTER_TUNE
+    {        338,    0,      0,      1,      0,      0,      -1,     0,      1,      1      },         // 183 NOTE_SHIFT
 
     // - - - UNISON - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
 #if test_inputModeFlag == 0
-    {        249,    0,      0,      1,      0,      -1,     -1,     0,      0,      11     },         // 183 UNISON_VOICES
+    {        249,    0,      0,      1,      0,      -1,     -1,     0,      0,      11     },         // 184 UNISON_VOICES
 #elif test_inputModeFlag == 1
-    {        249,    0,      0,      1,      0,      0,      -1,     0,      0,      11     },         // 183 UNISON_VOICES
+    {        249,    0,      0,      1,      0,      0,      -1,     0,      0,      11     },         // 184 UNISON_VOICES
 #endif
-    {        250,    3,      0,      1000,   0,      0,      -1,     0,      0,      12000  },         // 184 UNISON_DETUNE
-    {        252,    1,      0,      14400,  0,      0,      -1,     0,      0,      14400  },         // 185 UNISON_PHASE
-    {        253,    2,      0,      16000,  0,      0,      -1,     0,      0,      16000  },         // 186 UNISON_PAN
+    {        250,    3,      0,      1000,   0,      0,      -1,     0,      0,      12000  },         // 185 UNISON_DETUNE
+    {        252,    1,      0,      14400,  0,      0,      -1,     0,      0,      14400  },         // 186 UNISON_PHASE
+    {        253,    2,      0,      16000,  1,      0.5f,   -1,     0,      0,      16000  },         // 187 UNISON_PAN
 
     // - - - POLY KEY EVENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
 #if test_milestone == 150
-    {        400,    0,      1,      14400,  0,      0,      -1,     0,      1,      7200   },         // 187 KEY_UNISON_PHASE
-    {        406,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 188 KEY_NOTE_PITCH
-    {        407,    0,      1,      8000,   0,      0,      -1,     0,      1,      8000   },         // 189 KEY_VOICE_PAN
-    {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 190 KEY_VOICE_STEAL
+    {        400,    0,      1,      14400,  0,      0,      -1,     0,      1,      7200   },         // 188 KEY_UNISON_PHASE
+    {        406,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 189 KEY_NOTE_PITCH
+    {        407,    0,      1,      8000,   0,      0,      -1,     0,      1,      8000   },         // 190 KEY_VOICE_PAN
+    {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 191 KEY_VOICE_STEAL
 #elif test_milestone == 155
-    {        416,    0,      1,      1,      0,      0,      -1,     0,      1,      1      },         // 187 KEY_POSITION
-    {        417,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 188 KEY_UNISON_IDX
-    {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 189 KEY_VOICE_STEAL
+    {        416,    0,      1,      1,      0,      0,      -1,     0,      1,      1      },         // 188 KEY_POSITION
+    {        417,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 189 KEY_UNISON_IDX
+    {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 190 KEY_VOICE_STEAL
 #endif
 
 };

@@ -186,20 +186,20 @@
 
 #define P_MA_V      181
 #define P_MA_T      182
+#define P_MA_SH     183
 
-#define P_UN_V      183
-#define P_UN_DET    184
-#define P_UN_PHS    185
-#define P_UN_PAN    186
+#define P_UN_V      184
+#define P_UN_DET    185
+#define P_UN_PHS    186
+#define P_UN_PAN    187
 
 /* milestone 1.5 POLY KEY params */
-#define P_KEY_PH    187
-#define P_KEY_NP    188
-#define P_KEY_VP    189
-#define P_KEY_VS    190
-//#define P_KEY_EC    191
+#define P_KEY_PH    188
+#define P_KEY_NP    189
+#define P_KEY_VP    190
+#define P_KEY_VS    191
 
 /* milestone 1.55 POLY KEY params */
-#define P_KEY_POS   187
-#define P_KEY_IDX   188
-#define P_KEY_STL   189
+#define P_KEY_BP    188
+#define P_KEY_IDX   189
+#define P_KEY_STL   190

@@ -35,7 +35,7 @@ const uint32_t paramIds_recall[lst_recall_length] = {
     168, 169, 170, 171, 172, 173, 174,                                                  // Echo (all params)
     175, 176, 177, 178, 179, 180,                                                       // Reverb (all params)
     181, 182,                                                                           // Master (Vol, Tune)
-    183, 184, 185, 186                                                                  // Unison (all params)
+    184, 185, 186, 187                                                                  // Unison (all params)
 };
 
 // consecutive paramIds for POLY key event update (defining tcd order of destinations) - listId = 2
@@ -44,13 +44,13 @@ const uint32_t paramIds_recall[lst_recall_length] = {
 #if test_milestone == 150
 
 const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
-    187, 188, 189, 190
+    188, 189, 190, 191
 };
 
 #elif test_milestone == 155
 
 const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
-    187, 188, 189
+    188, 189, 190
 };
 
 #endif

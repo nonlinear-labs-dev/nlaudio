@@ -188,3 +188,7 @@
 /* Master Signals                   -- monophonic */
 
 #define MST_VOL         134         // Master Volume (Volume)
+
+/* Unison Signals                   -- polyphonic */
+
+#define UN_PHS          135         // Unison Phase Offset

@@ -15,6 +15,8 @@
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
 #define test_milestone              150             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echor/reverb sends)
+#define test_key_update_pan         1               // (should pan values be updated on key? (probably yes)
+#define test_note_shift             0               // [-48 ... 48] testing the note shift (sent on init)
 
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
 #define test_tone_initial_gain      -6.0f           // Test Tone initial Gain (in decibel)
@@ -75,9 +77,9 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Main Parameter Definition                        -> see Linux Engine LPC Status */
 
-#define sig_number_of_params        191             // see Linux Engine LPC Status / Overview, Parameter List
-#define sig_number_of_param_items   267             // number of required (single-voice) rendering items for all parameters
-#define sig_number_of_signal_items  135             // signals shared between the parameter and audio engine
+#define sig_number_of_params        192             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   268             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
 
 /* TCD List Handling */
 
@@ -89,9 +91,9 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Main Parameter Definition                        -> see Linux Engine LPC Status */
 
-#define sig_number_of_params        190             // see Linux Engine LPC Status / Overview, Parameter List
-#define sig_number_of_param_items   247             // number of required (single-voice) rendering items for all parameters
-#define sig_number_of_signal_items  135             // signals shared between the parameter and audio engine
+#define sig_number_of_params        191             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   248             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
 
 /* TCD List Handling */
 
