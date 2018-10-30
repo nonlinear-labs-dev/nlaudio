@@ -101,6 +101,7 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     for(i = 0; i < dsp_number_of_voices; i++)
     {
         m_env_c_clipFactor[i] = 1.f;
+        m_note_shift[i] = 0.f;
     }
 #if test_whichEnvelope == 0
     m_envelopes.init(_voices, gateRelease);
@@ -374,9 +375,23 @@ void paramengine::keyUp(const uint32_t _voiceId, float _velocity)
 /* TCD Key Events - preload functionality */
 void paramengine::keyApply(const uint32_t _voiceId)
 {
+    if(m_event.m_poly[_voiceId].m_type == 1)
+    {
+        m_note_shift[_voiceId] = m_body[m_head[P_MA_SH].m_index].m_signal;
+    }
     /* apply key event (update envelopes according to event type) */
-    const float pitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal
-                        + m_body[m_head[P_MA_T].m_index].m_signal;              // master tune is also effective here...
+#if test_milestone == 150
+    const float pitch   = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal
+                        + m_body[m_head[P_MA_T].m_index].m_signal
+                        + m_note_shift[_voiceId];
+#elif test_milestone == 155
+    const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
+    const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
+    const float pitch   = m_body[m_head[P_KEY_BP].m_index + _voiceId].m_signal
+                        + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
+                        + m_body[m_head[P_MA_T].m_index].m_signal
+                        + m_note_shift[_voiceId];
+#endif
     const float velocity = m_event.m_poly[_voiceId].m_velocity;
     if(m_event.m_poly[_voiceId].m_type == 0)
     {
@@ -933,14 +948,16 @@ void paramengine::postProcessPoly_slow(float *_signal, const uint32_t _voiceId)
 #endif
     /* Pitch Updates */
 #if test_milestone == 150
-    const float notePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+    const float notePitch   = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal
+                            + m_body[m_head[P_MA_T].m_index].m_signal
+                            + m_note_shift[_voiceId];
 #elif test_milestone == 155
     const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
     const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
     const float notePitch   = m_body[m_head[P_KEY_BP].m_index + _voiceId].m_signal
                             + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
                             + m_body[m_head[P_MA_T].m_index].m_signal
-                            + m_body[m_head[P_MA_SH].m_index].m_signal;
+                            + m_note_shift[_voiceId];
 #endif
     float keyTracking, unitPitch, envMod, unitSign, unitSpread, unitMod;
     /* Oscillator A */
@@ -1069,14 +1086,16 @@ void paramengine::postProcessPoly_fast(float *_signal, const uint32_t _voiceId)
     /* temporary variables */
     float tmp_lvl, tmp_pan, tmp_abs;
 #if test_milestone == 150
-    const float notePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+    const float notePitch   = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal
+                            + m_body[m_head[P_MA_T].m_index].m_signal
+                            + m_note_shift[_voiceId];
 #elif test_milestone == 155
     const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
     const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
     const float basePitch   = m_body[m_head[P_KEY_BP].m_index + _voiceId].m_signal;
     const float notePitch   = basePitch + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
                             + m_body[m_head[P_MA_T].m_index].m_signal
-                            + m_body[m_head[P_MA_SH].m_index].m_signal;
+                            + m_note_shift[_voiceId];
 #endif
     /* State Variable Filter */
     /* - LBH */
@@ -1251,14 +1270,16 @@ void paramengine::postProcessPoly_key(float *_signal, const uint32_t _voiceId)
 {
     /* Pitch Updates */
 #if test_milestone == 150
-    const float notePitch = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal + m_body[m_head[P_MA_T].m_index].m_signal;
+    const float notePitch   = m_body[m_head[P_KEY_NP].m_index + _voiceId].m_signal
+                            + m_body[m_head[P_MA_T].m_index].m_signal
+                            + m_note_shift[_voiceId];
 #elif test_milestone == 155
     const uint32_t uVoice = static_cast<uint32_t>(m_body[m_head[P_UN_V].m_index].m_signal);
     const uint32_t uIndex = static_cast<uint32_t>(m_body[m_head[P_KEY_IDX].m_index + _voiceId].m_signal);
     const float basePitch   = m_body[m_head[P_KEY_BP].m_index + _voiceId].m_signal;
     const float notePitch   = basePitch + m_body[m_head[P_MA_SH].m_index].m_signal
                             + (m_body[m_head[P_UN_DET].m_index].m_signal * m_unison_detune[uVoice][uIndex])
-                            + m_body[m_head[P_MA_T].m_index].m_signal;
+                            + m_note_shift[_voiceId];
 #endif
     float keyTracking, unitPitch, envMod, unitSign, unitSpread, unitMod;
     /* Oscillator A */

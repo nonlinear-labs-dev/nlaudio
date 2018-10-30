@@ -117,7 +117,8 @@ struct paramengine
     NlToolbox::Curves::Shaper_1_BP m_revColorCurve2;
     float   m_unison_detune[dsp_number_of_voices][dsp_number_of_voices],
             m_unison_phase[dsp_number_of_voices][dsp_number_of_voices],
-            m_unison_pan[dsp_number_of_voices][dsp_number_of_voices];
+            m_unison_pan[dsp_number_of_voices][dsp_number_of_voices],
+            m_note_shift[dsp_number_of_voices];
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */

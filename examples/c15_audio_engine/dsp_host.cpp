@@ -68,20 +68,6 @@ void dsp_host::loadInitialPreset()
         evalMidi(5, 0, 0);                                                              // send destination 0
     }
     evalMidi(47, 0, 2);                                                                 // apply preloaded values
-    evalMidi(1, 338 >> 7, 338 & 127);                                                   // select note shift parameter
-    // transmit initial note shift
-    uint32_t tmp_p;
-    if(test_note_shift < 0)
-    {
-        tmp_p = 8192 - test_note_shift;
-        evalMidi(21, tmp_p >> 7, tmp_p & 127);
-        std::cout << "P: " << tmp_p << std::endl;
-    }
-    else
-    {
-        tmp_p = static_cast<uint32_t>(test_note_shift);
-        evalMidi(5, tmp_p >> 7, tmp_p & 127);
-    }
 #if test_initialize_fx_sends
     /* temporarily initialize echo and reverb sends to 100% (because compability) */
     evalMidi(1, 334 >> 7, 334 & 127);                                                   // select echo send (ID 334)
@@ -520,10 +506,10 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
             if(m_params.m_event.m_poly[v].m_preload > 0)
             {
                 m_params.m_event.m_poly[v].m_preload = 0;                   // reset preload counter
-                m_params.postProcessPoly_key(m_paramsignaldata[v], v);      // update key-related parameters/signals
-                setPolySlowFilterCoeffs(m_paramsignaldata[v], v);           // update filter coefficients
                 m_params.keyApply(v);                                       // trigger env_engine
                 keyApply(v);                                                // update comb filter delay smoother, phase, (determine voice steal)
+                m_params.postProcessPoly_key(m_paramsignaldata[v], v);      // update key-related parameters/signals
+                setPolySlowFilterCoeffs(m_paramsignaldata[v], v);           // update filter coefficients
             }
         }
 #endif
@@ -717,12 +703,12 @@ void dsp_host::keyApply(uint32_t _voiceId)
         //float phaseA = m_params.m_body[m_params.m_head[P_KEY_PA].m_index + _voiceId].m_signal;
         //float phaseB = m_params.m_body[m_params.m_head[P_KEY_PB].m_index + _voiceId].m_signal;
 #if test_milestone == 150
-        float uniPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
+        const float startPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
 #elif test_milestone == 155
-        float uniPhase = 0.f;
+        const float startPhase = 0.f;
 #endif
         //m_soundgenerator[_voiceId].resetPhase(phaseA, phaseB);
-        m_soundgenerator[_voiceId].resetPhase(uniPhase);                                  // function could be reduced to one argument
+        m_soundgenerator[_voiceId].resetPhase(startPhase);                                  // function could be reduced to one argument
     }
 }
 

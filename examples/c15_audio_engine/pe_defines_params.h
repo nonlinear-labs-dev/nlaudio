@@ -300,7 +300,7 @@ const float param_definition[sig_number_of_params][10] = {
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
     {        247,    2,      0,      16000,  4,      4,      134,    0,      0,      16000  },         // 181 MASTER_VOLUME
     {        248,    3,      0,      100,    0,      0,      -1,     0,      1,      4800   },         // 182 MASTER_TUNE
-    {        338,    0,      0,      1,      0,      0,      -1,     0,      1,      1      },         // 183 NOTE_SHIFT
+    {        338,    0,      0,      1,      0,      0,      -1,     0,      1,      48     },         // 183 NOTE_SHIFT
 
     // - - - UNISON - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //       ID      CLOCK   POLY    RANGE   SCALE   (ARG)   POST    SPREAD  POL     FACTOR
