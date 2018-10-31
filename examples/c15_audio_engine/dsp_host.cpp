@@ -22,11 +22,12 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     m_params.init(_samplerate, _polyphony);
     m_decoder.init();
     /* init messages to terminal */
-    std::cout << "DSP_HOST::MILESTONE: " << static_cast<float>(test_milestone) * 0.01f << std::endl;
-    std::cout << "DSP_HOST::INIT(samplerate: " << m_samplerate << ", voices: " << m_voices << ")" << std::endl;
-    std::cout << "DSP_HOST::CLOCK_divisions(" << m_clockDivision[0] << ", " << m_clockDivision[1] << ", ";
-    std::cout << m_clockDivision[2] << ", " << m_clockDivision[3] << ")" << std::endl;
-    std::cout << "DSP_HOST::upsampleFactor: " << m_upsampleFactor << std::endl;
+    std::cout << std::endl << "DSP_HOST::MILESTONE:\t\t" << static_cast<float>(test_milestone) * 0.01f << std::endl;
+    std::cout << "DSP_HOST::INIT:\t\t\tsamplerate: " << m_samplerate << ", voices: " << m_voices << std::endl;
+    std::cout << "DSP_HOST::CLOCK_divisions:\t" << m_clockDivision[0] << ", " << m_clockDivision[1] << ", ";
+    std::cout << m_clockDivision[2] << ", " << m_clockDivision[3] << std::endl;
+    std::cout << "DSP_HOST::UPSAMPLE:\t\t" << m_upsampleFactor << std::endl;
+    std::cout << "DSP_HOST::SIZEOF:\t\t" << sizeof(dsp_host) << " bytes" << std::endl << std::endl;
 
     /* Audio Engine */
     initAudioEngine();
@@ -52,7 +53,6 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     m_signal_status.m_selected = log_signal_id;
     m_signal_status.m_size = m_voices;
 #endif
-    std::cout << "sizeof(dsp_host):\t" << sizeof(dsp_host) << " bytes" << std::endl;
 }
 
 /* */

@@ -28,7 +28,7 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     m_timeFactors[1] = 1.f;                                                     // time convertsion factor (audio types)
     m_timeFactors[2] = static_cast<float>(_sampleRate / dsp_clock_rates[0]);    // time convertsion factor (fast types)
     m_timeFactors[3] = static_cast<float>(_sampleRate / dsp_clock_rates[1]);    // time convertsion factor (slow types)
-    std::cout << "Time Factors: (" << m_timeFactors[0] << ", " << m_timeFactors[1] << ", " << m_timeFactors[2] << ", " << m_timeFactors[3] << ")" << std::endl;
+    //std::cout << "Time Factors: (" << m_timeFactors[0] << ", " << m_timeFactors[1] << ", " << m_timeFactors[2] << ", " << m_timeFactors[3] << ")" << std::endl;
     /* initialize components */
     m_clockIds.reset();
     m_postIds.reset();
