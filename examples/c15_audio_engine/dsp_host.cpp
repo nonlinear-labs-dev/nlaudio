@@ -22,6 +22,7 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     m_params.init(_samplerate, _polyphony);
     m_decoder.init();
     /* init messages to terminal */
+    std::cout << "DSP_HOST::MILESTONE: " << static_cast<float>(test_milestone) * 0.01f << std::endl;
     std::cout << "DSP_HOST::INIT(samplerate: " << m_samplerate << ", voices: " << m_voices << ")" << std::endl;
     std::cout << "DSP_HOST::CLOCK_divisions(" << m_clockDivision[0] << ", " << m_clockDivision[1] << ", ";
     std::cout << m_clockDivision[2] << ", " << m_clockDivision[3] << ")" << std::endl;
