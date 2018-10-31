@@ -576,7 +576,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     /* provide temporary variables */
 
     uint32_t envId, envIndex;                                                                                           // two variables are used to access envelope-specific parameter data
-    float time, timeKT, dest, levelVel, attackVel, levelKT, peak, unclipped;                                                       // several variables are needed in order to determine envelope behavior
+    float time, timeKT, dest, levelVel, attackVel, decay1Vel, decay2Vel, levelKT, peak, unclipped;                                                       // several variables are needed in order to determine envelope behavior
 
     /* envelope a update */
 
@@ -586,14 +586,19 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
+    decay1Vel = -m_body[m_head[envIndex + E_D1V].m_index].m_signal * _velocity;                                         // determine decay1 velocity accorindg to velocity and parameter
+    decay2Vel = -m_body[m_head[envIndex + E_D2V].m_index].m_signal * _velocity;                                         // determine decay2 velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
     peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
 
     m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
     m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT) * m_millisecond;                      // determine time factor for decay1 segment (without actual decay1 time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_event.m_env[envId].m_timeFactor[_voiceId][1];                    // determine time factor for decay2 segment (without actual decay2 time)
-
+    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;          // determine time factor for decay1 segment (without actual decay1 time)
+    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;          // determine time factor for decay2 segment (without actual decay2 time)
+    std::cout << "EnvA Times: ";
+    std::cout << m_event.m_env[envId].m_timeFactor[_voiceId][0] << ", ";
+    std::cout << m_event.m_env[envId].m_timeFactor[_voiceId][1] << ", ";
+    std::cout << m_event.m_env[envId].m_timeFactor[_voiceId][2] << std::endl;
     m_new_envelopes.m_env_a.setSplitValue(m_body[m_head[envIndex + E_SPL].m_index].m_signal);                           // update the split behavior by corresponding parameter
     m_new_envelopes.m_env_a.setAttackCurve(m_body[m_head[envIndex + E_AC].m_index].m_signal);                           // update the attack curve by corresponding parameter
     m_new_envelopes.m_env_a.setPeakLevel(_voiceId, peak);                                                               // update the current peak level (for magnitude/timbre crossfades)
@@ -620,13 +625,15 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
     levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
     attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
+    decay1Vel = -m_body[m_head[envIndex + E_D1V].m_index].m_signal * _velocity;                                         // determine decay1 velocity accorindg to velocity and parameter
+    decay2Vel = -m_body[m_head[envIndex + E_D2V].m_index].m_signal * _velocity;                                         // determine decay2 velocity accorindg to velocity and parameter
     levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
     peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
 
     m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
     m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT) * m_millisecond;                      // determine time factor for decay1 segment (without actual decay1 time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_event.m_env[envId].m_timeFactor[_voiceId][1];                    // determine time factor for decay2 segment (without actual decay2 time)
+    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;          // determine time factor for decay1 segment (without actual decay1 time)
+    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;          // determine time factor for decay2 segment (without actual decay2 time)
 
     m_new_envelopes.m_env_b.setSplitValue(m_body[m_head[envIndex + E_SPL].m_index].m_signal);                           // update the split behavior by corresponding parameter
     m_new_envelopes.m_env_b.setAttackCurve(m_body[m_head[envIndex + E_AC].m_index].m_signal);                           // update the attack curve by corresponding parameter
@@ -1218,7 +1225,7 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     _signal[OSC_A_PMFEC] = NlToolbox::Crossfades::unipolarCrossFade(1.f, _signal[ENV_C_CLIP], tmp_env) * tmp_amt;  // Osc A PM FB (Env C)
     /* Shaper A */
     /* - Shaper A Drive (Envelope A) */
-    tmp_amt = m_body[m_head[P_SA_D].m_index].m_signal;
+    tmp_amt = m_body[m_head[P_SA_DRV].m_index].m_signal;
     tmp_env = m_body[m_head[P_SA_DEA].m_index].m_signal;
     _signal[SHP_A_DRVEA] = (NlToolbox::Crossfades::unipolarCrossFade(1.f, _signal[ENV_A_TMB], tmp_env) * tmp_amt) + 0.18f;
     /* - Shaper A Feedback Mix (Envelope C) */
@@ -1239,7 +1246,7 @@ void paramengine::postProcessPoly_audio(float *_signal, const uint32_t _voiceId)
     _signal[OSC_B_PMFEC] = NlToolbox::Crossfades::unipolarCrossFade(1.f, _signal[ENV_C_CLIP], tmp_env) * tmp_amt;  // Osc B PM FB (Env C)
     /* Shaper B */
     /* - Shaper B Drive (Envelope B) */
-    tmp_amt = m_body[m_head[P_SB_D].m_index].m_signal;
+    tmp_amt = m_body[m_head[P_SB_DRV].m_index].m_signal;
     tmp_env = m_body[m_head[P_SB_DEB].m_index].m_signal;
     _signal[SHP_B_DRVEB] = (NlToolbox::Crossfades::unipolarCrossFade(1.f, _signal[ENV_B_TMB], tmp_env) * tmp_amt) + 0.18f;
     /* - Shaper B Feedback Mix (Envelope C) */

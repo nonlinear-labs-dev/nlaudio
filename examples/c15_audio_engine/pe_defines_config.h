@@ -76,13 +76,13 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Main Parameter Definition                        -> see Linux Engine LPC Status */
 
-#define sig_number_of_params        192             // see Linux Engine LPC Status / Overview, Parameter List
-#define sig_number_of_param_items   268             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_params        198             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   274             // number of required (single-voice) rendering items for all parameters
 #define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
 
 /* TCD List Handling */
 
-#define lst_recall_length           183             // preset-relevant parameters
+#define lst_recall_length           187             // preset-relevant parameters
 #define lst_keyEvent_length         4               // 4 key event parameters
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
 
@@ -90,13 +90,13 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Main Parameter Definition                        -> see Linux Engine LPC Status */
 
-#define sig_number_of_params        191             // see Linux Engine LPC Status / Overview, Parameter List
-#define sig_number_of_param_items   248             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_params        197             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   254             // number of required (single-voice) rendering items for all parameters
 #define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
 
 /* TCD List Handling */
 
-#define lst_recall_length           183             // preset-relevant parameters
+#define lst_recall_length           187             // preset-relevant parameters
 #define lst_keyEvent_length         3               // 3 key event parameters
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
 
@@ -113,9 +113,9 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Internal IDs of crucial TCD parameters */
 
-#define par_envelopeA               0               // item pointer to (consecutive) envelope parameters A (internal ids)
-#define par_envelopeB               15              // item pointer to (consecutive) envelope parameters B (internal ids)
-#define par_envelopeC               30              // item pointer to (consecutive) envelope parameters C (internal ids)
+#define P_EA                        0               // item pointer to (consecutive) envelope parameters A (internal ids)
+#define P_EB                        17              // item pointer to (consecutive) envelope parameters B (internal ids)
+#define P_EC                        34              // item pointer to (consecutive) envelope parameters C (internal ids)
 
 /* DSP Helper Values */
 

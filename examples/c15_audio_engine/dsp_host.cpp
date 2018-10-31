@@ -967,11 +967,10 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
         /* control edits */
         if(m_test_midiMode == 0)
         {
-            uint32_t pId = testParamRouting[m_test_selectedGroup][_id - 1];
+            int32_t pId = testParamRouting[m_test_selectedGroup][_id - 1];
             /* group edits */
-            if(pId > 0)
+            if(pId > -1)
             {
-                pId--;
                 uint32_t tcdId = static_cast<uint32_t>(param_definition[pId][0]);
                 uint32_t rng = static_cast<uint32_t>(param_definition[pId][9]);
                 uint32_t pol = static_cast<uint32_t>(param_definition[pId][8]);
