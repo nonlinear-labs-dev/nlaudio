@@ -595,10 +595,7 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
     m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
     m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;          // determine time factor for decay1 segment (without actual decay1 time)
     m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;          // determine time factor for decay2 segment (without actual decay2 time)
-    std::cout << "EnvA Times: ";
-    std::cout << m_event.m_env[envId].m_timeFactor[_voiceId][0] << ", ";
-    std::cout << m_event.m_env[envId].m_timeFactor[_voiceId][1] << ", ";
-    std::cout << m_event.m_env[envId].m_timeFactor[_voiceId][2] << std::endl;
+
     m_new_envelopes.m_env_a.setSplitValue(m_body[m_head[envIndex + E_SPL].m_index].m_signal);                           // update the split behavior by corresponding parameter
     m_new_envelopes.m_env_a.setAttackCurve(m_body[m_head[envIndex + E_AC].m_index].m_signal);                           // update the attack curve by corresponding parameter
     m_new_envelopes.m_env_a.setPeakLevel(_voiceId, peak);                                                               // update the current peak level (for magnitude/timbre crossfades)
