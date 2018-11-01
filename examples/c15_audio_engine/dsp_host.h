@@ -86,6 +86,8 @@ public:
     int32_t m_test_selectedParam = 0;                                   // a param selector
     uint32_t m_test_tone_state = 0;                                     // test tone state
     uint32_t m_test_unison_voices = 0;
+    uint32_t m_test_muteA = 0;
+    uint32_t m_test_muteB = 0;
     void testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1);  // testing the engine
     void testRouteControls(uint32_t _id, uint32_t _value);              // control routing
     void testNoteOn(uint32_t _pitch, uint32_t _velocity);               // testing note on messages
@@ -156,4 +158,7 @@ public:
 
     /* Envelope Reset */
     void resetEnv();
+
+    /* OSC Mute (temporary??) */
+    void muteOsc(uint32_t _oscId, uint32_t _state);
 };

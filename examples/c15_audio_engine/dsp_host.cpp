@@ -589,6 +589,12 @@ void dsp_host::utilityUpdate(float _value)
         _value *= m_params.m_utilities[4].m_normalize;
         m_test_tone.set_state(static_cast<uint32_t>(_value));
         break;
+    case 5:
+        muteOsc(0, static_cast<uint32_t>(_value));
+        break;
+    case 6:
+        muteOsc(1, static_cast<uint32_t>(_value));
+        break;
     }
 }
 
@@ -893,6 +899,20 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             std::cout << "triggered TEST_TONE_STATE(" << m_test_tone_state << ")" << std::endl;
             evalMidi(8, 0, 4);                                          // select utility (test tone state)
             evalMidi(24, 0, m_test_tone_state);                         // update utility
+            break;
+        case 19:
+            // Mute OSC A
+            m_test_muteA = 1 - m_test_muteA;
+            std::cout << "OSC_A_Mute: " << m_test_muteA << std::endl;
+            evalMidi(8, 0, 5);
+            evalMidi(24, 0, m_test_muteA);
+            break;
+        case 20:
+            // Mute OSC B
+            m_test_muteB = 1 - m_test_muteB;
+            std::cout << "OSC_B_Mute: " << m_test_muteB << std::endl;
+            evalMidi(8, 0, 6);
+            evalMidi(24, 0, m_test_muteB);
             break;
         }
         break;
@@ -1694,4 +1714,20 @@ void dsp_host::resetEnv()
     m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
     m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
 #endif
+}
+
+void dsp_host::muteOsc(uint32_t _oscId, uint32_t _state)
+{
+    for(uint32_t v = 0; v < m_voices; v++)
+    {
+        switch(_oscId)
+        {
+        case 0:
+            m_soundgenerator[v].m_OscA_mute = _state;
+            break;
+        case 1:
+            m_soundgenerator[v].m_OscB_mute = _state;
+            break;
+        }
+    }
 }
