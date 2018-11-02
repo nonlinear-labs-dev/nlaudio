@@ -17,7 +17,7 @@
 // postId for direct copy/distribute post processing
 // param id of -1 for placeholders (not part of parameter selection, use clock type 0 to prevent any rendering)
 
-/* Parameter Definition (Test 3) */
+/* Parameter Definition */
 
 const float param_definition[sig_number_of_params][10] = {
 
@@ -323,7 +323,7 @@ const float param_definition[sig_number_of_params][10] = {
     {        407,    0,      1,      8000,   0,      0,      -1,     0,      1,      8000   },         // 196 KEY_VOICE_PAN
     {        409,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 197 KEY_VOICE_STEAL
 #elif test_milestone == 155
-    {        416,    0,      1,      1,      0,      0,      -1,     0,      1,      1      },         // 194 KEY_POSITION
+    {        416,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 194 KEY_BASE_PITCH
     {        417,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 195 KEY_UNISON_IDX
     {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 196 KEY_VOICE_STEAL
 #endif

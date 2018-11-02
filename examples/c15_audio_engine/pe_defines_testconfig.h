@@ -257,22 +257,22 @@ const int32_t testParamRouting[25][24] = {
     /* ENV A */
     {
     /*  0             1             2             3             4             5             6             7            */
-        P_EA+E_ATT,   P_EA+E_DEC1,  P_EA+E_BP,    P_EA+E_DEC2,  P_EA+E_SUS,   P_EA+E_REL,   P_EA_GAIN,    P_EA+E_LV,
-        P_EA+E_AV,    P_EA+E_AC,    P_EA+E_D1V,   P_EA+E_D2V,   P_EA+E_SPL,   P_EA+E_RV,    P_EA+E_LKT,   P_EA+E_TKT,
+        P_EA_ATT,     P_EA_DEC1,    P_EA_BP,      P_EA_DEC2,    P_EA_SUS,     P_EA_REL,     P_EA_GAIN,    P_EA_LV,
+        P_EA_AV,      P_EA_AC,      P_EA_D1V,     P_EA_D2V,     P_EA_SPL,     P_EA_RV,      P_EA_LKT,     P_EA_TKT,
         -1,           -1,           -1,           -1,           -1,           -1,           -1,           -1,
     },
     /* ENV B */
     {
     /*  0             1             2             3             4             5             6             7            */
-        P_EB+E_ATT,   P_EB+E_DEC1,  P_EB+E_BP,    P_EB+E_DEC2,  P_EB+E_SUS,   P_EB+E_REL,   P_EB_GAIN,    P_EB+E_LV,
-        P_EB+E_AV,    P_EB+E_AC,    P_EB+E_D1V,   P_EB+E_D2V,   P_EB+E_SPL,   P_EB+E_RV,    P_EB+E_LKT,   P_EB+E_TKT,
+        P_EB_ATT,     P_EB_DEC1,    P_EB_BP,      P_EB_DEC2,    P_EB_SUS,     P_EB_REL,     P_EB_GAIN,    P_EB_LV,
+        P_EB_AV,      P_EB_AC,      P_EB_D1V,     P_EB_D2V,     P_EB_SPL,     P_EB_RV,      P_EB_LKT,     P_EB_TKT,
         -1,           -1,           -1,           -1,           -1,           -1,           -1,           -1,
     },
     /* ENV C */
     {
     /*  0             1             2             3             4             5             6             7            */
-        P_EC+E_ATT,   P_EC+E_DEC1,  P_EC+E_BP,    P_EC+E_DEC2,  P_EC+E_SUS,   P_EC+E_REL,   -1,           P_EC+E_LV,
-        P_EC+E_AV,    P_EC+E_AC,    -1,           -1,           P_EC+E_RH,    P_EC+E_RV,    P_EC+E_LKT,   P_EC+E_TKT,
+        P_EC_ATT,     P_EC_DEC1,    P_EC_BP,      P_EC_DEC2,    P_EC_SUS,     P_EC_REL,     -1,           P_EC_LV,
+        P_EC_AV,      P_EC_AC,      -1,           -1,           P_EC_RH,      P_EC_RV,      P_EC_LKT,     P_EC_TKT,
         -1,           -1,           -1,           -1,           -1,           -1,           -1,           -1,
     },
     /* OSC A */

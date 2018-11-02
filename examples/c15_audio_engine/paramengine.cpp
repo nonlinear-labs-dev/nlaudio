@@ -575,122 +575,112 @@ void paramengine::newEnvUpdateStart(const uint32_t _voiceId, const float _pitch,
 {
     /* provide temporary variables */
 
-    uint32_t envId, envIndex;                                                                                           // two variables are used to access envelope-specific parameter data
-    float time, timeKT, dest, levelVel, attackVel, decay1Vel, decay2Vel, levelKT, peak, unclipped;                                                       // several variables are needed in order to determine envelope behavior
+    float time, timeKT, dest, levelVel, attackVel, decay1Vel, decay2Vel, levelKT, peak, unclipped;          // several variables are needed in order to determine envelope behavior
 
     /* envelope a update */
 
-    envId = 0;                                                                                                          // setting the focus on envelope a
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    timeKT = -0.5f * m_body[m_head[P_EA_TKT].m_index].m_signal * _pitch;                                    // determine time key tracking according to pitch and parameter
+    levelVel = -m_body[m_head[P_EA_LV].m_index].m_signal;                                                   // get level velocity parameter
+    attackVel = -m_body[m_head[P_EA_AV].m_index].m_signal * _velocity;                                      // determine attack velocity accorindg to velocity and parameter
+    decay1Vel = -m_body[m_head[P_EA_D1V].m_index].m_signal * _velocity;                                     // determine decay1 velocity accorindg to velocity and parameter
+    decay2Vel = -m_body[m_head[P_EA_D2V].m_index].m_signal * _velocity;                                     // determine decay2 velocity accorindg to velocity and parameter
+    levelKT = m_body[m_head[P_EA_LKT].m_index].m_signal * _pitch;                                           // determine level key tracking according to pitch and parameter
+    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);         // determine peak level according to velocity and level parameters (max +3dB)
 
-    timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
-    levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
-    attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
-    decay1Vel = -m_body[m_head[envIndex + E_D1V].m_index].m_signal * _velocity;                                         // determine decay1 velocity accorindg to velocity and parameter
-    decay2Vel = -m_body[m_head[envIndex + E_D2V].m_index].m_signal * _velocity;                                         // determine decay2 velocity accorindg to velocity and parameter
-    levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
-    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
+    m_event.m_env[0].m_levelFactor[_voiceId] = peak;                                                        // remember peak level
+    m_event.m_env[0].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;  // determine time factor for attack segment (without actual attack time)
+    m_event.m_env[0].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;  // determine time factor for decay1 segment (without actual decay1 time)
+    m_event.m_env[0].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;  // determine time factor for decay2 segment (without actual decay2 time)
 
-    m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
-    m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;          // determine time factor for decay1 segment (without actual decay1 time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;          // determine time factor for decay2 segment (without actual decay2 time)
+    m_new_envelopes.m_env_a.setSplitValue(m_body[m_head[P_EA_SPL].m_index].m_signal);                       // update the split behavior by corresponding parameter
+    m_new_envelopes.m_env_a.setAttackCurve(m_body[m_head[P_EA_AC].m_index].m_signal);                       // update the attack curve by corresponding parameter
+    m_new_envelopes.m_env_a.setPeakLevel(_voiceId, peak);                                                   // update the current peak level (for magnitude/timbre crossfades)
 
-    m_new_envelopes.m_env_a.setSplitValue(m_body[m_head[envIndex + E_SPL].m_index].m_signal);                           // update the split behavior by corresponding parameter
-    m_new_envelopes.m_env_a.setAttackCurve(m_body[m_head[envIndex + E_AC].m_index].m_signal);                           // update the attack curve by corresponding parameter
-    m_new_envelopes.m_env_a.setPeakLevel(_voiceId, peak);                                                               // update the current peak level (for magnitude/timbre crossfades)
+    time = m_body[m_head[P_EA_ATT].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
+    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                  // update attack segment time
+    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 1, false, peak);                                       // update attack segment destination (peak level) (no split behavior)
 
-    time = m_body[m_head[envIndex + E_ATT].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
-    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                              // update attack segment time
-    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 1, false, peak);                                                   // update attack segment destination (peak level) (no split behavior)
+    time = m_body[m_head[P_EA_DEC1].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
+    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                  // update decay1 segment time
+    dest = peak * m_body[m_head[P_EA_BP].m_index].m_signal;                                                 // determine decay1 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 2, true, dest);                                        // update decay1 segment destination (split behavior)
 
-    time = m_body[m_head[envIndex + E_DEC1].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
-    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                              // update decay1 segment time
-    dest = peak * m_body[m_head[envIndex + E_BP].m_index].m_signal;                                                     // determine decay1 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 2, true, dest);                                                    // update decay1 segment destination (split behavior)
-
-    time = m_body[m_head[envIndex + E_DEC2].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
-    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                              // update decay2 segment time
-    dest = peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal;                                                    // determine decay2 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 3, true, dest);                                                    // update decay2 segment destination (split behavior)
+    time = m_body[m_head[P_EA_DEC2].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
+    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                  // update decay2 segment time
+    dest = peak * m_body[m_head[P_EA_SUS].m_index].m_signal;                                                // determine decay2 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 3, true, dest);                                        // update decay2 segment destination (split behavior)
 
     /* envelope b update */
 
-    envId = 1;                                                                                                          // setting the focus on envelope b
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    timeKT = -0.5f * m_body[m_head[P_EB_TKT].m_index].m_signal * _pitch;                                    // determine time key tracking according to pitch and parameter
+    levelVel = -m_body[m_head[P_EB_LV].m_index].m_signal;                                                   // get level velocity parameter
+    attackVel = -m_body[m_head[P_EB_AV].m_index].m_signal * _velocity;                                      // determine attack velocity accorindg to velocity and parameter
+    decay1Vel = -m_body[m_head[P_EB_D1V].m_index].m_signal * _velocity;                                     // determine decay1 velocity accorindg to velocity and parameter
+    decay2Vel = -m_body[m_head[P_EB_D2V].m_index].m_signal * _velocity;                                     // determine decay2 velocity accorindg to velocity and parameter
+    levelKT = m_body[m_head[P_EB_LKT].m_index].m_signal * _pitch;                                           // determine level key tracking according to pitch and parameter
+    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);         // determine peak level according to velocity and level parameters (max +3dB)
 
-    timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
-    levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
-    attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
-    decay1Vel = -m_body[m_head[envIndex + E_D1V].m_index].m_signal * _velocity;                                         // determine decay1 velocity accorindg to velocity and parameter
-    decay2Vel = -m_body[m_head[envIndex + E_D2V].m_index].m_signal * _velocity;                                         // determine decay2 velocity accorindg to velocity and parameter
-    levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
-    peak = std::min(m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT), env_clip_peak);                     // determine peak level according to velocity and level parameters (max +3dB)
+    m_event.m_env[1].m_levelFactor[_voiceId] = peak;                                                        // remember peak level
+    m_event.m_env[1].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;  // determine time factor for attack segment (without actual attack time)
+    m_event.m_env[1].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;  // determine time factor for decay1 segment (without actual decay1 time)
+    m_event.m_env[1].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;  // determine time factor for decay2 segment (without actual decay2 time)
 
-    m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
-    m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT + decay1Vel) * m_millisecond;          // determine time factor for decay1 segment (without actual decay1 time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_convert.eval_level(timeKT + decay2Vel) * m_millisecond;          // determine time factor for decay2 segment (without actual decay2 time)
+    m_new_envelopes.m_env_b.setSplitValue(m_body[m_head[P_EB_SPL].m_index].m_signal);                       // update the split behavior by corresponding parameter
+    m_new_envelopes.m_env_b.setAttackCurve(m_body[m_head[P_EB_AC].m_index].m_signal);                       // update the attack curve by corresponding parameter
+    m_new_envelopes.m_env_b.setPeakLevel(_voiceId, peak);                                                   // update the current peak level (for magnitude/timbre crossfades)
 
-    m_new_envelopes.m_env_b.setSplitValue(m_body[m_head[envIndex + E_SPL].m_index].m_signal);                           // update the split behavior by corresponding parameter
-    m_new_envelopes.m_env_b.setAttackCurve(m_body[m_head[envIndex + E_AC].m_index].m_signal);                           // update the attack curve by corresponding parameter
-    m_new_envelopes.m_env_b.setPeakLevel(_voiceId, peak);                                                               // update the current peak level (for magnitude/timbre crossfades)
+    time = m_body[m_head[P_EB_ATT].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
+    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                  // update attack segment time
+    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 1, false, peak);                                       // update attack segment destination (peak level) (no split behavior)
 
-    time = m_body[m_head[envIndex + E_ATT].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
-    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                              // update attack segment time
-    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 1, false, peak);                                                   // update attack segment destination (peak level) (no split behavior)
+    time = m_body[m_head[P_EB_DEC1].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
+    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                  // update decay1 segment time
+    dest = peak * m_body[m_head[P_EB_BP].m_index].m_signal;                                                 // determine decay1 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 2, true, dest);                                        // update decay1 segment destination (split behavior)
 
-    time = m_body[m_head[envIndex + E_DEC1].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
-    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                              // update decay1 segment time
-    dest = peak * m_body[m_head[envIndex + E_BP].m_index].m_signal;                                                     // determine decay1 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 2, true, dest);                                                    // update decay1 segment destination (split behavior)
-
-    time = m_body[m_head[envIndex + E_DEC2].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
-    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                              // update decay2 segment time
-    dest = peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal;                                                    // determine decay2 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 3, true, dest);                                                    // update decay2 segment destination (split behavior)
+    time = m_body[m_head[P_EB_DEC2].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
+    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                  // update decay2 segment time
+    dest = peak * m_body[m_head[P_EB_SUS].m_index].m_signal;                                                // determine decay2 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 3, true, dest);                                        // update decay2 segment destination (split behavior)
 
     /* envelope c update */
 
-    envId = 2;                                                                                                          // setting the focus on envelope c
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    timeKT = -0.5f * m_body[m_head[P_EC_TKT].m_index].m_signal * _pitch;                                    // determine time key tracking according to pitch and parameter
+    levelVel = -m_body[m_head[P_EC_LV].m_index].m_signal;                                                   // get level velocity parameter
+    attackVel = -m_body[m_head[P_EC_AV].m_index].m_signal * _velocity;                                      // determine attack velocity accorindg to velocity and parameter
+    levelKT = m_body[m_head[P_EC_LKT].m_index].m_signal * _pitch;                                           // determine level key tracking according to pitch and parameter
+    unclipped = m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT);                             // determine unclipped peak level according to velocity and level parameters
+    peak = std::min(unclipped, env_clip_peak);                                                              // determine clipped peak level (max +3dB)
+    m_env_c_clipFactor[_voiceId] = unclipped / peak;                                                        // determine unclipped / clipped peak factor in order to reconstruct unclipped signal later
 
-    timeKT = -0.5f * m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                        // determine time key tracking according to pitch and parameter
-    levelVel = -m_body[m_head[envIndex + E_LV].m_index].m_signal;                                                       // get level velocity parameter
-    attackVel = -m_body[m_head[envIndex + E_AV].m_index].m_signal * _velocity;                                          // determine attack velocity accorindg to velocity and parameter
-    levelKT = m_body[m_head[envIndex + E_LKT].m_index].m_signal * _pitch;                                               // determine level key tracking according to pitch and parameter
-    unclipped = m_convert.eval_level(((1.f - _velocity) * levelVel) + levelKT);                                         // determine unclipped peak level according to velocity and level parameters
-    peak = std::min(unclipped, env_clip_peak);                                                                          // determine clipped peak level (max +3dB)
-    m_env_c_clipFactor[_voiceId] = unclipped / peak;                                                                    // determine unclipped / clipped peak factor in order to reconstruct unclipped signal later
+    m_event.m_env[2].m_levelFactor[_voiceId] = peak;                                                        // remember peak level
+    m_event.m_env[2].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;  // determine time factor for attack segment (without actual attack time)
+    m_event.m_env[2].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT) * m_millisecond;              // determine time factor for decay1 segment (without actual decay1 time)
+    m_event.m_env[2].m_timeFactor[_voiceId][2] = m_event.m_env[2].m_timeFactor[_voiceId][1];                // determine time factor for decay2 segment (without actual decay2 time)
 
-    m_event.m_env[envId].m_levelFactor[_voiceId] = peak;                                                                // remember peak level
-    m_event.m_env[envId].m_timeFactor[_voiceId][0] = m_convert.eval_level(timeKT + attackVel) * m_millisecond;          // determine time factor for attack segment (without actual attack time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][1] = m_convert.eval_level(timeKT) * m_millisecond;                      // determine time factor for decay1 segment (without actual decay1 time)
-    m_event.m_env[envId].m_timeFactor[_voiceId][2] = m_event.m_env[envId].m_timeFactor[_voiceId][1];                    // determine time factor for decay2 segment (without actual decay2 time)
+    m_new_envelopes.m_env_c.setAttackCurve(m_body[m_head[P_EC_AC].m_index].m_signal);                       // update the attack curve by corresponding parameter
+    m_new_envelopes.m_env_c.setRetriggerHardness(m_body[m_head[P_EC_RH].m_index].m_signal);                 // update the retrigger hardness by corresponding parameter
 
-    m_new_envelopes.m_env_c.setAttackCurve(m_body[m_head[envIndex + E_AC].m_index].m_signal);                           // update the attack curve by corresponding parameter
-    m_new_envelopes.m_env_c.setRetriggerHardness(m_body[m_head[envIndex + E_RH].m_index].m_signal);                     // update the retrigger hardness by corresponding parameter
+    time = m_body[m_head[P_EC_ATT].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
+    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                  // update attack segment time
+    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 1, peak);                                              // update attack segment destination (peak level) (no split behavior)
 
-    time = m_body[m_head[envIndex + E_ATT].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
-    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                              // update attack segment time
-    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 1, peak);                                                          // update attack segment destination (peak level) (no split behavior)
+    time = m_body[m_head[P_EC_DEC1].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
+    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                  // update decay1 segment time
+    dest = peak * m_body[m_head[P_EC_BP].m_index].m_signal;                                                 // determine decay1 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 2, dest);                                              // update decay1 segment destination (no split behavior)
 
-    time = m_body[m_head[envIndex + E_DEC1].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
-    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                              // update decay1 segment time
-    dest = peak * m_body[m_head[envIndex + E_BP].m_index].m_signal;                                                     // determine decay1 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 2, dest);                                                          // update decay1 segment destination (no split behavior)
-
-    time = m_body[m_head[envIndex + E_DEC2].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
-    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                              // update decay2 segment time
-    dest = peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal;                                                    // determine decay2 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 3, dest);                                                          // update decay2 segment destination (no split behavior)
+    time = m_body[m_head[P_EC_DEC2].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
+    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                  // update decay2 segment time
+    dest = peak * m_body[m_head[P_EC_SUS].m_index].m_signal;                                                // determine decay2 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 3, dest);                                              // update decay2 segment destination (no split behavior)
 
     /* start envelopes */
 
-    m_new_envelopes.m_env_a.start(_voiceId);                                                                            // issue start of envelope a in current voice
-    m_new_envelopes.m_env_b.start(_voiceId);                                                                            // issue start of envelope b in current voice
-    m_new_envelopes.m_env_c.start(_voiceId);                                                                            // issue start of envelope c in current voice
-    m_new_envelopes.m_env_g.start(_voiceId);                                                                            // issue start of envelope g in current voice
+    m_new_envelopes.m_env_a.start(_voiceId);                                                                // issue start of envelope a in current voice
+    m_new_envelopes.m_env_b.start(_voiceId);                                                                // issue start of envelope b in current voice
+    m_new_envelopes.m_env_c.start(_voiceId);                                                                // issue start of envelope c in current voice
+    m_new_envelopes.m_env_g.start(_voiceId);                                                                // issue start of envelope g in current voice
 }
 
 /* */
@@ -698,81 +688,71 @@ void paramengine::newEnvUpdateStop(const uint32_t _voiceId, const float _pitch, 
 {
     /* provide temporary variables */
 
-    uint32_t envId, envIndex;                                                                                           // two variables are used to access envelope-specific parameter data
-    float time, timeKT, releaseVel;                                                                                     // several variables are needed in order to determine envelope behavior
+    float time, timeKT, releaseVel;                                                                         // several variables are needed in order to determine envelope behavior
 
     /* envelope a update */
 
-    envId = 0;                                                                                                          // setting the focus on envelope a
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    timeKT = -m_body[m_head[P_EA_TKT].m_index].m_signal * _pitch;                                           // determine time key tracking according to pitch and parameter
+    releaseVel = -m_body[m_head[P_EA_RV].m_index].m_signal * _velocity;                                     // determine release velocity according to velocity and parameter
 
-    timeKT = -m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                               // determine time key tracking according to pitch and parameter
-    releaseVel = -m_body[m_head[envIndex + E_RV].m_index].m_signal * _velocity;                                         // determine release velocity according to velocity and parameter
+    m_event.m_env[0].m_timeFactor[_voiceId][3] = m_convert.eval_level(timeKT + releaseVel) * m_millisecond; // determine time factor for release segment (without actual release time)
 
-    m_event.m_env[envId].m_timeFactor[_voiceId][3] = m_convert.eval_level(timeKT + releaseVel) * m_millisecond;         // determine time factor for release segment (without actual release time)
-
-    if(m_body[m_head[envIndex + E_REL].m_index].m_signal <= env_highest_finite_time)                                    // if the release time is meant to be finite (tcd: [0 ... 16000]):
+    if(m_body[m_head[P_EA_REL].m_index].m_signal <= env_highest_finite_time)                                // if the release time is meant to be finite (tcd: [0 ... 16000]):
     {
         /* finite release time */
-        time = m_body[m_head[envIndex + E_REL].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
-        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                                          //      update release segment time
+        time = m_body[m_head[P_EA_REL].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
+        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                              //      update release segment time
     }
-    else                                                                                                                // if the release time is meant to be infinite (tcd: [16001 ... 16160]):
+    else                                                                                                    // if the release time is meant to be infinite (tcd: [16001 ... 16160]):
     {
         /* infinite release time */
-        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 0.f);                                                         //      update release segment time (set it to infinity)
+        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 0.f);                                             //      update release segment time (set it to infinity)
     }
 
     /* envelope b update */
 
-    envId = 1;                                                                                                          // setting the focus on envelope b
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    timeKT = -m_body[m_head[P_EB_TKT].m_index].m_signal * _pitch;                                           // determine time key tracking according to pitch and parameter
+    releaseVel = -m_body[m_head[P_EB_RV].m_index].m_signal * _velocity;                                     // determine release velocity according to velocity and parameter
 
-    timeKT = -m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                               // determine time key tracking according to pitch and parameter
-    releaseVel = -m_body[m_head[envIndex + E_RV].m_index].m_signal * _velocity;                                         // determine release velocity according to velocity and parameter
+    m_event.m_env[1].m_timeFactor[_voiceId][3] = m_convert.eval_level(timeKT + releaseVel) * m_millisecond; // determine time factor for release segment (without actual release time)
 
-    m_event.m_env[envId].m_timeFactor[_voiceId][3] = m_convert.eval_level(timeKT + releaseVel) * m_millisecond;         // determine time factor for release segment (without actual release time)
-
-    if(m_body[m_head[envIndex + E_REL].m_index].m_signal <= env_highest_finite_time)                                    // if the release time is meant to be finite (tcd: [0 ... 16000]):
+    if(m_body[m_head[P_EB_REL].m_index].m_signal <= env_highest_finite_time)                                // if the release time is meant to be finite (tcd: [0 ... 16000]):
     {
         /* finite release time */
-        time = m_body[m_head[envIndex + E_REL].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
-        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                                          //      update release segment time
+        time = m_body[m_head[P_EB_REL].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
+        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                              //      update release segment time
     }
-    else                                                                                                                // if the release time is meant to be infinite (tcd: [16001 ... 16160]):
+    else                                                                                                    // if the release time is meant to be infinite (tcd: [16001 ... 16160]):
     {
         /* infinite release time */
-        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 0.f);                                                         //      update release segment time (set it to infinity)
+        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 0.f);                                             //      update release segment time (set it to infinity)
     }
 
     /* envelope c update */
 
-    envId = 2;                                                                                                          // setting the focus on envelope c
-    envIndex = m_envIds[envId];                                                                                         // update indexy accordingly
+    timeKT = -m_body[m_head[P_EC_TKT].m_index].m_signal * _pitch;                                           // determine time key tracking according to pitch and parameter
+    releaseVel = -m_body[m_head[P_EC_RV].m_index].m_signal * _velocity;                                     // determine release velocity according to velocity and parameter
 
-    timeKT = -m_body[m_head[envIndex + E_TKT].m_index].m_signal * _pitch;                                               // determine time key tracking according to pitch and parameter
-    releaseVel = -m_body[m_head[envIndex + E_RV].m_index].m_signal * _velocity;                                         // determine release velocity according to velocity and parameter
+    m_event.m_env[2].m_timeFactor[_voiceId][3] = m_convert.eval_level(timeKT + releaseVel) * m_millisecond; // determine time factor for release segment (without actual release time)
 
-    m_event.m_env[envId].m_timeFactor[_voiceId][3] = m_convert.eval_level(timeKT + releaseVel) * m_millisecond;         // determine time factor for release segment (without actual release time)
-
-    if(m_body[m_head[envIndex + E_REL].m_index].m_signal <= env_highest_finite_time)                                    // if the release time is meant to be finite (tcd: [0 ... 16000]):
+    if(m_body[m_head[P_EC_REL].m_index].m_signal <= env_highest_finite_time)                                // if the release time is meant to be finite (tcd: [0 ... 16000]):
     {
         /* finite release time */
-        time = m_body[m_head[envIndex + E_REL].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
-        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                                          //      update release segment time
+        time = m_body[m_head[P_EC_REL].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
+        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                              //      update release segment time
     }
-    else                                                                                                                // if the release time is meant to be infinite (tcd: [16001 ... 16160]):
+    else                                                                                                    // if the release time is meant to be infinite (tcd: [16001 ... 16160]):
     {
         /* infinite release time */
-        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 0.f);                                                         //      update release segment time (set it to infinity)
+        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 0.f);                                             //      update release segment time (set it to infinity)
     }
 
     /* stop envelopes */
 
-    m_new_envelopes.m_env_a.stop(_voiceId);                                                                             // issue stop of envelope a in current voice
-    m_new_envelopes.m_env_b.stop(_voiceId);                                                                             // issue stop of envelope b in current voice
-    m_new_envelopes.m_env_c.stop(_voiceId);                                                                             // issue stop of envelope c in current voice
-    m_new_envelopes.m_env_g.stop(_voiceId);                                                                             // issue stop of envelope g in current voice
+    m_new_envelopes.m_env_a.stop(_voiceId);                                                                 // issue stop of envelope a in current voice
+    m_new_envelopes.m_env_b.stop(_voiceId);                                                                 // issue stop of envelope b in current voice
+    m_new_envelopes.m_env_c.stop(_voiceId);                                                                 // issue stop of envelope c in current voice
+    m_new_envelopes.m_env_g.stop(_voiceId);                                                                 // issue stop of envelope g in current voice
 }
 
 /* */
@@ -780,85 +760,75 @@ void paramengine::newEnvUpdateTimes(const uint32_t _voiceId)
 {
     /* provide temporary variables */
 
-    uint32_t envId, envIndex;                                                                                           // two variables are used to access envelope-specific parameter data
-    float time;                                                                                                         // the time variable is needed in order to determine envelope behavior
+    float time;                                                                                             // the time variable is needed in order to determine envelope behavior
 
     /* envelope a update */
 
-    envId = 0;                                                                                                          // setting the focus on envelope a
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    time = m_body[m_head[P_EA_ATT].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
+    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                  // update attack segment time
 
-    time = m_body[m_head[envIndex + E_ATT].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
-    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                              // update attack segment time
+    time = m_body[m_head[P_EA_DEC1].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
+    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                  // update decay1 segment time
 
-    time = m_body[m_head[envIndex + E_DEC1].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
-    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                              // update decay1 segment time
+    time = m_body[m_head[P_EA_DEC2].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
+    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                  // update decay2 segment time
 
-    time = m_body[m_head[envIndex + E_DEC2].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
-    m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                              // update decay2 segment time
-
-    if(m_body[m_head[envIndex + E_REL].m_index].m_signal <= env_highest_finite_time)                                    // if the release time is meant to be finite (tcd: [0 ... 16000]):
+    if(m_body[m_head[P_EA_REL].m_index].m_signal <= env_highest_finite_time)                                // if the release time is meant to be finite (tcd: [0 ... 16000]):
     {
         /* finite release time */
-        time = m_body[m_head[envIndex + E_REL].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
-        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                                          //      update release segment time
+        time = m_body[m_head[P_EA_REL].m_index].m_signal * m_event.m_env[0].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
+        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                              //      update release segment time
     }
-    else                                                                                                                // if the release time is meant to be infinite (tcd: [16001 ... 16160])
+    else                                                                                                    // if the release time is meant to be infinite (tcd: [16001 ... 16160])
     {
         /* infinite release time */
-        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 0.f);                                                         //      update release segment time (set it to infinity)
+        m_new_envelopes.m_env_a.setSegmentDx(_voiceId, 4, 0.f);                                             //      update release segment time (set it to infinity)
     }
 
     /* envelope b update */
 
-    envId = 1;                                                                                                          // setting the focus on envelope b
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    time = m_body[m_head[P_EB_ATT].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
+    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                  // update attack segment time
 
-    time = m_body[m_head[envIndex + E_ATT].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
-    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                              // update attack segment time
+    time = m_body[m_head[P_EB_DEC1].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
+    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                  // update decay1 segment time
 
-    time = m_body[m_head[envIndex + E_DEC1].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
-    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                              // update decay1 segment time
+    time = m_body[m_head[P_EB_DEC2].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
+    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                  // update decay2 segment time
 
-    time = m_body[m_head[envIndex + E_DEC2].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
-    m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                              // update decay2 segment time
-
-    if(m_body[m_head[envIndex + E_REL].m_index].m_signal <= env_highest_finite_time)                                    // if the release time is meant to be finite (tcd: [0 ... 16000]):
+    if(m_body[m_head[P_EB_REL].m_index].m_signal <= env_highest_finite_time)                                // if the release time is meant to be finite (tcd: [0 ... 16000]):
     {
         /* finite release time */
-        time = m_body[m_head[envIndex + E_REL].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
-        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                                          //      update release segment time
+        time = m_body[m_head[P_EB_REL].m_index].m_signal * m_event.m_env[1].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
+        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                              //      update release segment time
     }
-    else                                                                                                                // if the release time is meant to be infinite (tcd: [16001 ... 16160])
+    else                                                                                                    // if the release time is meant to be infinite (tcd: [16001 ... 16160])
     {
         /* infinite release time */
-        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 0.f);                                                         //      update release segment time (set it to infinity)
+        m_new_envelopes.m_env_b.setSegmentDx(_voiceId, 4, 0.f);                                              //      update release segment time (set it to infinity)
     }
 
     /* envelope c update */
 
-    envId = 2;                                                                                                          // setting the focus on envelope c
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
+    time = m_body[m_head[P_EC_ATT].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
+    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                  // update attack segment time
 
-    time = m_body[m_head[envIndex + E_ATT].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][0];          // determine attack segment time according to time factor and parameter
-    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 1, 1.f / (time + 1.f));                                              // update attack segment time
+    time = m_body[m_head[P_EC_DEC1].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
+    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                  // update decay1 segment time
 
-    time = m_body[m_head[envIndex + E_DEC1].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][1];         // determine decay1 segment time according to time factor and parameter
-    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 2, 1.f / (time + 1.f));                                              // update decay1 segment time
+    time = m_body[m_head[P_EC_DEC2].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
+    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                  // update decay2 segment time
 
-    time = m_body[m_head[envIndex + E_DEC2].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][2];         // determine decay2 segment time according to time factor and parameter
-    m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 3, 1.f / (time + 1.f));                                              // update decay2 segment time
-
-    if(m_body[m_head[envIndex + E_REL].m_index].m_signal <= env_highest_finite_time)                                    // if the release time is meant to be finite (tcd: [0 ... 16000]):
+    if(m_body[m_head[P_EC_REL].m_index].m_signal <= env_highest_finite_time)                                // if the release time is meant to be finite (tcd: [0 ... 16000]):
     {
         /* finite release time */
-        time = m_body[m_head[envIndex + E_REL].m_index].m_signal * m_event.m_env[envId].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
-        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                                          //      update release segment time
+        time = m_body[m_head[P_EC_REL].m_index].m_signal * m_event.m_env[2].m_timeFactor[_voiceId][3];      //      determine release segment time according to time factor and parameter
+        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 1.f / (time + 1.f));                              //      update release segment time
     }
-    else                                                                                                                // if the release time is meant to be infinite (tcd: [16001 ... 16160])
+    else                                                                                                    // if the release time is meant to be infinite (tcd: [16001 ... 16160])
     {
         /* infinite release time */
-        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 0.f);                                                         //      update release segment time (set it to infinity)
+        m_new_envelopes.m_env_c.setSegmentDx(_voiceId, 4, 0.f);                                             //      update release segment time (set it to infinity)
     }
 }
 
@@ -867,44 +837,37 @@ void paramengine::newEnvUpdateLevels(const uint32_t _voiceId)
 {
     /* provide temporary variables */
 
-    uint32_t envId, envIndex;                                                                                           // two variables are used to access envelope-specific parameter data
-    float peak, dest;                                                                                                   // two variables are needed in order to determine envelope behavior
+    float peak, dest;                                                                                       // two variables are needed in order to determine envelope behavior
 
     /* envelope a update */
 
-    envId = 0;                                                                                                          // setting the focus on envelope a
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
-    peak = m_event.m_env[envId].m_levelFactor[_voiceId];                                                                // get envelope peak level (was determined by last key down)
+    peak = m_event.m_env[0].m_levelFactor[_voiceId];                                                        // get envelope peak level (was determined by last key down)
 
-    dest = peak * m_body[m_head[envIndex + E_BP].m_index].m_signal;                                                     // determine decay1 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 2, true, dest);                                                    // update decay1 segment destination (split behavior)
+    dest = peak * m_body[m_head[P_EA_BP].m_index].m_signal;                                                 // determine decay1 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 2, true, dest);                                        // update decay1 segment destination (split behavior)
 
-    dest = peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal;                                                    // determine decay2 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 3, true, dest);                                                    // update decay2 segment destinatino (split behavior)
+    dest = peak * m_body[m_head[P_EA_SUS].m_index].m_signal;                                                // determine decay2 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_a.setSegmentDest(_voiceId, 3, true, dest);                                        // update decay2 segment destinatino (split behavior)
 
     /* envelope b update */
 
-    envId = 1;                                                                                                          // setting the focus on envelope b
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
-    peak = m_event.m_env[envId].m_levelFactor[_voiceId];                                                                // get envelope peak level (was determined by last key down)
+    peak = m_event.m_env[1].m_levelFactor[_voiceId];                                                        // get envelope peak level (was determined by last key down)
 
-    dest = peak * m_body[m_head[envIndex + E_BP].m_index].m_signal;                                                     // determine decay1 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 2, true, dest);                                                    // update decay1 segment destination (split behavior)
+    dest = peak * m_body[m_head[P_EB_BP].m_index].m_signal;                                                 // determine decay1 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 2, true, dest);                                        // update decay1 segment destination (split behavior)
 
-    dest = peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal;                                                    // determine decay2 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 3, true, dest);                                                    // update decay2 segment destinatino (split behavior)
+    dest = peak * m_body[m_head[P_EB_SUS].m_index].m_signal;                                                // determine decay2 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_b.setSegmentDest(_voiceId, 3, true, dest);                                        // update decay2 segment destinatino (split behavior)
 
     /* envelope c update */
 
-    envId = 2;                                                                                                          // setting the focus on envelope c
-    envIndex = m_envIds[envId];                                                                                         // update index accordingly
-    peak = m_event.m_env[envId].m_levelFactor[_voiceId];                                                                // get envelope peak level (was determined by last key down)
+    peak = m_event.m_env[2].m_levelFactor[_voiceId];                                                        // get envelope peak level (was determined by last key down)
 
-    dest = peak * m_body[m_head[envIndex + E_BP].m_index].m_signal;                                                     // determine decay1 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 2, dest);                                                          // update decay1 segment destination (no split behavior)
+    dest = peak * m_body[m_head[P_EC_BP].m_index].m_signal;                                                 // determine decay1 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 2, dest);                                              // update decay1 segment destination (no split behavior)
 
-    dest = peak * m_body[m_head[envIndex + E_SUS].m_index].m_signal;                                                    // determine decay2 segment destination according to peak level and parameter
-    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 3, dest);                                                          // update decay2 segment destinatino (no split behavior)
+    dest = peak * m_body[m_head[P_EC_SUS].m_index].m_signal;                                                // determine decay2 segment destination according to peak level and parameter
+    m_new_envelopes.m_env_c.setSegmentDest(_voiceId, 3, dest);                                              // update decay2 segment destinatino (no split behavior)
 }
 #endif
 

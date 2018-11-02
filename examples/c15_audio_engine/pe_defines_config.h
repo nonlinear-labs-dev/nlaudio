@@ -14,7 +14,7 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
-#define test_milestone              150             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echor/reverb sends)
+#define test_milestone              155             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echor/reverb sends)
 #define test_key_update_pan         1               // (should pan values be updated on key? (probably yes)
 
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency

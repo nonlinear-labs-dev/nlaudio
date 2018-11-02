@@ -14,7 +14,7 @@
 #pragma once
 
 /* Envelope Parameter Labels - access parameter with (envIndex + ID) */
-// NOTE: define param labels directly and get rid of envIndex and placeholders
+// NOTE: placeholders and Env Param Labels are needed until old envelopes disappear
 
 #define E_ATT       0
 #define E_DEC1      1
@@ -35,8 +35,53 @@
 
 /* 'normal' Parameter Labels - access parameter with m_head[ID] - maybe, the rendering index would be much more efficient? */
 
+#define P_EA_ATT    0
+#define P_EA_DEC1   1
+#define P_EA_BP     2
+#define P_EA_DEC2   3
+#define P_EA_SUS    4
+#define P_EA_REL    5
 #define P_EA_GAIN   6
+#define P_EA_LV     7
+#define P_EA_AV     8
+#define P_EA_D1V    9
+#define P_EA_D2V    10
+#define P_EA_RV     11
+#define P_EA_LKT    12
+#define P_EA_TKT    13
+#define P_EA_AC     14
+#define P_EA_SPL    16
+
+#define P_EB_ATT    17
+#define P_EB_DEC1   18
+#define P_EB_BP     19
+#define P_EB_DEC2   20
+#define P_EB_SUS    21
+#define P_EB_REL    22
 #define P_EB_GAIN   23
+#define P_EB_LV     24
+#define P_EB_AV     25
+#define P_EB_D1V    26
+#define P_EB_D2V    27
+#define P_EB_RV     28
+#define P_EB_LKT    29
+#define P_EB_TKT    30
+#define P_EB_AC     31
+#define P_EB_SPL    33
+
+#define P_EC_ATT    34
+#define P_EC_DEC1   35
+#define P_EC_BP     36
+#define P_EC_DEC2   37
+#define P_EC_SUS    38
+#define P_EC_REL    39
+#define P_EC_LV     41
+#define P_EC_AV     42
+#define P_EC_RV     45
+#define P_EC_LKT    46
+#define P_EC_TKT    47
+#define P_EC_AC     48
+#define P_EC_RH     49
 
 #define P_OA_P      51
 #define P_OA_PKT    52

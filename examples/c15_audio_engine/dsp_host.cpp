@@ -1098,7 +1098,7 @@ void dsp_host::testNewNoteOn(uint32_t _pitch, uint32_t _velocity)
     evalMidi(0, 0, m_test_voiceId);                         // select voice: current
     for(uint32_t uIndex = 0; uIndex < m_test_unison_voices; uIndex++)
     {
-        testParseDestination(keyPos);                       // key position
+        testParseDestination(keyPos * 1000);                // base pitch (factor 1000 because of Scaling)
         evalMidi(5, 0, uIndex);                             // unison index
         evalMidi(5, 0, 0);                                  // voice steal (0)
         evalMidi(23, noteVel >> 7, noteVel & 127);          // key down: velocity
