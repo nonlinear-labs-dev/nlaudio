@@ -66,13 +66,16 @@ void dsp_host::loadInitialPreset()
     /* traverse parameters, each one receiving zero value */
     for(uint32_t i = 0; i < lst_recall_length; i++)
     {
-        evalMidi(5, 0, 0);                                                              // send destination 0
+        if(paramIds_recall[i] == P_UN_V)                                                /// Unison Voices
+        {
+            evalMidi(5, 0, 1);                                                          // send destination 1
+        }
+        else                                                                            /// anything else
+        {
+            evalMidi(5, 0, 0);                                                          // send destination 0
+        }
     }
     evalMidi(47, 0, 2);                                                                 // apply preloaded values
-
-    evalMidi(1, 249 >> 7, 249 & 127);                                                   /// Unison Voices in TCD Mode
-    evalMidi(5, 0, 1);                                                                  // should not receive a zero!
-
 #if test_initialize_fx_sends
     /* temporarily initialize echo and reverb sends to 100% (because compability) */
     evalMidi(1, 334 >> 7, 334 & 127);                                                   // select echo send (ID 334)
@@ -1010,6 +1013,7 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
                 {
                     std::cout << "\tEnvelope Stop" << std::endl;
                     resetEnv();
+                    val += 1;
                 }
                 evalMidi(1, tcdId >> 7, tcdId & 127);
                 testParseDestination(static_cast<int32_t>(val));

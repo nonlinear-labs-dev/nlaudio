@@ -35,7 +35,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
     /* preset 1 - default tone */
     {
@@ -56,7 +56,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
     /* preset 2 - testing comb filter */
     {
@@ -77,7 +77,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
     /* preset 3 - testing state variable filter */
     {
@@ -98,7 +98,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
     /* preset 4 - testing envelope a/b split */
     {
@@ -119,7 +119,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
     /* preset 5 - testing envelope c retrigger (use one voice polyphony for testing) */
     {
@@ -140,7 +140,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
     /* preset 6 - SVF NaN issue */
     {
@@ -161,7 +161,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
 #if 0
     /* preset 7 - SVF NAN (handmade copy of "Linux Engine NAN" Bank) */
@@ -183,7 +183,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
 #endif
     /* preset 7 - feedback mixer asym issue */
@@ -205,7 +205,7 @@ const int32_t testPresetData[testRecallSequences][lst_recall_length] = {
         6928,  0,     8000,  8000,  12000, 0,     16000,                                                                // Echo
         5280,  5280,  8000,  4000,  0,     16000,                                                                       // Reverb
         8000,  0,                                                                                                       // Master
-        0,     0,     0,     0                                                                                          // Unison
+        1,     0,     0,     0                                                                                          // Unison
     },
 };
 
