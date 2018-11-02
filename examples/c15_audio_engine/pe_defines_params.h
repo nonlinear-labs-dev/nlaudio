@@ -329,7 +329,7 @@ const float param_definition[sig_number_of_params][10] = {
 #elif test_milestone == 155
     {        416,    0,      1,      1,      0,      0,      -1,     0,      1,      1      },         // 194 KEY_POSITION
     {        417,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 195 KEY_UNISON_IDX
-    {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 196 KEY_VOICE_STEAL
+    {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 196 KEY_VOICE_STEAL
 #endif
 
 };
