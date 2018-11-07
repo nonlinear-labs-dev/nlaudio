@@ -33,7 +33,7 @@
 #include <any>
 
 #include "common/blockingcircularbuffer.h"
-#include "common/debugbuffer.h"
+#include "common/commandbufferresponse.h"
 #include "common/commandbuffer.h"
 #include "audio/audioalsainput.h"
 #include "audio/audioalsaoutput.h"
@@ -80,7 +80,7 @@ struct JobHandle {
     SharedBufferHandle inBuffer;
     SharedBufferHandle outBuffer;
     SharedBufferHandle inMidiBuffer;
-    SharedDebugBuffer debugBuffer;
+    SharedCommandBufferResponse cmdBufferResponse;
     SharedCommandBuffer cmdBuffer;
 };
 

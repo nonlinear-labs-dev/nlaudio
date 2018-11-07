@@ -37,7 +37,7 @@
 #include <common/tools.h>
 #include <common/stopwatch.h>
 #include <common/blockingcircularbuffer.h>
-#include <common/debugbuffer.h>
+#include <common/commandbufferresponse.h>
 #include <common/commandbuffer.h>
 #include <common/specialkeyboard.h>
 
@@ -243,8 +243,8 @@ int main(int argc, char **argv)
                 exit = true;
                 break;
             default:
-                if (handle.debugBuffer->canRead())
-                    std::cout << *handle.debugBuffer.get() << std::endl;
+                if (handle.cmdBufferResponse->canRead())
+                    std::cout << *handle.cmdBufferResponse.get() << std::endl;
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
