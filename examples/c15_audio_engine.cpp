@@ -55,7 +55,6 @@ void usage(const char* name)
                  "   " << name << ":" << std::endl <<
                  "        -s" << " Samplerate in Hz (default=48000)" << std::endl <<
                  "        -v" << " Voice count (default=20)" << std::endl <<
-                 "        -t" << " Mode" << std::endl <<
                  "        -a" << " Audio Device" << std::endl <<
                  "        -m" << " Midi Device" << std::endl;
 
@@ -65,7 +64,6 @@ void usage(const char* name)
 enum cmd_opts {
     OPT_SAMPLERATE,
     OPT_VOICECOUNT,
-    OPT_MODE,
     OPT_AUDIODEVICE,
     OPT_MIDIDEVICE,
     OPT_NUM_ITEMS
@@ -107,9 +105,6 @@ int main(int argc, char **argv)
         case 'v': // Voice count
             opts[OPT_VOICECOUNT] = atoi(optarg);
             break;
-        case 't': // Mode
-            opts[OPT_MODE] = atoi(optarg);
-            break;
         case 'a': // Audio Device
             opts[OPT_AUDIODEVICE] = atoi(optarg);
             break;
@@ -145,7 +140,6 @@ int main(int argc, char **argv)
         std::cout << "Invalid Arguments! " << std::endl <<
                      "Samplerate       : " << (opts[OPT_SAMPLERATE] < 0 ? "invalid" :  std::to_string(opts[OPT_SAMPLERATE])) << std::endl <<
                      "Voice Count      : " << (opts[OPT_VOICECOUNT] < 0 ? "invalid" : std::to_string(opts[OPT_VOICECOUNT])) << std::endl <<
-                     "Mode             : " << (opts[OPT_MODE] < 0 ? "invalid" : std::to_string(opts[OPT_MODE])) << std::endl <<
                      "Audio Device     : " << strAudioDevive  << std::endl <<
                      "Midi Device      : " << (opts[OPT_MIDIDEVICE] < 0 ? "invalid" : std::to_string(opts[OPT_MIDIDEVICE])) << std::endl <<
                      std::endl;
@@ -158,35 +152,17 @@ int main(int argc, char **argv)
     try
     {
         Nl::AlsaAudioCardIdentifier audioOut = availableCards.at(opts[OPT_AUDIODEVICE]);
-        Nl::AlsaMidiCardIdentifier midiIn(opts[OPT_MIDIDEVICE],0,0, "Midi In"); //TODO: Add lib function to look for midi devices
+        Nl::AlsaMidiCardIdentifier midiIn(opts[OPT_MIDIDEVICE], 0, 0, "Midi In"); //TODO: Add lib function to look for midi devices
 
         const int buffersize = 64;
         const int samplerate = opts[OPT_SAMPLERATE];
-        // Matthias: require number of voices, too (implemented)
         const int polyphony = opts[OPT_VOICECOUNT];
 
-        // We can use the opts[OPT_MODE] command line flag here, to select a mode!
-        std::cout << "[MODE=" << opts[OPT_MODE] << "][RUNNING] ";
-
-        Nl::JobHandle handle;
-        switch(opts[OPT_MODE]) {
-        case 0:
-            //            std::cout << "Nl::MINISYNTH::miniSynthMidiControl()" << std::endl;
-            //            handle = Nl::MINISYNTH::miniSynthMidiControl(audioOut, midiIn, buffersize, samplerate);
-            std::cout << ">>> NO MORE MINISYNTH MODE<<<" << std::endl;
-            exit(EXIT_FAILURE);
-        case 1:
-            std::cout << "Nl::DSP_HOST_HANDLE::dspHostTCDControl()" << std::endl;
-            handle = Nl::DSP_HOST_HANDLE::dspHostTCDControl(audioOut, midiIn, buffersize, samplerate, polyphony);
-            break;
-        default:
-            std::cout << ">>> INVALID MODE <<<" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        Nl::JobHandle handle = Nl::DSP_HOST_HANDLE::dspHostTCDControl(audioOut, midiIn, buffersize, samplerate, polyphony);
 
         SpecialKeyboard sk;
         bool exit = false;
-        while(true) {
+        while(!handle.workingThreadHandle.terminateRequest->load()) {
             // nonblocking Keyboard Read
             char key = sk.kbhit();
             switch (key) {
@@ -246,11 +222,12 @@ int main(int argc, char **argv)
                 if (handle.cmdBufferResponse->canRead())
                     std::cout << *handle.cmdBufferResponse.get() << std::endl;
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
-
             if (exit) break;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
+
 
         // Tell worker thread to cleanup and quit
         Nl::terminateWorkingThread(handle.workingThreadHandle);
