@@ -37,8 +37,6 @@ public:
     virtual const char* what() const noexcept;
 
 private:
-    void help(std::vector<std::string> args, JobHandle jobHandle, int sockfd);
-
     std::string m_func;
     std::string m_file;
     std::string m_msg;
@@ -46,15 +44,24 @@ private:
     int m_errno;
 };
 
+
+
+
 class ControlInterface;
 typedef void (*command)(std::vector<std::string> args, JobHandle jobHandle, int sockfd, ControlInterface *ptr);
 
 struct CommandDescriptor {
     command func;
     std::string cmd;
+    std::string shortCmd;
+    std::string description;
 };
 
 std::ostream& operator<<(std::ostream& lhs, CommandDescriptor const& rhs);
+
+
+
+
 
 
 class ControlInterface {
@@ -66,11 +73,33 @@ public:
 
     void addCommand(const CommandDescriptor&cd);
 
+    template <Nl::CommandBuffer::Command cb>
+    Nl::CommandDescriptor makeCommand(const std::string& description, const std::string& cmd, const std::string& shortCmd)
+    {
+        Nl::CommandDescriptor cd;
+        cd.description = description;
+        cd.cmd = cmd;
+        cd.shortCmd = shortCmd;
+        cd.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr)
+        {
+            jobHandle.cmdBuffer->set(cb);
+            while (!jobHandle.cmdBufferResponse->canRead())
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            std::stringstream s;
+            s<<*jobHandle.cmdBufferResponse.get();
+            write(sockfd, s.str().c_str(), s.str().size());
+        };
+
+        return cd;
+    }
+
 private:
-    static std::string read(int fd);
-    static void handleRequest(int fd, ControlInterface *ptr);
+    static int read(int fd, std::string *data);
+    static void handleClient(int fd, ControlInterface *ptr);
     static void run(ControlInterface *ptr);
     static void help(std::vector<std::string> args, JobHandle jobHandle, int sockfd, ControlInterface *ptr);
+    static void exit(std::vector<std::string> args, JobHandle jobHandle, int sockfd, ControlInterface *ptr);
     bool m_isRunning;
     std::atomic<bool> m_terminateRequest;
     std::thread *m_thread;

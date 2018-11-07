@@ -31,11 +31,14 @@
 #include <sys/socket.h> /* For accept */
 #include <unistd.h> /* For read, errno, STDIN_FILENO */
 #include <limits.h> /* For PIPE_BUF */
+#include <functional>
 
 #include<arpa/inet.h>
 #include <sys/un.h>
 
 namespace Nl {
+
+using namespace std::placeholders;
 
 /** \ingroup Tools
  *
@@ -68,7 +71,7 @@ const char* ControlInterfaceException::what() const noexcept
 
 std::ostream& operator<<(std::ostream& lhs, CommandDescriptor const& rhs)
 {
-    lhs << rhs.cmd;
+    lhs << "[" << rhs.shortCmd << " | " << rhs.cmd << "]  " << rhs.description;
     return lhs;
 }
 
@@ -79,10 +82,21 @@ ControlInterface::ControlInterface(JobHandle jobHandle) :
     m_jobHandle(jobHandle)
 {
     // Add default commands
+    // help
     Nl::CommandDescriptor cmdHelp;
+    cmdHelp.description = "Show all available commands";
     cmdHelp.cmd = "help";
+    cmdHelp.shortCmd = "h";
     cmdHelp.func = ControlInterface::help;
     addCommand(cmdHelp);
+
+    // exit
+    Nl::CommandDescriptor cmdExit;
+    cmdExit.description = "Terminate audio engine";
+    cmdExit.cmd = "exit";
+    cmdExit.shortCmd = "e";
+    cmdExit.func = ControlInterface::exit;
+    addCommand(cmdExit);
 }
 
 void ControlInterface::start()
@@ -110,11 +124,17 @@ void ControlInterface::addCommand(const CommandDescriptor &cd)
     m_commands.push_back(CommandDescriptor(cd));
 }
 
-
 //static
 void ControlInterface::help(std::vector<std::string> args, JobHandle jobHandle, int sockfd, ControlInterface *ptr)
 {
+    (void)args;
+    (void)jobHandle;
+    (void)sockfd;
+
     std::string msg = "Available Commands:\n\n";
+    write(sockfd, msg.c_str(), msg.size());
+
+    msg = "[q | quit]  Quit remote interface\n";
     write(sockfd, msg.c_str(), msg.size());
 
     std::stringstream s;
@@ -122,34 +142,58 @@ void ControlInterface::help(std::vector<std::string> args, JobHandle jobHandle, 
     write(sockfd, s.str().c_str(), s.str().length());
 }
 
+//static
+void ControlInterface::exit(std::vector<std::string> args, JobHandle jobHandle, int sockfd, ControlInterface *ptr)
+{
+    (void)args;
+    (void)jobHandle;
+    (void)sockfd;
+
+    std::cout << "Storing..." << std::endl;
+    jobHandle.workingThreadHandle.terminateRequest->store(true);
+    //ptr->m_terminateRequest.store(true);
+}
+
 // Static
 void ControlInterface::run(ControlInterface *ptr)
 {
     //Create socket
-    int sockfd = ::socket(AF_UNIX, SOCK_STREAM, 0);
+    int sockfd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
-        std::cerr << "Can not create to socket" << std::endl;
+        std::cerr << "Can not create socket" << std::endl;
         ptr->m_terminateRequest.store(true);
     }
 
-    union {
-        struct sockaddr sa;
-        struct sockaddr_un un;
-    } sa;
-
-    memset(&sa, 0, sizeof(sa));
-    sa.un.sun_family = AF_UNIX;
-    strncpy(sa.un.sun_path, "/tmp/nlaudio.sock", sizeof(sa.un.sun_path));
-
-    if (bind(sockfd, &sa.sa, sizeof(sa)) < 0) {
-        std::cerr << "Can not bin to socket: " << ::strerror(errno) << std::endl;
+    int enable = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+        std::cerr << "Can not set socket option SO_REUSEADDR: " << ::strerror(errno) << std::endl;
         ptr->m_terminateRequest.store(true);
-        close(sockfd);
+        ::close(sockfd);
+    }
+
+    enable = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)) < 0) {
+        std::cerr << "Can not set socket option SO_REUSEPORT: " << ::strerror(errno) << std::endl;
+        ptr->m_terminateRequest.store(true);
+        ::close(sockfd);
+    }
+
+    struct sockaddr_in server;
+    memset(&server, 0, sizeof(struct sockaddr_in));
+
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons(8888);
+
+    if (::bind(sockfd, (struct sockaddr*)&server, sizeof(server)) < 0) {
+        std::cerr << "Can not bind to socket: " << ::strerror(errno) << std::endl;
+        ptr->m_terminateRequest.store(true);
+        ::close(sockfd);
     }
 
     if(::listen(sockfd, 5) < 0) {
-        ptr->m_terminateRequest.store(true);
         std::cerr << "Can not listen to socket: " << ::strerror(errno) << std::endl;
+        ptr->m_terminateRequest.store(true);
     }
 
     timeval tv;
@@ -167,67 +211,84 @@ void ControlInterface::run(ControlInterface *ptr)
         if ((ret = select(sockfd+1, &fd, NULL, NULL, &tv)) == 0) {
             continue;
         } else if (ret < 0) {
-            ptr->m_terminateRequest.store(true);
             std::cerr << "Error in select: " << ::strerror(ret) << std::endl;
+            ptr->m_terminateRequest.store(true);
+            continue;
         }
 
         int fd = TEMP_FAILURE_RETRY(accept(sockfd, NULL, NULL));
         if (fd < 0) {
-            ptr->m_terminateRequest.store(true);
             std::cerr << "Can not listen to socket: " << ::strerror(errno) << std::endl;
+            ptr->m_terminateRequest.store(true);
             continue;
         }
 
-        ControlInterface::handleRequest(fd, ptr);
-        TEMP_FAILURE_RETRY(close(fd));
+        ControlInterface::handleClient(fd, ptr);
     }
 
-    ::unlink("/tmp/nlaudio.sock");
-    ::close(sockfd);
+    TEMP_FAILURE_RETRY(::close(sockfd));
 }
 
 // Static
-std::string ControlInterface::read(int fd)
+int ControlInterface::read(int fd, std::string *data)
 {
-    std::string result;
-    result.resize(1024);
+    int ret = TEMP_FAILURE_RETRY(::recv(fd, &(*data)[0], data->size(), 0));
 
-    int ret = TEMP_FAILURE_RETRY(::recv(fd, &result[0], result.size(), MSG_PEEK|MSG_TRUNC));
-    if (ret <= 0)
-        throw ControlInterfaceException(__PRETTY_FUNCTION__, __FILE__, __LINE__, errno, "Can not read socket");
-
-    return result;
+    return ret;
 }
 
 // Static
-void ControlInterface::handleRequest(int fd, ControlInterface *ptr)
+void ControlInterface::handleClient(int fd, ControlInterface *ptr)
 {
-    std::string request = ControlInterface::read(fd);
-    std::string cmd = "";
+    new std::thread([](int fd, ControlInterface *ptr) {
 
-    std::istringstream f(request);
-    std::vector<std::string> tokens;
+        std::string data = "";
+        data.resize(1024);
 
-    copy(std::istream_iterator<std::string>(f),
-         std::istream_iterator<std::string>(),
-         std::back_inserter(tokens));
+        while(!ptr->m_terminateRequest.load()) {
 
-    if (tokens.size() == 0)
-        return;
+            if (ControlInterface::read(fd, &data) < 0)
+                break;
 
-    cmd = tokens[0];
-    tokens.erase(tokens.begin());
+            std::istringstream f(data);
+            std::vector<std::string> tokens;
 
-    // Todo: access over ptr must be mutexed!
-    for (auto i = ptr->m_commands.begin(); i != ptr->m_commands.end(); ++i) {
-        if (i->cmd == cmd) {
-            i->func(tokens, ptr->m_jobHandle, fd, ptr);
-            return;
+            copy(std::istream_iterator<std::string>(f),
+                 std::istream_iterator<std::string>(),
+                 std::back_inserter(tokens));
+
+            if (tokens.size() == 0)
+                continue;
+
+            std::string cmd = tokens[0];
+            tokens.erase(tokens.begin());
+
+            // Special case: quit
+            if (cmd == "quit" || cmd == "q") {
+                std::string gb = "Goodbye!\n";
+                write(fd, gb.c_str(), gb.size());
+                break;
+            }
+
+            // Todo: access over ptr must be mutexed!
+            bool foundCmd = false;
+            for (auto i = ptr->m_commands.begin(); i != ptr->m_commands.end(); ++i) {
+                if (i->cmd == cmd || i->shortCmd == cmd) {
+                    i->func(tokens, ptr->m_jobHandle, fd, ptr);
+                    foundCmd = true;
+                }
+            }
+
+            if (!foundCmd) {
+                std::string ret = "Unknown command (" + cmd + ")! Try 'help' if unsure.\n";
+                write(fd, ret.c_str(), ret.size());
+            }
+
         }
-    }
+        TEMP_FAILURE_RETRY(::close(fd));
 
-    std::string ret = "Unknown command!\n";
-    write(fd, ret.c_str(), ret.size());
+    }, fd, ptr);
+
 }
 
 } // namespace Nl

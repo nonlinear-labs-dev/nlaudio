@@ -40,6 +40,7 @@
 #include <common/commandbufferresponse.h>
 #include <common/commandbuffer.h>
 #include <common/specialkeyboard.h>
+#include <common/controlinterface.h>
 
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
@@ -73,7 +74,7 @@ enum cmd_opts {
 int main(int argc, char **argv)
 {
 
-    int32_t opts[OPT_NUM_ITEMS];
+    int opts[OPT_NUM_ITEMS];
     std::fill_n(opts, OPT_NUM_ITEMS, -1);
 
     // Add default values here!
@@ -160,71 +161,50 @@ int main(int argc, char **argv)
 
         Nl::JobHandle handle = Nl::DSP_HOST_HANDLE::dspHostTCDControl(audioOut, midiIn, buffersize, samplerate, polyphony);
 
-        SpecialKeyboard sk;
-        bool exit = false;
+        Nl::ControlInterface ci(handle);
+        Nl::CommandDescriptor cd1;
+        cd1.description = "Show Sample Specs";
+        cd1.cmd = "specs";
+        cd1.shortCmd = "a";
+        cd1.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr)
+        {
+            std::stringstream s;
+            s<<jobHandle.outBuffer->sampleSpecs();
+            write(sockfd, s.str().c_str(), s.str().size());
+        };
+        ci.addCommand(cd1);
+
+        Nl::CommandDescriptor cd2;
+        cd2.description = "Show Buffer Statistics";
+        cd2.cmd = "stats";
+        cd2.shortCmd = "s";
+        cd2.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr)
+        {
+            std::stringstream s;
+            s<<jobHandle.audioOutput->getStats();
+            write(sockfd, s.str().c_str(), s.str().size());
+        };
+        ci.addCommand(cd2);
+
+
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_GET_PARAM>("Show all params", "params", "ap"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_GET_SIGNAL>("Get signal", "getsignal", "gs"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_GET_TCD_INPUT>("Get TCD Input", "gettcdinput", "gti"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_GET_CPU_LOAD>("Get CPU Load", "getcpuload", "gcl"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_RESET>("Reset", "reset", "r"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_TOGGLE_TEST_TONE>("Toggle Testone", "toggletesttone", "ttt"));
+
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_FREQ>("Focus Test Tone Frequency", "focustesttonefrequency", "fttf"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_AMP>("Focus Test Tone Amplification", "focustesttoneamp", "ftta"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_EDIT_TEST_TONE_PLUS>("Edit Test Tone Plus", "edittesttoneplus", "ettp"));
+        ci.addCommand(ci.makeCommand<Nl::CommandBuffer::CMD_EDIT_TEST_TONE_MINUS>("Edit Test Tone Minus", "edittesttoneminus", "ettm"));
+
+        ci.start();
+
+
+        std::cout << "\n\nFor command interface: \n" << "    telnet 127.0.0.1 8888\nor  telnet 192.168.23.1 8888\n" << std::endl;
+
         while(!handle.workingThreadHandle.terminateRequest->load()) {
-            // nonblocking Keyboard Read
-            char key = sk.kbhit();
-            switch (key) {
-            case 'a':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_PARAM);
-                break;
-            case 'b':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_SIGNAL);
-                break;
-            case 'c':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_TCD_INPUT);
-                break;
-            case 'd':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_GET_CPU_LOAD);
-                break;
-            case 'e':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_RESET);
-                break;
-            case 'm':
-                if (handle.inMidiBuffer) {
-                    unsigned long rxBytes, txBytes;
-                    handle.inMidiBuffer->getStat(&rxBytes, &txBytes);
-                    std::cout << "Midi: Input Statistics:" << std::endl
-                              << "  rx=" << rxBytes << "  txBytes=" << txBytes << std::endl;
-                }
-                break;
-            case 'n':
-                if (handle.audioOutput) {
-                    std::cout << "Audio: Output Statistics:" << std::endl
-                              << handle.audioOutput->getStats() << std::endl;
-                }
-                if (handle.audioInput) {
-                    std::cout << "Audio: Input Statistics:" << std::endl
-                              << handle.audioInput->getStats() << std::endl;
-                }
-
-                break;
-            case 't':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_TOGGLE_TEST_TONE);
-                break;
-            case 'z':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_FREQ);
-                break;
-            case 'u':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_AMP);
-                break;
-            case '+':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_EDIT_TEST_TONE_PLUS);
-                break;
-            case '-':
-                handle.cmdBuffer->set(Nl::CommandBuffer::CMD_EDIT_TEST_TONE_MINUS);
-                break;
-            case 'q':
-                exit = true;
-                break;
-            default:
-                if (handle.cmdBufferResponse->canRead())
-                    std::cout << *handle.cmdBufferResponse.get() << std::endl;
-
-            }
-            if (exit) break;
-
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
 
@@ -233,6 +213,8 @@ int main(int argc, char **argv)
         Nl::terminateWorkingThread(handle.workingThreadHandle);
         if (handle.audioOutput) handle.audioOutput->stop();
         if (handle.audioInput) handle.audioInput->stop();
+
+        ci.stop();
 
     } catch (Nl::AudioAlsaException& e) {
         std::cout << "### Exception ###" << std::endl << "  " << e.what() << std::endl;

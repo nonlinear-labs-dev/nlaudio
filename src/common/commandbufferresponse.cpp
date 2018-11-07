@@ -50,7 +50,7 @@ std::ostream& operator<<(std::ostream &s, CommandBufferResponse& p)
         p.m_items.swap(copy);
     }
 
-    if (!copy.empty()) s << "Debug: " << std::endl;
+   // if (!copy.empty()) s << "Debug: " << std::endl;
     while (!copy.empty()) {
         s << "  ";
         copy.front().get()->operator<<(s);
