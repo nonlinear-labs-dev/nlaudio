@@ -50,11 +50,11 @@ int main()
         Nl::ControlInterface ci(handle);
         Nl::CommandDescriptor cd1;
         cd1.cmd = "size";
-        cd1.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr) { std::stringstream s; s << jobHandle.audioInput->getStats(); write(sockfd, s.str().c_str(), s.str().size()); };
+        cd1.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr) { std::stringstream s; s << toJSON(jobHandle.audioInput->getStats()); write(sockfd, s.str().c_str(), s.str().size()); };
         ci.addCommand(cd1);
         Nl::CommandDescriptor cd2;
         cd2.cmd = "stat";
-        cd2.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr) { std::stringstream s; s << jobHandle.audioInput->getStats(); write(sockfd, s.str().c_str(), s.str().size());  };
+        cd2.func = [](std::vector<std::string> args, Nl::JobHandle jobHandle, int sockfd, Nl::ControlInterface *ptr) { std::stringstream s; s << toJSON(jobHandle.audioInput->getStats()); write(sockfd, s.str().c_str(), s.str().size());  };
         ci.addCommand(cd2);
         ci.start();
 

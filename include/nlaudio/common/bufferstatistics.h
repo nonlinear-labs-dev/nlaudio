@@ -22,6 +22,8 @@
 // Input Output forward declaration
 #include <iosfwd>
 
+#include "common/json.hpp"
+
 namespace Nl {
 
 /** \ingroup Audio
@@ -37,5 +39,9 @@ struct BufferStatistics {
 };
 
 std::ostream& operator<<(std::ostream& lhs, const BufferStatistics& rhs);
+
+void to_json(nlohmann::json& j, const BufferStatistics& s);
+void from_json(const nlohmann::json& j, BufferStatistics& s);
+nlohmann::json toJSON(const BufferStatistics& ss);
 
 } // namespace Nl

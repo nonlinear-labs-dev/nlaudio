@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include <chrono>
 
+#include "common/json.hpp"
+
 namespace Nl {
 
 /** \ingroup Audio
@@ -51,10 +53,13 @@ struct SampleSpecs {
 std::ostream& operator<<(std::ostream& lhs, const SampleSpecs& rhs);
 
 unsigned int getByteIndex(unsigned int frameIndex, unsigned int channel, unsigned int byte, const SampleSpecs &sampleSpecs);
-float getSample(u_int8_t* in, u_int32_t frameIndex, u_int32_t channel, const SampleSpecs& sampleSpecs);
-void setSample(u_int8_t* out, float sample, u_int32_t frameIndex, u_int32_t channel, const SampleSpecs& sampleSpecs);
-void setSample(u_int8_t* out, int32_t sample, u_int32_t frameIndex, u_int32_t channel, const SampleSpecs& sampleSpecs);
+float getSample(uint8_t* in, uint32_t frameIndex, uint32_t channel, const SampleSpecs& sampleSpecs);
+void setSample(uint8_t* out, float sample, uint32_t frameIndex, uint32_t channel, const SampleSpecs& sampleSpecs);
+void setSample(uint8_t* out, int32_t sample, uint32_t frameIndex, uint32_t channel, const SampleSpecs& sampleSpecs);
 
+nlohmann::json toJSON(const SampleSpecs& ss);
+void to_json(nlohmann::json& j, const SampleSpecs& s);
+void from_json(const nlohmann::json& j, SampleSpecs& s);
 
 #if 0
 //TODO: Implement little/bigendian

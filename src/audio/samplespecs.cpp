@@ -206,7 +206,7 @@ void setSample(u_int8_t* out, int32_t sample, u_int32_t frameIndex, u_int32_t ch
 */
 std::ostream& operator<<(std::ostream& lhs, const SampleSpecs& rhs)
 {
-    auto latencyMs = std::chrono::duration_cast<std::chrono::microseconds>(rhs.latency);
+    auto latencyUs = std::chrono::duration_cast<std::chrono::microseconds>(rhs.latency);
 
     lhs << "Samplerate:                        " << rhs.samplerate << std::endl <<
 		   "Buffersize in Samples:             " << rhs.buffersizeInSamples << std::endl <<
@@ -222,8 +222,59 @@ std::ostream& operator<<(std::ostream& lhs, const SampleSpecs& rhs)
 		   "isLittleEndian:                    " << rhs.isLittleEndian << std::endl <<
 		   "isFloat                            " << rhs.isFloat << std::endl <<
 		   "isSigned:                          " << rhs.isSigned << std::endl <<
-           "latency:                           " << latencyMs.count() << " us" << std::endl;
+           "latency:                           " << latencyUs.count() << " us" << std::endl;
 	return lhs;
 }
+
+void to_json(nlohmann::json& j, const SampleSpecs& s)
+{
+
+    j = nlohmann::json{
+    { "samplerate",                         s.samplerate},
+    { "buffersize_in_samples",              s.buffersizeInSamples},
+    { "buffersize_in_samples_per_periode",  s.buffersizeInSamplesPerPeriode},
+    { "buffersize_in_frames",               s.buffersizeInFrames},
+    { "buffersize_in_frames_per_periode",   s.buffersizeInFramesPerPeriode},
+    { "buffersize_in_bytes",                s.buffersizeInBytes},
+    { "buffersize_in_bytes_per_periode",    s.buffersizeInBytesPerPeriode},
+    { "bytes_per_frame",                    s.bytesPerFrame},
+    { "bytes_per_sample",                   s.bytesPerSample},
+    { "bytes_per_sample_physical",          s.bytesPerSamplePhysical},
+    { "channels",                           s.channels},
+    { "is_float",                           s.isFloat},
+    { "is_little_endian",                   s.isLittleEndian},
+    { "is_signed",                          s.isSigned},
+    //TODO: Fix latency
+    //{ "latency",                            s.latency.count()}
+};
+}
+
+void from_json(const nlohmann::json& j, SampleSpecs& s)
+{
+
+    s.samplerate                    = j.at("samplerate").get<unsigned int>();
+    s.buffersizeInBytes             = j.at("buffersize_in_samples").get<unsigned int>();
+    s.buffersizeInBytesPerPeriode   = j.at("buffersize_in_samples_per_periode").get<unsigned int>();
+    s.buffersizeInFrames            = j.at("buffersize_in_frames").get<unsigned int>();
+    s.buffersizeInFramesPerPeriode  = j.at("buffersize_in_frames_per_periode").get<unsigned int>();
+    s.buffersizeInSamples           = j.at("buffersize_in_samples").get<unsigned int>();
+    s.buffersizeInSamplesPerPeriode = j.at("buffersize_in_samples_per_periode").get<unsigned int>();
+    s.bytesPerFrame                 = j.at("bytes_per_frame").get<unsigned int>();
+    s.bytesPerSample                = j.at("bytes_per_sample").get<unsigned int>();
+    s.bytesPerSamplePhysical        = j.at("bytes_per_sample_physical").get<unsigned int>();
+    s.channels                      = j.at("channels").get<unsigned int>();
+    s.isFloat                       = j.at("is_float").get<bool>();
+    s.isLittleEndian                = j.at("is_little_endian").get<bool>();
+    s.isSigned                      = j.at("is_signed").get<bool>();
+    //TODO: Fix latency
+    //s.latency                       = j.at("latency").get<int>();
+};
+
+nlohmann::json toJSON(const SampleSpecs& ss)
+{
+    return ss;
+}
+
+
 
 } // namespace Nl
