@@ -30,6 +30,7 @@
 #include <audio/audioalsa.h>
 #include <common/alsa/alsacardidentifier.h>
 #include <audio/audioalsaexception.h>
+#include <audio/samplespecs.h>
 
 #include <midi/midi.h>
 #include <midi/rawmididevice.h>
@@ -40,6 +41,8 @@
 #include <common/commandbufferresponse.h>
 #include <common/commandbuffer.h>
 #include <common/specialkeyboard.h>
+
+#include <chrono>
 
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
@@ -68,13 +71,56 @@ enum cmd_opts {
     OPT_MODE,
     OPT_AUDIODEVICE,
     OPT_MIDIDEVICE,
+    OPT_MEASURE_PERFORMANCE,
+
     OPT_NUM_ITEMS
 };
 
 
+void measurePerformance()
+{
+    using Clock = std::chrono::high_resolution_clock;
+    Nl::SampleSpecs specs;
+
+    specs.samplerate = 48000;
+    specs.channels = 2;
+    specs.bytesPerSample = 4;
+    specs.bytesPerSamplePhysical = 4;
+    specs.bytesPerFrame = specs.bytesPerSamplePhysical * specs.channels;
+    specs.buffersizeInFrames = 64;
+    specs.buffersizeInFramesPerPeriode = specs.buffersizeInFrames / 2;
+    specs.buffersizeInBytes = specs.buffersizeInFrames * specs.bytesPerFrame;
+    specs.buffersizeInBytesPerPeriode = specs.buffersizeInFramesPerPeriode * specs.bytesPerFrame;
+    specs.buffersizeInSamples =  specs.buffersizeInFrames * specs.channels;
+    specs.buffersizeInSamplesPerPeriode = specs.buffersizeInFramesPerPeriode * specs.channels;
+    specs.isFloat = false;
+    specs.isLittleEndian = true;
+    specs.isSigned = true;
+    specs.latency = std::chrono::microseconds
+            (static_cast<long>(specs.buffersizeInFramesPerPeriode / specs.samplerate * 1000.0 * 1000.0));
+
+    auto numPeriods = specs.samplerate / specs.buffersizeInFramesPerPeriode;
+
+    Nl::DSP_HOST_HANDLE::getDspHost().init(48000, 20);
+    auto start = Clock::now();
+    uint8_t buffer[specs.buffersizeInBytesPerPeriode];
+    int numSeconds = 1;
+
+    for(int i = 0; i < numSeconds; i++)
+    {
+        for(unsigned int i = 0; i < numPeriods; i++)
+        {
+            Nl::DSP_HOST_HANDLE::processAudioFrames(buffer, specs);
+        }
+    }
+    auto diff = Clock::now() - start;
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+    auto ratio = numSeconds * 1000.0 / ms;
+    std::cout << "Audio engine runs with " << ratio << " x realtime" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
-
     int32_t opts[OPT_NUM_ITEMS];
     std::fill_n(opts, OPT_NUM_ITEMS, -1);
 
@@ -95,7 +141,7 @@ int main(int argc, char **argv)
     }
 
     char c = 0;
-    while ((c = static_cast<char>(getopt(argc, argv, "hs:v:t:a:m:"))) != -1) {
+    while ((c = static_cast<char>(getopt(argc, argv, "phs:v:t:a:m:"))) != -1) {
         switch (c)
         {
         case 'h':
@@ -116,9 +162,18 @@ int main(int argc, char **argv)
         case 'm': // Midi Device
             opts[OPT_MIDIDEVICE] = atoi(optarg);
             break;
+        case 'p': // Performance measurement
+            opts[OPT_MEASURE_PERFORMANCE] = 1;
+            break;
         default:
             usage(argv[0]);
         }
+    }
+
+    if(opts[OPT_MEASURE_PERFORMANCE] == 1)
+    {
+        measurePerformance();
+        return EXIT_SUCCESS;
     }
 
     // Get real name for audio device, and check if selection is valid in order to provide better information to the user

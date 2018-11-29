@@ -135,6 +135,12 @@ namespace DSP_HOST_HANDLE {
             }
         }
 
+        processAudioFrames(out, sampleSpecs);
+        sw->stop();
+    }
+
+    void processAudioFrames(uint8_t *out, const SampleSpecs &sampleSpecs)
+    {
         for (unsigned int frameIndex = 0; frameIndex < sampleSpecs.buffersizeInFramesPerPeriode; ++frameIndex)
         {
             m_host.tickMain();
@@ -161,8 +167,6 @@ namespace DSP_HOST_HANDLE {
                 setSample(out, outputSample, frameIndex, channelIndex, sampleSpecs);
             }
         }
-        sw->stop();
-
     }
 
     // Matthias: added polyphony as argument
@@ -196,5 +200,11 @@ namespace DSP_HOST_HANDLE {
 
         return ret;
     }
+
+    dsp_host &getDspHost()
+    {
+        return m_host;
+    }
+
 } // namespace DSP_HOST
 } // namespace Nl
