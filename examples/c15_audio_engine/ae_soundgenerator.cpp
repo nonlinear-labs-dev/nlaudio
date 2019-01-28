@@ -49,6 +49,9 @@ void ae_soundgenerator::init(float _samplerate, uint32_t _vn)
     m_OscA_randVal_int = static_cast<int32_t>(_vn) + 1;
     m_OscB_randVal_int = static_cast<int32_t>(_vn) + 1 + 111;
 
+    m_OscA_mute = 0;
+    m_OscB_mute = 0;
+
 }
 
 
@@ -124,7 +127,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 
     oscSampleA += m_oscA_phase;
 
-    oscSampleA += _signal[OSC_A_PHS];                           // NEW Phase Offset
+    oscSampleA += _signal[OSC_A_PHS] + _signal[UN_PHS];             // NEW Phase Offset
     oscSampleA += (-0.25f);                                         // Wrap
     oscSampleA -= NlToolbox::Conversion::float2int(oscSampleA);
 
@@ -142,7 +145,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     m_oscA_phase += m_oscA_phaseInc;
     m_oscA_phase -= NlToolbox::Conversion::float2int(m_oscA_phase);
 
-    oscSampleA = NlToolbox::Math::sinP3_noWrap(oscSampleA);
+    oscSampleA = m_mute_state[m_OscA_mute] * NlToolbox::Math::sinP3_noWrap(oscSampleA);
 
 
     //**************************** Modulation B ******************************//
@@ -162,7 +165,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 
     oscSampleB += m_oscB_phase;
 
-    oscSampleB += _signal[OSC_B_PHS];                           // NEW Phase Offset
+    oscSampleB += _signal[OSC_B_PHS] + _signal[UN_PHS];         // NEW Phase Offset
     oscSampleB += (-0.25f);                                     // Warp
     oscSampleB -= NlToolbox::Conversion::float2int(oscSampleB);
 
@@ -180,7 +183,7 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     m_oscB_phase += m_oscB_phaseInc;
     m_oscB_phase -=  NlToolbox::Conversion::float2int(m_oscB_phase);
 
-    oscSampleB = NlToolbox::Math::sinP3_noWrap(oscSampleB);
+    oscSampleB = m_mute_state[m_OscB_mute] * NlToolbox::Math::sinP3_noWrap(oscSampleB);
 
 
     //******************************* Shaper A *******************************//

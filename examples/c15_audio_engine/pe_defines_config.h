@@ -14,6 +14,9 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
+#define test_milestone              155             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echor/reverb sends)
+#define test_key_update_pan         1               // (should pan values be updated on key? (probably yes)
+
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
 #define test_tone_initial_gain      -6.0f           // Test Tone initial Gain (in decibel)
 #define test_tone_initial_state     0               // Test Tone initial State (0: disabled, 1: enabled)
@@ -35,7 +38,9 @@
 #define test_phase_reset            1               // 0: reset phase only, 1: reset phase, self- & cross-mix and feedback, chirp state var
 #define test_flanger_phs            1               // 0: slow (default, artifacts), 1: fast (seems okay), 2: audio (optimum)
 #define test_flanger_env            2               // 0: slow (default, artifacts), 1: fast (artifacts), 2: audio (recommended)
-#define test_initialize_time        1
+
+#define test_initialize_time        1               // leave at 1 until LPC transmits full init sequence (including time)
+#define test_initialize_fx_sends    1               // leave at 1 until LPC can handle fx sends (echo, reverb) (inits sends to 100%, maintaining compability)
 
 /* Log Settings                                     THINGS TO PRINT into the terminal: TCD MIDI Input, single Parameter, single Signal */
 
@@ -67,22 +72,39 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 };
 
-/* Main Parameter Definition                        -> see Linux Engine - Test 5 */
+#if test_milestone == 150
 
-#define sig_number_of_params        184             // 3 * (15 ENV params) + 2 * (15 OSC + 8 SHP params) + (16 CMB params) + (13 SVF params) + (9 FB Mix params) + (12 OUT params)
-                                                    // + (8 CABINET params) + (6 GAP params) + (12 FLANGER params) (6 ECHO params) + (5 REVERB params) + (2 MASTER params) + (4 KEY params)
-#define sig_number_of_param_items   260             // (45 + 46 + 16 + 13 + 9 + 12 + 8 + 6 + 12 + 6 + 5 + 2 (* 1 Voice) MONO params) + (4 (* 20 Voices) POLY params)
-#define sig_number_of_signal_items  133             // 133 shared signals
+/* Main Parameter Definition                        -> see Linux Engine LPC Status */
+
+#define sig_number_of_params        198             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   274             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
 
 /* TCD List Handling */
 
-#define lst_recall_length           176             // 176 preset-relevant parameters
+#define lst_recall_length           187             // preset-relevant parameters
 #define lst_keyEvent_length         4               // 4 key event parameters
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
 
+#elif test_milestone == 155
+
+/* Main Parameter Definition                        -> see Linux Engine LPC Status */
+
+#define sig_number_of_params        197             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   254             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
+
+/* TCD List Handling */
+
+#define lst_recall_length           187             // preset-relevant parameters
+#define lst_keyEvent_length         3               // 3 key event parameters
+#define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
+
+#endif
+
 /* Utility Parameters and Envelope Definition */
 
-#define sig_number_of_utilities     4               // four Utility Parameters: Velocity, Reference Tone, Test Tone Freq, Amp
+#define sig_number_of_utilities     5               // four Utility Parameters: Velocity, Reference Tone, Test Tone Freq, Amp, State
 #define sig_number_of_envelopes     5               // five Envelope Units: A, B, C, Gate, Flanger
 #define sig_number_of_env_items     81              // 4 POLY Envelopes (A..Gate) = 4 * 20 = 80 items, 1 MONO (Flanger Decay), total: 81 items
 #define sig_number_of_env_segments  4               // four segments for ADBDSR-type Envelopes (A, B, C): Attack, Decay 1, Decay 2, Release
@@ -91,9 +113,9 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 /* Internal IDs of crucial TCD parameters */
 
-#define par_envelopeA               0               // item pointer to (consecutive) envelope parameters A (internal ids)
-#define par_envelopeB               15              // item pointer to (consecutive) envelope parameters B (internal ids)
-#define par_envelopeC               30              // item pointer to (consecutive) envelope parameters C (internal ids)
+#define P_EA                        0               // item pointer to (consecutive) envelope parameters A (internal ids)
+#define P_EB                        17              // item pointer to (consecutive) envelope parameters B (internal ids)
+#define P_EC                        34              // item pointer to (consecutive) envelope parameters C (internal ids)
 
 /* DSP Helper Values */
 

@@ -27,13 +27,13 @@
 
 namespace Nl {
 
-class DebugBuffer;
-typedef std::shared_ptr<DebugBuffer> SharedDebugBuffer;
+class CommandBufferResponse;
+typedef std::shared_ptr<CommandBufferResponse> SharedCommandBufferResponse;
 
-class PrintableDebugBufferItem;
-typedef std::shared_ptr<PrintableDebugBufferItem> SharedPrintableDebugBufferItem;
+class PrintableCommandBufferResponseItem;
+typedef std::shared_ptr<PrintableCommandBufferResponseItem> SharedPrintableCommandBufferResponseItem;
 
-class PrintableDebugBufferItem
+class PrintableCommandBufferResponseItem
 {
 public:
     virtual void print(std::ostream &s) = 0;
@@ -41,10 +41,10 @@ public:
 };
 
 template <typename T>
-class DebugBufferItem : public PrintableDebugBufferItem
+class CommandBufferResponseItem : public PrintableCommandBufferResponseItem
 {
 public:
-    DebugBufferItem(const T& item)
+    CommandBufferResponseItem(const T& item)
     {
         set(item);
     }
@@ -67,24 +67,24 @@ private:
     T m_shadow;
 };
 
-class DebugBuffer
+class CommandBufferResponse
 {
 public:
-    void insert(const SharedPrintableDebugBufferItem& item);
+    void insert(const SharedPrintableCommandBufferResponseItem& item);
     bool canRead();
 
 private:
     std::mutex m_lock;
-    std::queue<SharedPrintableDebugBufferItem> m_items;
-    friend std::ostream& operator<<(std::ostream &s, DebugBuffer& p);
+    std::queue<SharedPrintableCommandBufferResponseItem> m_items;
+    friend std::ostream& operator<<(std::ostream &s, CommandBufferResponse& p);
 };
 
 template <typename T>
-SharedPrintableDebugBufferItem pack(T d)
+SharedPrintableCommandBufferResponseItem pack(T d)
 {
-    return SharedPrintableDebugBufferItem(new DebugBufferItem<T>(d));
+    return SharedPrintableCommandBufferResponseItem(new CommandBufferResponseItem<T>(d));
 }
 
-SharedDebugBuffer createSharedDebugBuffer();
+SharedCommandBufferResponse createSharedCommandBufferResponse();
 
 } // namespace Nl

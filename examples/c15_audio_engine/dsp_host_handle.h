@@ -11,6 +11,10 @@
 
 namespace Nl {
 namespace DSP_HOST_HANDLE {
+
+    void processAudioFrames(uint8_t *out, const SampleSpecs &sampleSpecs);
+    dsp_host &getDspHost();
+
     JobHandle dspHostTCDControl(const AlsaAudioCardIdentifier &audioOutCard,
                                 const AlsaMidiCardIdentifier &midiIn,
                                 unsigned int buffersize,

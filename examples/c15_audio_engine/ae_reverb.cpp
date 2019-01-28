@@ -373,7 +373,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 
     //************************************************************************//
     //**************************** Left Channel ******************************//
-    wetSample_L  = _rawSample_L * _signal[REV_FEED];
+    wetSample_L  = _rawSample_L * _signal[REV_SND] * _signal[REV_FEED];
 
 
     //****************************** Asym 2 L ********************************//
@@ -546,7 +546,7 @@ void ae_reverb::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 
     //************************************************************************//
     //*************************** Right Channel ******************************//
-    wetSample_R  = _rawSample_R * _signal[REV_FEED];
+    wetSample_R  = _rawSample_R * _signal[REV_SND] * _signal[REV_FEED];
 
 
     //****************************** Asym 2 R ********************************//

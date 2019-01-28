@@ -31,6 +31,7 @@ struct ae_soundgenerator
     //************************** Shared Variables *****************************//
     float m_sample_interval;
     float m_feedback_phase;
+    const float m_mute_state[2] = {1.f, 0.f};
 
     //*********************** Oscillator A Variables **************************//
     float m_oscA_selfmix;
@@ -42,7 +43,7 @@ struct ae_soundgenerator
 
     int32_t m_OscA_randVal_int;
     float m_OscA_randVal_float;
-
+    uint32_t m_OscA_mute;
 
     //*********************** Oscillator B Variables **************************//
     float m_oscB_selfmix;
@@ -54,6 +55,7 @@ struct ae_soundgenerator
 
     int32_t m_OscB_randVal_int;
     float m_OscB_randVal_float;
+    uint32_t m_OscB_mute;
 
     //***************************** Chirp Filter ******************************//
     float m_warpConst_PI;

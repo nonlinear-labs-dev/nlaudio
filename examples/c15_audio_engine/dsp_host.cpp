@@ -22,10 +22,12 @@ void dsp_host::init(uint32_t _samplerate, uint32_t _polyphony)
     m_params.init(_samplerate, _polyphony);
     m_decoder.init();
     /* init messages to terminal */
-    std::cout << "DSP_HOST::INIT(samplerate: " << m_samplerate << ", voices: " << m_voices << ")" << std::endl;
-    std::cout << "DSP_HOST::CLOCK_divisions(" << m_clockDivision[0] << ", " << m_clockDivision[1] << ", ";
-    std::cout << m_clockDivision[2] << ", " << m_clockDivision[3] << ")" << std::endl;
-    std::cout << "DSP_HOST::upsampleFactor: " << m_upsampleFactor << std::endl;
+    std::cout << std::endl << "DSP_HOST::MILESTONE:\t\t" << static_cast<float>(test_milestone) * 0.01f << std::endl;
+    std::cout << "DSP_HOST::INIT:\t\t\tsamplerate: " << m_samplerate << ", voices: " << m_voices << std::endl;
+    std::cout << "DSP_HOST::CLOCK_divisions:\t" << m_clockDivision[0] << ", " << m_clockDivision[1] << ", ";
+    std::cout << m_clockDivision[2] << ", " << m_clockDivision[3] << std::endl;
+    std::cout << "DSP_HOST::UPSAMPLE:\t\t" << m_upsampleFactor << std::endl;
+    std::cout << "DSP_HOST::SIZEOF:\t\t" << sizeof(dsp_host) << " bytes" << std::endl << std::endl;
 
     /* Audio Engine */
     initAudioEngine();
@@ -64,9 +66,23 @@ void dsp_host::loadInitialPreset()
     /* traverse parameters, each one receiving zero value */
     for(uint32_t i = 0; i < lst_recall_length; i++)
     {
-        evalMidi(5, 0, 0);                                                              // send destination 0
+        if(paramIds_recall[i] == P_UN_V)                                                /// Unison Voices
+        {
+            evalMidi(5, 0, 1);                                                          // send destination 1
+        }
+        else                                                                            /// anything else
+        {
+            evalMidi(5, 0, 0);                                                          // send destination 0
+        }
     }
     evalMidi(47, 0, 2);                                                                 // apply preloaded values
+#if test_initialize_fx_sends
+    /* temporarily initialize echo and reverb sends to 100% (because compability) */
+    evalMidi(1, 334 >> 7, 334 & 127);                                                   // select echo send (ID 334)
+    evalMidi(5, 16000 >> 7, 16000 & 127);                                               // set destination (16000 <-> 100%)
+    evalMidi(1, 336 >> 7, 336 & 127);                                                   // select reverb send (ID 336)
+    evalMidi(5, 16000 >> 7, 16000 & 127);                                               // set destination (16000 <-> 100%)
+#endif
     /* should time be initialized? */
 #if test_initialize_time == 1
     uint32_t time = dsp_initial_time * static_cast<uint32_t>(m_params.m_millisecond);   // no clipping!!!
@@ -326,8 +342,8 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         }
         break;
     case 15:
-        /* flush (audio_engine trigger needed) */
-        m_flush = true;
+        /* reset command (flush / env_stop / dsp_reset) */
+        resetUpdate(_data1);
         break;
     case 16:
         /* selectUtility */
@@ -335,7 +351,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 17:
         /* setUtility */
-        f = static_cast<float>(m_decoder.unsigned14(_data0, _data1));
+        f = static_cast<float>(m_decoder.signed14(_data0, _data1));
         utilityUpdate(f);
         break;
     }
@@ -498,10 +514,10 @@ void dsp_host::preloadUpdate(uint32_t _mode, uint32_t _listId)
             if(m_params.m_event.m_poly[v].m_preload > 0)
             {
                 m_params.m_event.m_poly[v].m_preload = 0;                   // reset preload counter
-                m_params.postProcessPoly_key(m_paramsignaldata[v], v);      // update key-related parameters/signals
-                setPolySlowFilterCoeffs(m_paramsignaldata[v], v);           // update filter coefficients
                 m_params.keyApply(v);                                       // trigger env_engine
                 keyApply(v);                                                // update comb filter delay smoother, phase, (determine voice steal)
+                m_params.postProcessPoly_key(m_paramsignaldata[v], v);      // update key-related parameters/signals
+                setPolySlowFilterCoeffs(m_paramsignaldata[v], v);           // update filter coefficients
             }
         }
 #endif
@@ -567,12 +583,24 @@ void dsp_host::utilityUpdate(float _value)
     case 2:
         /* set test tone frequency */
         _value *= m_params.m_utilities[2].m_normalize;
+        m_test_tone.a_frequency = _value;
         m_test_tone.set_frequency(m_params.scale(m_params.m_utilities[2].m_scaleId, m_params.m_utilities[2].m_scaleArg, _value));
         break;
     case 3:
         /* set test tone amplitude */
         _value *= m_params.m_utilities[3].m_normalize;
+        m_test_tone.a_amplitude = _value;
         m_test_tone.set_amplitude(m_params.scale(m_params.m_utilities[3].m_scaleId, m_params.m_utilities[3].m_scaleArg, _value));
+        break;
+    case 4:
+        _value *= m_params.m_utilities[4].m_normalize;
+        m_test_tone.set_state(static_cast<uint32_t>(_value));
+        break;
+    case 5:
+        muteOsc(0, static_cast<uint32_t>(_value));
+        break;
+    case 6:
+        muteOsc(1, static_cast<uint32_t>(_value));
         break;
     }
 }
@@ -593,6 +621,26 @@ void dsp_host::listUpdate(float _dest)
     case 2:
         /* key event traversal (polyphonic - voice selection up to sender! */
         m_params.setDest(m_decoder.m_voiceFrom, m_decoder.traverseKeyEvent(), _dest);
+        break;
+    }
+}
+
+/* */
+void dsp_host::resetUpdate(uint32_t _mode)
+{
+    switch(_mode)
+    {
+    case 0:
+        // execute flush
+        m_flush = true;
+        break;
+    case 1:
+        // execute envelope stop
+        resetEnv();
+        break;
+    case 2:
+        // execute dsp reset
+        resetDSP();
         break;
     }
 }
@@ -668,9 +716,13 @@ void dsp_host::keyApply(uint32_t _voiceId)
         /* NEW UNISONO PHASE FUNCTIONALITY, Osc Phases are now offsets */
         //float phaseA = m_params.m_body[m_params.m_head[P_KEY_PA].m_index + _voiceId].m_signal;
         //float phaseB = m_params.m_body[m_params.m_head[P_KEY_PB].m_index + _voiceId].m_signal;
-        float uniPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
+#if test_milestone == 150
+        const float startPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
+#elif test_milestone == 155
+        const float startPhase = 0.f;
+#endif
         //m_soundgenerator[_voiceId].resetPhase(phaseA, phaseB);
-        m_soundgenerator[_voiceId].resetPhase(uniPhase);                                  // function could be reduced to one argument
+        m_soundgenerator[_voiceId].resetPhase(startPhase);                                  // function could be reduced to one argument
     }
 }
 
@@ -696,14 +748,21 @@ void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
             printf("ooooooh ... exp %d \n", _data0);
 
         }
-
+#if test_milestone == 150
         testNoteOff(_data0, _data1);
+#elif test_milestone == 155
+        testNewNoteOff(_data0, _data1);
+#endif
         break;
     case 1:
         /* NOTE ON (if velocity > 0) */
         if(_data1 > 0)
         {
+#if test_milestone == 150
             testNoteOn(_data0, _data1);
+#elif test_milestone == 155
+            testNewNoteOn(_data0, _data1);
+#endif
         }
         else
         {
@@ -712,7 +771,11 @@ void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
                 printf("ooooooh ... exp %d \n", _data0);
 
             }
+#if test_milestone == 150
             testNoteOff(_data0, _data1);
+#elif test_milestone == 155
+            testNewNoteOff(_data0, _data1);
+#endif
         }
         break;
     case 3:
@@ -785,7 +848,7 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
         case 7:
             /* Flush */
             std::cout << "triggered FLUSH" << std::endl;
-            testFlush();
+            testReset(0);
             break;
         case 8:
             /* Preset 0 */
@@ -826,6 +889,37 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
             /* Preset 7 */
             std::cout << "load PRESET 7" << std::endl;
             testLoadPreset(7);
+            break;
+        case 16:
+            // Envelope Stop
+            std::cout << "triggered ENV_STOP" << std::endl;
+            testReset(1);
+            break;
+        case 17:
+            // DSP Reset
+            std::cout << "triggered DSP_RESET" << std::endl;
+            testReset(2);
+            break;
+        case 18:
+            // Trigger Test Tone
+            m_test_tone_state = 1 - m_test_tone_state;
+            std::cout << "triggered TEST_TONE_STATE(" << m_test_tone_state << ")" << std::endl;
+            evalMidi(8, 0, 4);                                          // select utility (test tone state)
+            evalMidi(24, 0, m_test_tone_state);                         // update utility
+            break;
+        case 19:
+            // Mute OSC A
+            m_test_muteA = 1 - m_test_muteA;
+            std::cout << "OSC_A_Mute: " << m_test_muteA << std::endl;
+            evalMidi(8, 0, 5);
+            evalMidi(24, 0, m_test_muteA);
+            break;
+        case 20:
+            // Mute OSC B
+            m_test_muteB = 1 - m_test_muteB;
+            std::cout << "OSC_B_Mute: " << m_test_muteB << std::endl;
+            evalMidi(8, 0, 6);
+            evalMidi(24, 0, m_test_muteB);
             break;
         }
         break;
@@ -900,11 +994,10 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
         /* control edits */
         if(m_test_midiMode == 0)
         {
-            uint32_t pId = testParamRouting[m_test_selectedGroup][_id - 1];
+            int32_t pId = testParamRouting[m_test_selectedGroup][_id - 1];
             /* group edits */
-            if(pId > 0)
+            if(pId > -1)
             {
-                pId--;
                 uint32_t tcdId = static_cast<uint32_t>(param_definition[pId][0]);
                 uint32_t rng = static_cast<uint32_t>(param_definition[pId][9]);
                 uint32_t pol = static_cast<uint32_t>(param_definition[pId][8]);
@@ -914,9 +1007,16 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
                     val = (2 * val) - 1;
                 }
                 val *= rng;
+                std::cout << "edit PARAM " << tcdId << " (" << val << ")" << std::endl;
+                /* get unison voices trigger and stop envelopes */
+                if(tcdId == 249)
+                {
+                    std::cout << "\tEnvelope Stop" << std::endl;
+                    resetEnv();
+                    val += 1;
+                }
                 evalMidi(1, tcdId >> 7, tcdId & 127);
                 testParseDestination(static_cast<int32_t>(val));
-                std::cout << "edit PARAM " << tcdId << " (" << val << ")" << std::endl;
                 m_test_selectedParam = static_cast<int32_t>(tcdId);
             }
         }
@@ -933,6 +1033,14 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
                 /* transition time */
                 testSetGlobalTime(_value);
                 break;
+            case 3:
+                // test tone frequency
+                testSetToneFreq(_value);
+                break;
+            case 4:
+                // test tone amplitude
+                testSetToneAmp(_value);
+                break;
             }
         }
         break;
@@ -942,6 +1050,7 @@ void dsp_host::testRouteControls(uint32_t _id, uint32_t _value)
 /* test key down */
 void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
 {
+    //std::cout << "Unison: " << m_params.m_body[m_params.m_head[183].m_index].m_signal << std::endl;
     /* get current voiceId and trigger list sequence for key event */
     m_test_noteId[_pitch] = m_test_voiceId + 1;             // (plus one in order to distinguish from zero)
     /* prepare pitch and velocity */
@@ -977,6 +1086,28 @@ void dsp_host::testNoteOn(uint32_t _pitch, uint32_t _velocity)
 #endif
 }
 
+/* key down for milestone 1.55 */
+void dsp_host::testNewNoteOn(uint32_t _pitch, uint32_t _velocity)
+{
+    m_test_noteId[_pitch] = m_test_voiceId + 1;             // (plus one in order to distinguish from zero)
+    /* prepare pitch, velocity und unison */
+    int32_t keyPos = static_cast<int32_t>(_pitch) - 60;
+    uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
+    m_test_unison_voices = static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_UN_V].m_index].m_signal) + 1;
+    evalMidi(47, 2, 1);                                     // enable preload (key event list mode)
+    evalMidi(0, 0, m_test_voiceId);                         // select voice: current
+    for(uint32_t uIndex = 0; uIndex < m_test_unison_voices; uIndex++)
+    {
+        testParseDestination(keyPos * 1000);                // base pitch (factor 1000 because of Scaling)
+        evalMidi(5, 0, uIndex);                             // unison index
+        evalMidi(5, 0, 0);                                  // voice steal (0)
+        evalMidi(23, noteVel >> 7, noteVel & 127);          // key down: velocity
+    }
+    evalMidi(47, 0, 2);                                     // apply preloaded values
+    /* take current voiceId and increase it (wrapped around polyphony) - sloppy approach */
+    m_test_voiceId = (m_test_voiceId + m_test_unison_voices) % m_voices;
+}
+
 /* test key up */
 void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
 {
@@ -1003,6 +1134,33 @@ void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
         evalMidi(7, noteVel >> 7, noteVel & 127);                               // key up: velocity
         evalMidi(47, 0, 2);                                                     // apply preloaded values
 #endif
+    }
+}
+
+/* */
+void dsp_host::testNewNoteOff(uint32_t _pitch, uint32_t _velocity)
+{
+    /* rigorous safety mechanism */
+    int32_t checkVoiceId = static_cast<int32_t>(m_test_noteId[_pitch]) - 1;     // (subtract one in order to get real id)
+    int32_t v = static_cast<int32_t>(m_voices);                                 // number of voices represented as signed integer (for correct comparisons)
+    if((checkVoiceId < 0) || (checkVoiceId >= v))
+    {
+        std::cout << "detected Note Off that shouldn't have happened..." << std::endl;
+    }
+    else
+    {
+        uint32_t usedVoiceId = static_cast<uint32_t>(checkVoiceId);             // copy valid voiceId
+        m_test_noteId[_pitch] = 0;                                              // clear voiceId assignment
+        /* prepare velocity */
+        uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
+        /* key event sequence */
+        evalMidi(47, 2, 1);                                                     // enable preload (key event list mode)
+        evalMidi(0, 0, usedVoiceId);                                            // select voice: used voice (by note number)
+        for(uint32_t uIndex = 0; uIndex < m_test_unison_voices; uIndex++)
+        {
+            evalMidi(7, noteVel >> 7, noteVel & 127);                           // key up: velocity
+        }
+        evalMidi(47, 0, 2);                                                     // apply preloaded values
     }
 }
 
@@ -1042,6 +1200,32 @@ void dsp_host::testSetReference(uint32_t _value)
     evalMidi(24, val >> 7, val & 127);                          // update utility
 }
 
+/* set test tone frequency  */
+void dsp_host::testSetToneFreq(uint32_t _value)
+{
+    _value += 400;
+    std::cout << "Set_TestTone_Frequency(" << _value << ") [Hz]" << std::endl;
+    evalMidi(8, 0, 2);                                          // select utility (test tone freq)
+    evalMidi(24, _value >> 7, _value & 127);                    // update utility
+}
+
+/* set test tone amplitude */
+void dsp_host::testSetToneAmp(uint32_t _value)
+{
+    int32_t val = static_cast<int32_t>(_value) - 127;
+    std::cout << "Set_TestTone_Amplitude(" << val << ") [dB]" << std::endl;
+    if(val < 0)
+    {
+        _value = 8192 + static_cast<uint32_t>(val * -1);
+    }
+    else
+    {
+        _value = static_cast<uint32_t>(val);
+    }
+    evalMidi(8, 0, 3);                                          // select utility (test tone amp)
+    evalMidi(24, _value >> 7, _value & 127);                    // update utility
+}
+
 /* preset recall approach */
 void dsp_host::testLoadPreset(uint32_t _presetId)
 {
@@ -1058,11 +1242,11 @@ void dsp_host::testLoadPreset(uint32_t _presetId)
 }
 
 /* trigger flush */
-void dsp_host::testFlush()
+void dsp_host::testReset(uint32_t _mode)
 {
-    std::cout << "\nFLUSH" << std::endl;
+    std::cout << "\nRESET(" << _mode << ")" << std::endl;
     /* pass the trigger TCD message */
-    evalMidi(39, 0, 0);                                         // flush
+    evalMidi(39, 0, _mode);                                         // flush/env_stop/dsp_reset
 }
 
 /* glance at current signals */
@@ -1322,7 +1506,7 @@ void dsp_host::makeMonoSound(float *_signal)
     {
         m_test_tone.tick();
         m_mainOut_L = std::clamp(m_mainOut_L + m_test_tone.m_signal, -1.f, 1.f);
-        m_mainOut_L = std::clamp(m_mainOut_R + m_test_tone.m_signal, -1.f, 1.f);
+        m_mainOut_R = std::clamp(m_mainOut_R + m_test_tone.m_signal, -1.f, 1.f);
     }
 }
 
@@ -1416,61 +1600,10 @@ void dsp_host::examineSignal()
 /* Audio Engine Reset */
 void dsp_host::resetDSP()
 {
-    // if present, reset old envelopes
-#if test_whichEnvelope == 0
-    uint32_t e;
-    // reset old envelopes (A, B, C, G, F) -- not tested yet!
-    for(e = 0; e < sig_number_of_env_items; e++)
-    {
-        m_params.m_envelopes.m_body[e].m_index = 0;
-        m_params.m_envelopes.m_body[e].m_signal = 0.f;
-        m_params.m_envelopes.m_body[e].m_start = 0.f;
-    }
-#endif
-    // iterate voices
-    uint32_t v;
-
-    // reset Enevlopes
-    for(v = 0; v < m_voices; v++)
-    {
-        // if present, reset new envelopes
-#if test_whichEnvelope == 1
-        // reset new envelopes (Env A)
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env B)
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env C)
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
-        // reset new envelopes (Env G)
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
-        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
-#endif
-    }
-    // mono flanger envelope (new envelopes only)
-#if test_whichEnvelope == 1
-    // reset enw envelopes (Env F)
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
-    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
-#endif
-
+    // reset: envlopes
+    resetEnv();
     // reset: audio engine poly section (full flush included)
+    uint32_t v;
     for(v = 0; v < m_voices; v++)
     {
         m_soundgenerator[v].resetDSP();
@@ -1531,4 +1664,78 @@ void dsp_host::flushDSP()
     std::fill(m_reverb.m_buffer_R.begin(), m_reverb.m_buffer_R.end(), 0.f);
 
 #endif
+}
+
+/******************************************************************************/
+/**
+*******************************************************************************/
+
+/* */
+void dsp_host::resetEnv()
+{
+    // if present, reset old envelopes
+#if test_whichEnvelope == 0
+    uint32_t e;
+    // reset old envelopes (A, B, C, G, F) -- not tested yet!
+    for(e = 0; e < sig_number_of_env_items; e++)
+    {
+        m_params.m_envelopes.m_body[e].m_index = 0;
+        m_params.m_envelopes.m_body[e].m_signal = 0.f;
+        m_params.m_envelopes.m_body[e].m_start = 0.f;
+    }
+#elif test_whichEnvelope == 1
+    // if present, reset new envelopes
+    // iterate voices
+    uint32_t v;
+
+    // reset Enevlopes
+    for(v = 0; v < m_voices; v++)
+    {
+        // reset new envelopes (Env A)
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_a.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env B)
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_timbre = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_b.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env C)
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_c.m_body[v].m_start_magnitude = 0.f;
+        // reset new envelopes (Env G)
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_index = 0;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_x = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_signal_magnitude = 0.f;
+        m_params.m_new_envelopes.m_env_g.m_body[v].m_start_magnitude = 0.f;
+    }
+    // mono flanger envelope (new envelopes only)
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_index = 0;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_x = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_signal_magnitude = 0.f;
+    m_params.m_new_envelopes.m_env_f.m_body[0].m_start_magnitude = 0.f;
+#endif
+}
+
+void dsp_host::muteOsc(uint32_t _oscId, uint32_t _state)
+{
+    for(uint32_t v = 0; v < m_voices; v++)
+    {
+        switch(_oscId)
+        {
+        case 0:
+            m_soundgenerator[v].m_OscA_mute = _state;
+            break;
+        case 1:
+            m_soundgenerator[v].m_OscB_mute = _state;
+            break;
+        }
+    }
 }

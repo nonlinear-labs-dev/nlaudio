@@ -15,12 +15,10 @@ std::shared_ptr<StopWatch> sw(new StopWatch("AudioCallback", 10000, Nl::StopWatc
 
 int main()
 {
-
 	initSignalHandler();
 
 	try
 	{
-
         AlsaAudioCardIdentifier audioIn(1,0,0, "USB Device");
         AlsaAudioCardIdentifier audioOut(1,0,0, "USB Device");
 
@@ -53,7 +51,7 @@ int main()
 		if (handle.audioOutput) handle.audioOutput->stop();
 		if (handle.audioInput) handle.audioInput->stop();
 
-	} catch (AudioAlsaException e) {
+    } catch (AudioAlsaException& e) {
 		std::cout << "### Exception A ### " << std::endl << e.what() << std::endl;
 	} catch (std::exception& e) {
 		std::cout << "### Exception B ###" << std::endl <<  e.what() << std::endl;

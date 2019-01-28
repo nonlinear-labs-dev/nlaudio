@@ -17,33 +17,33 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <common/debugbuffer.h>
+#include <common/commandbufferresponse.h>
 
 #include <iostream>
 
 namespace Nl {
 
-void DebugBuffer::insert(const SharedPrintableDebugBufferItem& item)
+void CommandBufferResponse::insert(const SharedPrintableCommandBufferResponseItem& item)
 {
     std::lock_guard<std::mutex> guard(m_lock);
     m_items.push(item);
 }
 
-bool DebugBuffer::canRead()
+bool CommandBufferResponse::canRead()
 {
     std::lock_guard<std::mutex> guard(m_lock);
     return !m_items.empty();
 }
 
-std::ostream &PrintableDebugBufferItem::operator<<(std::ostream &s)
+std::ostream &PrintableCommandBufferResponseItem::operator<<(std::ostream &s)
 {
     print(s);
     return s;
 }
 
-std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
+std::ostream& operator<<(std::ostream &s, CommandBufferResponse& p)
 {
-    static std::queue<SharedPrintableDebugBufferItem> copy;
+    static std::queue<SharedPrintableCommandBufferResponseItem> copy;
 
     {
         std::lock_guard<std::mutex> guard(p.m_lock);
@@ -61,9 +61,9 @@ std::ostream& operator<<(std::ostream &s, DebugBuffer& p)
     return s;
 }
 
-SharedDebugBuffer createSharedDebugBuffer()
+SharedCommandBufferResponse createSharedCommandBufferResponse()
 {
-    return SharedDebugBuffer(new DebugBuffer);
+    return SharedCommandBufferResponse(new CommandBufferResponse);
 }
 
 } // namespace NL

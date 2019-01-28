@@ -37,29 +37,32 @@ namespace DSP_HOST_HANDLE {
         JobHandle jh = std::any_cast<JobHandle>(ptr);
 
         Nl::CommandBuffer::Command c;
+        float tmp = 0.f;
         while ((c = jh.cmdBuffer->get()) != Nl::CommandBuffer::CMD_NO_CMD) {
             switch (c) {
             case Nl::CommandBuffer::CMD_GET_PARAM:
                     m_host.examineParameter();
-                    jh.debugBuffer->insert(pack<::examine_param>(m_host.m_param_status));
+                    jh.cmdBufferResponse->insert(pack<::examine_param>(m_host.m_param_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_SIGNAL:
                     m_host.examineSignal();
-                    jh.debugBuffer->insert(pack<::examine_signal>(m_host.m_signal_status));
+                    jh.cmdBufferResponse->insert(pack<::examine_signal>(m_host.m_signal_status));
                 break;
             case Nl::CommandBuffer::CMD_GET_TCD_INPUT:
-                    jh.debugBuffer->insert(pack<::examine_tcd_input_log>(m_host.m_tcd_input_log));
+                    jh.cmdBufferResponse->insert(pack<::examine_tcd_input_log>(m_host.m_tcd_input_log));
                     m_host.m_tcd_input_log.reset();
                 break;
             case Nl::CommandBuffer::CMD_GET_CPU_LOAD:
-                    jh.debugBuffer->insert(pack<SharedStopWatchHandle>(sw));
+                    jh.cmdBufferResponse->insert(pack<SharedStopWatchHandle>(sw));
                 break;
             case Nl::CommandBuffer::CMD_RESET:
                     m_host.resetDSP();
-                    jh.debugBuffer->insert(pack<std::string>("Reset executed"));
+                    jh.cmdBufferResponse->insert(pack<std::string>("Reset executed"));
                 break;
             case Nl::CommandBuffer::CMD_TOGGLE_TEST_TONE:
-                m_host.m_test_tone.set_state(1 - m_host.m_test_tone.m_state);
+                tmp = static_cast<float>(1 - m_host.m_test_tone.m_state);
+                m_host.m_decoder.m_utilityId = 4;
+                m_host.utilityUpdate(tmp);
                 std::cout << "Test Tone toggled(" << m_host.m_test_tone.m_state << ")" << std::endl;
                 break;
             case Nl::CommandBuffer::CMD_FOCUS_TEST_TONE_FREQ:
@@ -75,15 +78,15 @@ namespace DSP_HOST_HANDLE {
                 {
                 case 0:
                     m_host.m_decoder.m_utilityId = 2;
-                    m_host.m_test_tone.a_frequency = std::clamp(m_host.m_test_tone.a_frequency + 10.f, 0.f, 1000.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_frequency);
-                    std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_frequency + 10.f, 0.f, 1000.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Frequency:\t" << tmp << " Hz" << std::endl;
                     break;
                 case 1:
                     m_host.m_decoder.m_utilityId = 3;
-                    m_host.m_test_tone.a_amplitude = std::clamp(m_host.m_test_tone.a_amplitude + 1.f, -60.f, 0.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_amplitude);
-                    std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_amplitude + 1.f, -60.f, 0.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Amplitude:\t" << tmp << " dB" << std::endl;
                     break;
                 }
                 break;
@@ -92,15 +95,15 @@ namespace DSP_HOST_HANDLE {
                 {
                 case 0:
                     m_host.m_decoder.m_utilityId = 2;
-                    m_host.m_test_tone.a_frequency = std::clamp(m_host.m_test_tone.a_frequency - 10.f, 0.f, 1000.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_frequency);
-                    std::cout << "Test Tone: Frequency:\t" << m_host.m_test_tone.a_frequency << " Hz" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_frequency - 10.f, 0.f, 1000.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Frequency:\t" << tmp << " Hz" << std::endl;
                     break;
                 case 1:
                     m_host.m_decoder.m_utilityId = 3;
-                    m_host.m_test_tone.a_amplitude = std::clamp(m_host.m_test_tone.a_amplitude - 1.f, -60.f, 0.f);
-                    m_host.utilityUpdate(m_host.m_test_tone.a_amplitude);
-                    std::cout << "Test Tone: Amplitude:\t" << m_host.m_test_tone.a_amplitude << " dB" << std::endl;
+                    tmp = std::clamp(m_host.m_test_tone.a_amplitude - 1.f, -60.f, 0.f);
+                    m_host.utilityUpdate(tmp);
+                    std::cout << "Test Tone: Amplitude:\t" << tmp << " dB" << std::endl;
                     break;
                 }
                 break;
@@ -132,6 +135,12 @@ namespace DSP_HOST_HANDLE {
             }
         }
 
+        processAudioFrames(out, sampleSpecs);
+        sw->stop();
+    }
+
+    void processAudioFrames(uint8_t *out, const SampleSpecs &sampleSpecs)
+    {
         for (unsigned int frameIndex = 0; frameIndex < sampleSpecs.buffersizeInFramesPerPeriode; ++frameIndex)
         {
             m_host.tickMain();
@@ -158,8 +167,6 @@ namespace DSP_HOST_HANDLE {
                 setSample(out, outputSample, frameIndex, channelIndex, sampleSpecs);
             }
         }
-        sw->stop();
-
     }
 
     // Matthias: added polyphony as argument
@@ -172,7 +179,7 @@ namespace DSP_HOST_HANDLE {
         m_host.init(samplerate, polyphony);
         JobHandle ret;
 
-        ret.debugBuffer = createSharedDebugBuffer();
+        ret.cmdBufferResponse = createSharedCommandBufferResponse();
         ret.cmdBuffer = createSharedCommandBuffer();
 
         // No input here
@@ -193,5 +200,11 @@ namespace DSP_HOST_HANDLE {
 
         return ret;
     }
+
+    dsp_host &getDspHost()
+    {
+        return m_host;
+    }
+
 } // namespace DSP_HOST
 } // namespace Nl

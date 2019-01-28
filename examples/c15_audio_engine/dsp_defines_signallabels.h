@@ -24,7 +24,7 @@
 #define OSC_A_FRQ       7           // Oscillator A Frequency (Pitch, Pitch KT, Pitch Env C Amount, Env C, Master Tune, Reference, Key Pitch)
 #define OSC_A_FLUEC     8           // Oscillator A Fluctuation (Amount, Env C Amount, Env C)
 #define OSC_A_PMSEA     9           // Oscillator A PM Self (Amount, Env A Amount, Env A)
-#define OSC_A_PMSSH     10           // Oscillator A PM Self Shaper (Amount)
+#define OSC_A_PMSSH     10          // Oscillator A PM Self Shaper (Amount)
 #define OSC_A_PMBEB     11          // Oscillator A PM B (Amount, Env B Amount, Env B)
 #define OSC_A_PMBSH     12          // Oscillator A PM B Shaper (Amount)
 #define OSC_A_PMFEC     13          // Oscillator A PM FB (Amount, Env C Amount, Env C)
@@ -170,19 +170,25 @@
 #define DLY_LPF         120         // Echo Lowpass Frequency (Hi Cut)
 #define DLY_DRY         121         // Echo Dry Amount (Mix)
 #define DLY_WET         122         // Echo Wet Amount (Mix)
+#define DLY_SND         123         // Echo Send Amount
 
 /* Reverb Signals                   -- monophonic */
 
-#define REV_SIZE        123         // Reverb Size (Size)
-#define REV_FEED        124         // Reverb Feedback Amount (Size)
-#define REV_BAL         125         // Reverb Balance (Size)
-#define REV_PRE         126         // Reverb Pre Delay (Pre Delay)
-#define REV_HPF         127         // Reverb Highpass Frequency (Color)
-#define REV_LPF         128         // Reverb Lowpass Frequency (Color)
-#define REV_CHO         129         // Reverb Chorus (Chorus)
-#define REV_DRY         130         // Reverb Dry Amount (Mix)
-#define REV_WET         131         // Reverb Wet Amount (Mix)
+#define REV_SIZE        124         // Reverb Size (Size)
+#define REV_FEED        125         // Reverb Feedback Amount (Size)
+#define REV_BAL         126         // Reverb Balance (Size)
+#define REV_PRE         127         // Reverb Pre Delay (Pre Delay)
+#define REV_HPF         128         // Reverb Highpass Frequency (Color)
+#define REV_LPF         129         // Reverb Lowpass Frequency (Color)
+#define REV_CHO         130         // Reverb Chorus (Chorus)
+#define REV_DRY         131         // Reverb Dry Amount (Mix)
+#define REV_WET         132         // Reverb Wet Amount (Mix)
+#define REV_SND         133         // Reverb Send Amount
 
 /* Master Signals                   -- monophonic */
 
-#define MST_VOL         132         // Master Volume (Volume)
+#define MST_VOL         134         // Master Volume (Volume)
+
+/* Unison Signals                   -- polyphonic */
+
+#define UN_PHS          135         // Unison Phase Offset

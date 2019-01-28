@@ -83,7 +83,7 @@ struct paramengine
     float m_timeFactors[dsp_clock_types];
     uint32_t m_routePolyphony[dsp_poly_types] = {1, dsp_number_of_voices};
     /* access to envelope parameters */
-    const uint32_t m_envIds[sig_number_of_env_events] = {par_envelopeA, par_envelopeB, par_envelopeC};
+    const uint32_t m_envIds[sig_number_of_env_events] = {P_EA, P_EB, P_EC};
     /* local data structures */
     clock_id_list m_clockIds;
     dual_clock_id_list m_postIds;
@@ -115,6 +115,10 @@ struct paramengine
     float m_flangerEnv[10];
     NlToolbox::Curves::Shaper_1_BP m_revColorCurve1;
     NlToolbox::Curves::Shaper_1_BP m_revColorCurve2;
+    float   m_unison_detune[dsp_number_of_voices][dsp_number_of_voices],
+            m_unison_phase[dsp_number_of_voices][dsp_number_of_voices],
+            m_unison_pan[dsp_number_of_voices][dsp_number_of_voices],
+            m_note_shift[dsp_number_of_voices];
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */
