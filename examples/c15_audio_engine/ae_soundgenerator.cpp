@@ -216,28 +216,28 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
     m_oscB_selfmix  = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[OSC_B_PMSSH]);
     m_oscB_crossmix = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[OSC_A_PMBSH]);
 
-    m_out_A = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shaperSampleA, _signal[SHP_A_MIX]);
-    m_out_B = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[SHP_B_MIX]);
+    float sample_A = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shaperSampleA, _signal[SHP_A_MIX]);
+    float sample_B = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shaperSampleB, _signal[SHP_B_MIX]);
 
 
     //******************* Envelope Influence (Magnitudes) ********************//
-    m_out_A *= _signal[ENV_A_MAG];
-    m_out_B *= _signal[ENV_B_MAG];
+    sample_A *= _signal[ENV_A_MAG];
+    sample_B *= _signal[ENV_B_MAG];
 
 
     //**************************** Feedback Mix ******************************//
     tmpVar = _feedbackSample * _signal[SHP_A_FBEC];
-    m_out_A = NlToolbox::Crossfades::unipolarCrossFade(m_out_A, tmpVar, _signal[SHP_A_FBM]);
+    sample_A = NlToolbox::Crossfades::unipolarCrossFade(sample_A, tmpVar, _signal[SHP_A_FBM]);
 
     tmpVar = _feedbackSample * _signal[SHP_B_FBEC];
-    m_out_B = NlToolbox::Crossfades::unipolarCrossFade(m_out_B, tmpVar, _signal[SHP_B_FBM]);
+    sample_B = NlToolbox::Crossfades::unipolarCrossFade(sample_B, tmpVar, _signal[SHP_B_FBM]);
 
 
     //************************** Ring Modulation *****************************//
-    tmpVar = m_out_A * m_out_B;
+    tmpVar = sample_A * sample_B;
 
-    m_out_A = NlToolbox::Crossfades::unipolarCrossFade(m_out_A, tmpVar, _signal[SHP_A_RM]);
-    m_out_B = NlToolbox::Crossfades::unipolarCrossFade(m_out_B, tmpVar, _signal[SHP_B_RM]);
+    m_out_A = NlToolbox::Crossfades::unipolarCrossFade(sample_A, tmpVar, _signal[SHP_A_RM]);
+    m_out_B = NlToolbox::Crossfades::unipolarCrossFade(sample_B, tmpVar, _signal[SHP_B_RM]);
 }
 
 /******************************************************************************/

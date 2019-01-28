@@ -111,23 +111,27 @@ void ae_outputmixer::combine(float _sampleA, float _sampleB, float _sampleComb, 
 
 void ae_outputmixer::filter_level(float *_signal)
 {
-    float tmpVar  = m_hp_b0 * m_out_L;          // HP L
+    float tmpVar, sample;
+
+    sample = m_out_L;                       // HP L
+    tmpVar = m_hp_b0 * sample;
     tmpVar += m_hp_b1 * m_hp_stateVar_L1;
     tmpVar += m_hp_a1 * m_hp_stateVar_L2;
 
-    m_hp_stateVar_L1 = m_out_L + DNC_const;
+    m_hp_stateVar_L1 = sample + DNC_const;
     m_hp_stateVar_L2 = tmpVar + DNC_const;
 
-    tmpVar  = m_hp_b0 * m_out_R;                // HP R
+    m_out_L = sample * _signal[OUT_LVL];
+
+    sample = m_out_R;                       // HP R
+    tmpVar = m_hp_b0 * sample;
     tmpVar += m_hp_b1 * m_hp_stateVar_R1;
     tmpVar += m_hp_a1 * m_hp_stateVar_R2;
 
-    m_hp_stateVar_R1 = m_out_R + DNC_const;
+    m_hp_stateVar_R1 = sample + DNC_const;
     m_hp_stateVar_R2 = tmpVar + DNC_const;
 
-
-    m_out_L *= _signal[OUT_LVL];
-    m_out_R *= _signal[OUT_LVL];
+    m_out_R = sample * _signal[OUT_LVL];
 }
 
 /******************************************************************************/

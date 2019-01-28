@@ -100,7 +100,7 @@ void ae_echo::set(float *_signal)
 
 void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
 {
-    float tmpVar;
+    float tmpVar, sample;
 
     //***************************** Left Channel *****************************//
     tmpVar = (_rawSample_L * _signal[DLY_SND]) + (m_stateVar_L * _signal[DLY_FB_LOC]) + (m_stateVar_R * _signal[DLY_FB_CR]);
@@ -135,23 +135,23 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
                                          m_buffer_L[ind_tp1],
                                          m_buffer_L[ind_tp2]);
 
-    m_out_L  = m_lp_b0 * tmpVar;                        // LP
-    m_out_L += m_lp_b1 * m_lp_stateVar_L1;
-    m_out_L += m_lp_a1 * m_lp_stateVar_L2;
+    sample  = m_lp_b0 * tmpVar;                        // LP
+    sample += m_lp_b1 * m_lp_stateVar_L1;
+    sample += m_lp_a1 * m_lp_stateVar_L2;
 
     m_lp_stateVar_L1 = tmpVar + DNC_const;
-    m_lp_stateVar_L2 = m_out_L + DNC_const;
+    m_lp_stateVar_L2 = sample + DNC_const;
 
-    m_stateVar_L  = m_hp_b0 * m_out_L;                  // HP
+    m_stateVar_L  = m_hp_b0 * sample;                  // HP
     m_stateVar_L += m_hp_b1 * m_hp_stateVar_L1;
     m_stateVar_L += m_hp_a1 * m_hp_stateVar_L2;
 
-    m_hp_stateVar_L1 = m_out_L + DNC_const;
+    m_hp_stateVar_L1 = sample + DNC_const;
     m_hp_stateVar_L2 = m_stateVar_L + DNC_const;
 
     m_stateVar_L += DNC_const;
 
-    m_out_L = NlToolbox::Crossfades::crossFade(_rawSample_L, m_out_L, _signal[DLY_DRY], _signal[DLY_WET]);
+    m_out_L = NlToolbox::Crossfades::crossFade(_rawSample_L, sample, _signal[DLY_DRY], _signal[DLY_WET]);
 
 
     //**************************** Right Channel *****************************//
@@ -187,23 +187,23 @@ void ae_echo::apply(float _rawSample_L, float _rawSample_R, float *_signal)
                                          m_buffer_R[ind_tp1],
                                          m_buffer_R[ind_tp2]);
 
-    m_out_R  = m_lp_b0 * tmpVar;                        // LP
-    m_out_R += m_lp_b1 * m_lp_stateVar_R1;
-    m_out_R += m_lp_a1 * m_lp_stateVar_R2;
+    sample  = m_lp_b0 * tmpVar;                        // LP
+    sample += m_lp_b1 * m_lp_stateVar_R1;
+    sample += m_lp_a1 * m_lp_stateVar_R2;
 
     m_lp_stateVar_R1 = tmpVar + DNC_const;
-    m_lp_stateVar_R2 = m_out_R + DNC_const;
+    m_lp_stateVar_R2 = sample + DNC_const;
 
-    m_stateVar_R  = m_hp_b0 * m_out_R;                  // HP
+    m_stateVar_R  = m_hp_b0 * sample;                  // HP
     m_stateVar_R += m_hp_b1 * m_hp_stateVar_R1;
     m_stateVar_R += m_hp_a1 * m_hp_stateVar_R2;
 
-    m_hp_stateVar_R1 = m_out_R + DNC_const;
+    m_hp_stateVar_R1 = sample + DNC_const;
     m_hp_stateVar_R2 = m_stateVar_R + DNC_const;
 
     m_stateVar_R += DNC_const;        /// Brauchen wir das wirklich?
 
-    m_out_R = NlToolbox::Crossfades::crossFade(_rawSample_R, m_out_R, _signal[DLY_DRY], _signal[DLY_WET]);
+    m_out_R = NlToolbox::Crossfades::crossFade(_rawSample_R, sample, _signal[DLY_DRY], _signal[DLY_WET]);
 
     m_buffer_indx = (m_buffer_indx + 1) & m_buffer_sz_m1;
 }
