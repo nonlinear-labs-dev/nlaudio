@@ -161,6 +161,20 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal)
         }
     }
 
+/*    float invert = (m_out < -0.501187f) ? -1 : 1;
+     m_out *= invert;
+
+     if (m_out > 0.501187f) {
+       m_out -= 0.501187f;
+       const auto abc = m_out;
+       m_out = std::min(m_out, 2.98815f);
+       m_out *= (1.f - m_out* 0.167328f);
+       m_out *= 0.7488f;
+       m_out += (abc * 0.2512f + 0.501187f);
+     }
+
+     m_out *= invert;*/
+
 
     //***************************** SmoothB ********************************//
     tmpVar  = m_delaySamples - m_delayStateVar;
