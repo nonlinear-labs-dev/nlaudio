@@ -81,11 +81,11 @@ void ae_combfilter::setDelaySmoother()
 
 void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal)
 {
-    float tmpVar;
+    float tmpVar, sample;
 
     //**************************** AB Sample Mix ****************************//
     tmpVar = _signal[CMB_AB];                                                       // AB Mix is inverted, so crossfade mix is as well (currently)
-    m_out  = _sampleB * (1.f - tmpVar) + _sampleA * tmpVar;
+    sample  = _sampleB * (1.f - tmpVar) + _sampleA * tmpVar;
 
     //****************** AB Ssample Phase Mdulation Mix ********************//
     tmpVar = _signal[CMB_PMAB];
@@ -94,86 +94,57 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal)
 
 
     //************************** 1-Pole Highpass ****************************//
-    tmpVar  = m_hpCoeff_b0 * m_out;
+    tmpVar  = m_hpCoeff_b0 * sample;
     tmpVar += (m_hpCoeff_b1 * m_hpInStateVar);
     tmpVar += (m_hpCoeff_a1 * m_hpOutStateVar);
 
-    m_hpInStateVar  = m_out + DNC_const;
+    m_hpInStateVar  = sample + DNC_const;
     m_hpOutStateVar = tmpVar + DNC_const;
 
-    m_out = tmpVar;
-    m_out += m_decayStateVar;
+    sample = tmpVar;
+    sample += m_decayStateVar;
 
     //*************************** 1-Pole Lowpass ****************************//
-    m_out *= (1.f - m_lpCoeff);
-    m_out += (m_lpCoeff * m_lpStateVar);
-    m_out += DNC_const;
-    m_lpStateVar = m_out;
+    sample *= (1.f - m_lpCoeff);
+    sample += (m_lpCoeff * m_lpStateVar);
+    sample += DNC_const;
+    m_lpStateVar = sample;
 
 
     //******************************* Allpass *******************************//
-    tmpVar = m_out;
+    tmpVar = sample;
 
-    m_out *= m_apCoeff_2;
-    m_out += (m_apStateVar_1 * m_apCoeff_1);
-    m_out += m_apStateVar_2;
+    sample *= m_apCoeff_2;
+    sample += (m_apStateVar_1 * m_apCoeff_1);
+    sample += m_apStateVar_2;
 
-    m_out -= (m_apStateVar_3 * m_apCoeff_1);
-    m_out -= (m_apStateVar_4 * m_apCoeff_2);
+    sample -= (m_apStateVar_3 * m_apCoeff_1);
+    sample -= (m_apStateVar_4 * m_apCoeff_2);
 
-    m_out += DNC_const;
+    sample += DNC_const;
 
     m_apStateVar_2 = m_apStateVar_1;
     m_apStateVar_1 = tmpVar;
 
     m_apStateVar_4 = m_apStateVar_3;
-    m_apStateVar_3 = m_out;
+    m_apStateVar_3 = sample;
 
 
     //****************************** Para D ********************************//
-    if (std::abs(m_out) > 0.501187f)
-    {
-        if (m_out > 0.f)
-        {
-            m_out -= 0.501187f;
-            tmpVar = m_out;
+    float invert = (sample < -0.501187f) ? -1 : 1;
+    sample *= invert;
 
-            m_out = std::min(m_out, 2.98815f);
-            m_out *= (1.f - m_out * 0.167328f);
-
-            m_out *= 0.7488f;
-            tmpVar *= 0.2512f;
-
-            m_out += (tmpVar + 0.501187f);
-        }
-        else
-        {
-            m_out += 0.501187f;
-            tmpVar = m_out;
-
-            m_out = std::max(m_out, -2.98815f);
-            m_out *= (1.f - std::abs(m_out) * 0.167328f);
-
-            m_out *= 0.7488f;
-            tmpVar *= 0.2512f;
-
-            m_out += (tmpVar - 0.501187f);
-        }
-    }
-
-/*    float invert = (m_out < -0.501187f) ? -1 : 1;
-     m_out *= invert;
-
-     if (m_out > 0.501187f) {
-       m_out -= 0.501187f;
-       const auto abc = m_out;
-       m_out = std::min(m_out, 2.98815f);
-       m_out *= (1.f - m_out* 0.167328f);
-       m_out *= 0.7488f;
-       m_out += (abc * 0.2512f + 0.501187f);
+     if (sample > 0.501187f)
+     {
+       sample -= 0.501187f;
+       const float hold_1 = sample;
+       sample = std::min(sample, 2.98815f);
+       sample *= (1.f - sample * 0.167328f);
+       sample *= 0.7488f;
+       sample += (hold_1 * 0.2512f + 0.501187f);
      }
 
-     m_out *= invert;*/
+     sample *= invert;
 
 
     //***************************** SmoothB ********************************//
@@ -188,9 +159,9 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal)
 
 
     //******************************* Delay ********************************//
-    float holdsample = m_out;                                  // for Bypass
+    const float hold_2 = sample;                                  // for Bypass
 
-    m_buffer[m_buffer_indx] = m_out;
+    m_buffer[m_buffer_indx] = sample;
 
     /// hier kommt voicestealing hin!!
 
@@ -214,21 +185,22 @@ void ae_combfilter::apply(float _sampleA, float _sampleB, float *_signal)
     ind_tp1 &= m_buffer_sz_m1;
     ind_tp2 &= m_buffer_sz_m1;
 
-    m_out = NlToolbox::Math::interpolRT(tmpVar,
-                                        m_buffer[ind_tm1],
-                                        m_buffer[ind_t0],
-                                        m_buffer[ind_tp1],
-                                        m_buffer[ind_tp2]);
+    sample = NlToolbox::Math::interpolRT(tmpVar,
+                                         m_buffer[ind_tm1],
+                                         m_buffer[ind_t0],
+                                         m_buffer[ind_tp1],
+                                         m_buffer[ind_tp2]);
 
     /// Envelope for voicestealingtmpVar
 
     m_buffer_indx = (m_buffer_indx + 1) & m_buffer_sz_m1;
 
     tmpVar = _signal[CMB_BYP];                                            // Bypass
-    m_out = tmpVar * holdsample + (1.f - tmpVar) * m_out;
+    sample = tmpVar * hold_2 + (1.f - tmpVar) * sample;
 
     //****************************** Decay ********************************//
-    m_decayStateVar = m_out * m_decayGain;
+    m_decayStateVar = sample * m_decayGain;
+    m_out = sample;
 }
 
 
