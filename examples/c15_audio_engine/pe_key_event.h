@@ -36,6 +36,9 @@ struct env_event
 struct poly_key_event
 {
     /* local data structures */
+#if test_flanger_env_legato
+    uint32_t m_active = 0;                      // tracking active keys for legato flanger env behavior
+#endif
     key_event m_mono;
     key_event m_poly[dsp_number_of_voices];
     env_event m_env[sig_number_of_env_events];

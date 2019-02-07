@@ -1,0 +1,236 @@
+The system is: Linux - 4.13.9-300.fc27.x86_64 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: 
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.9.6/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: 
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.9.6/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+The system is: Linux - 4.13.9-300.fc27.x86_64 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is GNU, found in "/home/billserver/development/nlaudio/CMakeFiles/3.10.3/CompilerIdCXX/CMakeCXXCompilerId.o"
+

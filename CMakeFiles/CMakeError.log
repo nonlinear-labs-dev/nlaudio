@@ -1,0 +1,621 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_18b86/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_18b86.dir/build.make CMakeFiles/cmTC_18b86.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_18b86.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_18b86.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_18b86
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_18b86.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_18b86.dir/testCCompiler.c.o  -o cmTC_18b86 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_18b86.dir/build.make:98: cmTC_18b86] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_18b86/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_22c65/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_22c65.dir/build.make CMakeFiles/cmTC_22c65.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_22c65.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_22c65.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_22c65
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_22c65.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_22c65.dir/testCCompiler.c.o  -o cmTC_22c65 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_22c65.dir/build.make:98: cmTC_22c65] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_22c65/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_f2304/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_f2304.dir/build.make CMakeFiles/cmTC_f2304.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f2304.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_f2304.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_f2304
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f2304.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_f2304.dir/testCCompiler.c.o  -o cmTC_f2304 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_f2304.dir/build.make:98: cmTC_f2304] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_f2304/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_73f0f/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_73f0f.dir/build.make CMakeFiles/cmTC_73f0f.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_73f0f.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_73f0f.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_73f0f
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_73f0f.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_73f0f.dir/testCCompiler.c.o  -o cmTC_73f0f 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_73f0f.dir/build.make:98: cmTC_73f0f] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_73f0f/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_9c347/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_9c347.dir/build.make CMakeFiles/cmTC_9c347.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9c347.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_9c347.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_9c347
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9c347.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_9c347.dir/testCCompiler.c.o  -o cmTC_9c347 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_9c347.dir/build.make:98: cmTC_9c347] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_9c347/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_8c4c9/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_8c4c9.dir/build.make CMakeFiles/cmTC_8c4c9.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8c4c9.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_8c4c9.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_8c4c9
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8c4c9.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_8c4c9.dir/testCCompiler.c.o  -o cmTC_8c4c9 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_8c4c9.dir/build.make:98: cmTC_8c4c9] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_8c4c9/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_52c19/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_52c19.dir/build.make CMakeFiles/cmTC_52c19.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_52c19.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_52c19.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_52c19
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52c19.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_52c19.dir/testCCompiler.c.o  -o cmTC_52c19 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_52c19.dir/build.make:98: cmTC_52c19] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_52c19/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_4e6ea/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_4e6ea.dir/build.make CMakeFiles/cmTC_4e6ea.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4e6ea.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_4e6ea.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_4e6ea
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4e6ea.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_4e6ea.dir/testCCompiler.c.o  -o cmTC_4e6ea 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_4e6ea.dir/build.make:98: cmTC_4e6ea] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_4e6ea/fast] Error 2
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-g++ 
+Build flags: ;-O2;-pipe;-g;-feliminate-unused-debug-types;
+Id flags:  
+
+The output was:
+1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lstdc++
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lm
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_621be/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_621be.dir/build.make CMakeFiles/cmTC_621be.dir/build
+gmake[1]: Entering directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_621be.dir/testCCompiler.c.o
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc    -o CMakeFiles/cmTC_621be.dir/testCCompiler.c.o   -c /home/billserver/development/nlaudio/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_621be
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_621be.dir/link.txt --verbose=1
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/bin/x86_64-nonlinear-linux/x86_64-nonlinear-linux-gcc      -rdynamic CMakeFiles/cmTC_621be.dir/testCCompiler.c.o  -o cmTC_621be 
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crt1.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crti.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtbegin.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find -lgcc_s
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtend.o: No such file or directory
+/opt/nonlinear-nuc-distro/64/sysroots/x86_64-nonlinearsdk-linux/usr/libexec/x86_64-nonlinear-linux/gcc/x86_64-nonlinear-linux/7.3.0/real-ld: cannot find crtn.o: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_621be.dir/build.make:98: cmTC_621be] Error 1
+gmake[1]: Leaving directory '/home/billserver/development/nlaudio/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:126: cmTC_621be/fast] Error 2
+
+
