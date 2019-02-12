@@ -103,10 +103,10 @@ void ae_soundgenerator::resetPhase(float _phase)
 
 
 /******************************************************************************/
-/** @brief
+/** @brief      version 1
 *******************************************************************************/
-
-void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
+#if 0
+void ae_soundgenerator::generate_1(float _feedbackSample, float *_signal)
 {
     float tmpVar;
 
@@ -238,6 +238,165 @@ void ae_soundgenerator::generate(float _feedbackSample, float *_signal)
 
     m_out_A = NlToolbox::Crossfades::unipolarCrossFade(sample_A, tmpVar, _signal[SHP_A_RM]);
     m_out_B = NlToolbox::Crossfades::unipolarCrossFade(sample_B, tmpVar, _signal[SHP_B_RM]);
+
+}
+#endif
+
+/******************************************************************************/
+/** @brief version 2
+*******************************************************************************/
+
+void ae_soundgenerator::generate_2(float _feedbackSample, float *_signal)
+{
+    //************************ Get From Siganl Array **************************//
+    const float env_a_mag   = _signal[ENV_A_MAG];
+    const float env_b_mag   = _signal[ENV_B_MAG];
+
+    const float osc_a_frq   = _signal[OSC_A_FRQ];
+    const float osc_a_fluec = _signal[OSC_A_FLUEC];
+    const float modVarA_1   = m_oscA_selfmix * _signal[OSC_A_PMSEA];
+    const float osc_a_pmssh = _signal[OSC_A_PMSSH];
+    const float modVarA_2   = m_oscB_crossmix * _signal[OSC_A_PMBEB];
+    const float osc_a_pmbsh = _signal[OSC_A_PMBSH];
+    const float modVarA_3   = m_feedback_phase * _signal[OSC_A_PMFEC];
+    const float osc_a_phs   = _signal[OSC_A_PHS];
+
+    const float shp_a_drvea = _signal[SHP_A_DRVEA];
+    const float shp_a_fld   = _signal[SHP_A_FLD];
+    const float shp_a_asm   = _signal[SHP_A_ASM];
+    const float shp_a_mix   = _signal[SHP_A_MIX];
+    const float shp_a_fbm   = _signal[SHP_A_FBM];
+    const float shp_a_fbec  = _signal[SHP_A_FBEC];
+    const float shp_a_rm    = _signal[SHP_A_RM];
+
+
+    const float osc_b_frq   = _signal[OSC_B_FRQ];
+    const float osc_b_fluec = _signal[OSC_B_FLUEC];
+    const float modVarB_1   = m_oscB_selfmix * _signal[OSC_B_PMSEB];
+    const float osc_b_pmssh = _signal[OSC_B_PMSSH];
+    const float modVarB_2   = m_oscA_crossmix * _signal[OSC_B_PMAEA];
+    const float osc_b_pmash = _signal[OSC_B_PMASH];
+    const float modVarB_3   = m_feedback_phase * _signal[OSC_B_PMFEC];
+    const float osc_b_phs   = _signal[OSC_B_PHS];
+
+    const float shp_b_drveb = _signal[SHP_B_DRVEB];
+    const float shp_b_fld   = _signal[SHP_B_FLD];
+    const float shp_b_asm   = _signal[SHP_B_ASM];
+    const float shp_b_mix   = _signal[SHP_B_MIX];
+    const float shp_b_fbm   = _signal[SHP_B_FBM];
+    const float shp_b_fbec  = _signal[SHP_B_FBEC];
+    const float shp_b_rm    = _signal[SHP_B_RM];
+
+    const float un_phs = _signal[UN_PHS];
+
+
+    //**************************** Modulation A ******************************//
+    const float modSampleA = modVarA_1 + modVarA_2 + modVarA_3;
+
+
+    //**************************** Oscillator A ******************************//
+    const float chirpIIRSampleA = (modSampleA - m_chiA_a1 * m_chiA_stateVar) * m_chiA_a0; // Chirp IIR
+    const float holdChirpA = chirpIIRSampleA;
+
+    const float chirpFIRSampleA = (chirpIIRSampleA + m_chiA_stateVar) * m_chiA_omega;       // Chirp FIR
+    m_chiA_stateVar = holdChirpA + NlToolbox::Constants::DNC_const;
+
+    const float phsA = m_oscA_phase + osc_a_phs + un_phs + (-0.25f);
+    const float phsSampleA_1 = chirpFIRSampleA + phsA;
+    const float phsSampleA_2 = phsSampleA_1 - NlToolbox::Conversion::float2int(phsSampleA_1);
+
+    /// geht das hier auch anders??
+    if (std::abs(m_oscA_phase_stateVar - phsSampleA_2) > 0.5f)            // Check edge
+    {
+        m_OscA_randVal_int = m_OscA_randVal_int * 1103515245 + 12345;
+    }
+
+    const float rndValA = static_cast<float>(m_OscA_randVal_int) * 4.5657e-10f;
+    m_oscA_phase_stateVar = phsSampleA_2;
+
+    const float phsInc_A_1 = ((rndValA * osc_a_fluec * osc_a_frq) + osc_a_frq) * m_sample_interval;
+    const float phsInc_A_2 = m_oscA_phase + phsInc_A_1;
+    m_oscA_phase = phsInc_A_2 - NlToolbox::Conversion::float2int(phsInc_A_2);
+
+    const float oscSampleA = m_mute_state[m_OscA_mute] * NlToolbox::Math::sinP3_noWrap(phsSampleA_2);
+
+
+    //**************************** Modulation B ******************************//
+    const float modSampleB = modVarB_1 + modVarB_2 + modVarB_3;
+
+
+    //**************************** Oscillator B ******************************//
+    const float chirpIIRSampleB = (modSampleB - (m_chiB_a1 * m_chiB_stateVar)) * m_chiB_a0;  // Chirp IIR
+    const float holdChirpB = chirpIIRSampleB;
+
+    const float chirpFIRSampleB = (chirpIIRSampleB + m_chiB_stateVar) * m_chiB_omega;        // Chirp FIR
+    m_chiB_stateVar = holdChirpB + NlToolbox::Constants::DNC_const;
+
+    const float phsB = m_oscB_phase + osc_b_phs + un_phs + (-0.25f);
+    const float phsSampleB_1 = chirpFIRSampleB + phsB;
+    const float phsSampleB_2 = phsSampleB_1 - NlToolbox::Conversion::float2int(phsSampleB_1);
+
+    /// geht das hier auch anders ???
+    if (std::abs(m_oscB_phase_stateVar - phsSampleB_2) > 0.5f)    // Check edge
+    {
+        m_OscB_randVal_int = m_OscB_randVal_int * 1103515245 + 12345;
+    }
+
+    const float rndValB  = static_cast<float>(m_OscB_randVal_int) * 4.5657e-10f;
+    m_oscB_phase_stateVar = phsSampleB_2;
+
+    const float phsInc_B_1 = ((rndValB * osc_b_fluec * osc_b_frq) + osc_b_frq) * m_sample_interval;
+    const float phsInc_B_2 = m_oscB_phase + phsInc_B_1;
+    m_oscB_phase = phsInc_B_2 - NlToolbox::Conversion::float2int(phsInc_B_2);
+
+    const float oscSampleB = m_mute_state[m_OscB_mute] * NlToolbox::Math::sinP3_noWrap(phsSampleB_2);
+
+
+    //******************************* Shaper A *******************************//
+    const float shpSampleA_1 = oscSampleA * shp_a_drvea;
+    const float shpHoldA_1 = shpSampleA_1;
+
+    const float shpSampleA_2 = NlToolbox::Math::sinP3_wrap(shpSampleA_1);
+    const float shpSampleA_3 = NlToolbox::Others::threeRanges(shpSampleA_2, shpHoldA_1, shp_a_fld);
+
+    const float shpHoldA_2 = shpSampleA_3 * shpSampleA_3 + (-0.5f);
+
+    const float shpSampleA = NlToolbox::Others::parAsym(shpSampleA_3, shpHoldA_2, shp_a_asm);
+
+
+    //******************************* Shaper B *******************************//
+    const float shpSampleB_1 = oscSampleB * shp_b_drveb;
+    const float shpHoldB_1 = shpSampleB_1;
+
+    const float shpSampleB_2 = NlToolbox::Math::sinP3_wrap(shpSampleB_1);
+    const float shpSampleB_3 = NlToolbox::Others::threeRanges(shpSampleB_2, shpHoldB_1, shp_b_fld);
+
+    const float shpHoldB_2 = shpSampleB_3 * shpSampleB_3 + (-0.5f);
+
+    const float shpSampleB = NlToolbox::Others::parAsym(shpSampleB_3, shpHoldB_2, shp_b_asm);
+
+
+    //****************************** Crossfades ******************************//
+    m_oscA_selfmix  = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shpSampleA, osc_a_pmssh);
+    m_oscA_crossmix = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shpSampleA, osc_b_pmash);
+
+    m_oscB_selfmix  = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shpSampleB, osc_b_pmssh);
+    m_oscB_crossmix = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shpSampleB, osc_a_pmbsh);
+
+    const float oscShpSample_A = NlToolbox::Crossfades::bipolarCrossFade(oscSampleA, shpSampleA, shp_a_mix) * env_a_mag;
+    const float oscShpSample_B = NlToolbox::Crossfades::bipolarCrossFade(oscSampleB, shpSampleB, shp_b_mix) * env_b_mag;
+
+
+    //**************************** Feedback Mix ******************************//
+    const float oscShpFdbSample_A = NlToolbox::Crossfades::unipolarCrossFade(oscShpSample_A, _feedbackSample * shp_a_fbec, shp_a_fbm);
+    const float oscShpFdbSample_B = NlToolbox::Crossfades::unipolarCrossFade(oscShpSample_B, _feedbackSample * shp_b_fbec, shp_b_fbm);
+
+
+    //************************** Ring Modulation *****************************//
+    const float ringSample = oscShpFdbSample_A * oscShpFdbSample_B;
+
+    m_out_A = NlToolbox::Crossfades::unipolarCrossFade(oscShpFdbSample_A, ringSample, shp_a_rm);
+    m_out_B = NlToolbox::Crossfades::unipolarCrossFade(oscShpFdbSample_B, ringSample, shp_b_rm);
 }
 
 /******************************************************************************/

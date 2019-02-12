@@ -23,7 +23,8 @@ struct ae_soundgenerator
     float m_out_A, m_out_B;       // Generated Samples
 
     void init(float _samplerate, uint32_t _vn);
-    void generate(float _feedbackSample, float *_signal);
+    void generate_1(float _feedbackSample, float *_signal);
+    void generate_2(float _feedbackSample, float *_signal);
     void set(float *_signal);
     void resetPhase(float _phase);
     void resetDSP();

@@ -1413,7 +1413,8 @@ void dsp_host::initAudioEngine()
 
 void dsp_host::makePolySound(float *_signal, uint32_t _voiceID)
 {
-    m_soundgenerator[_voiceID].generate(m_feedbackmixer[_voiceID].m_out, _signal);
+//    m_soundgenerator[_voiceID].generate_1(m_feedbackmixer[_voiceID].m_out, _signal);
+    m_soundgenerator[_voiceID].generate_2(m_feedbackmixer[_voiceID].m_out, _signal);
 
     m_combfilter[_voiceID].apply(m_soundgenerator[_voiceID].m_out_A,
                                  m_soundgenerator[_voiceID].m_out_B,
