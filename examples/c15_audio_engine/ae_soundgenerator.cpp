@@ -105,7 +105,7 @@ void ae_soundgenerator::resetPhase(float _phase)
 /******************************************************************************/
 /** @brief      version 1
 *******************************************************************************/
-#if 0
+
 void ae_soundgenerator::generate_1(float _feedbackSample, float *_signal)
 {
     float tmpVar;
@@ -240,7 +240,6 @@ void ae_soundgenerator::generate_1(float _feedbackSample, float *_signal)
     m_out_B = NlToolbox::Crossfades::unipolarCrossFade(sample_B, tmpVar, _signal[SHP_B_RM]);
 
 }
-#endif
 
 /******************************************************************************/
 /** @brief version 2
