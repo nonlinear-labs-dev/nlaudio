@@ -14,7 +14,7 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
-#define test_milestone              155             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echor/reverb sends)
+#define test_milestone              155             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echo/reverb sends)
 #define test_key_update_pan         1               // (should pan values be updated on key? (probably yes)
 
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
@@ -29,7 +29,7 @@
 #define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
 #define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
-#define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
+#define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
 
 #define test_reverbParams           1               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
@@ -38,6 +38,7 @@
 #define test_phase_reset            1               // 0: reset phase only, 1: reset phase, self- & cross-mix and feedback, chirp state var
 #define test_flanger_phs            1               // 0: slow (default, artifacts), 1: fast (seems okay), 2: audio (optimum)
 #define test_flanger_env            2               // 0: slow (default, artifacts), 1: fast (artifacts), 2: audio (recommended)
+#define test_flanger_env_legato     1               // 0: retriggering flanger env, 1: legato (only trigger if no key is pressed)
 
 #define test_initialize_time        1               // leave at 1 until LPC transmits full init sequence (including time)
 #define test_initialize_fx_sends    1               // leave at 1 until LPC can handle fx sends (echo, reverb) (inits sends to 100%, maintaining compability)
