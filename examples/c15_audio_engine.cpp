@@ -47,6 +47,8 @@
 // new:
 #include "c15_audio_engine/dsp_host_handle.h"
 
+#define TEMPORARY_STARTING_HACK 1       // force engine to start (circumventing start flags issue, invalid opts issue)
+
 using namespace std;
 
 //
@@ -160,6 +162,10 @@ int main(int argc, char **argv)
         case 'p': // Performance measurement
             opts[OPT_MEASURE_PERFORMANCE] = 1;
             break;
+#if TEMPORARY_STARTING_HACK
+        case 't': // TEMPORARY: ignore -t argument (as it is still somehow expected?)
+            break;
+#endif
         default:
             usage(argv[0]);
         }
@@ -190,6 +196,10 @@ int main(int argc, char **argv)
             hasInvalidOpts = true;
         }
     }
+
+#if TEMPORARY_STARTING_HACK
+    hasInvalidOpts = false;     // TEMPORARY: force engine start (somehow, the given (valid) arguments are considered invalid?)
+#endif
 
     if (hasInvalidOpts) {
         std::cout << "Invalid Arguments! " << std::endl <<

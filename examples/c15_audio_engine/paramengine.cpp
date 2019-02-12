@@ -411,6 +411,9 @@ void paramengine::keyApply(const uint32_t _voiceId)
         /* key up */
         newEnvUpdateStop(_voiceId, pitch, velocity);            // all poly Envelopes at once
 #endif
+#if test_flanger_env_legato
+        m_event.m_active--;                                     // track (decrease) number of active keys
+#endif
     }
     else
     {
@@ -430,6 +433,9 @@ void paramengine::keyApply(const uint32_t _voiceId)
         /* key down */
         newEnvUpdateStart(_voiceId, pitch, velocity);
 #endif
+#if test_flanger_env_legato
+        m_event.m_active++;                                     // track (increase) number of active keys
+#endif
     }
 }
 
@@ -441,20 +447,36 @@ void paramengine::keyApplyMono()
      *      "OLD" ENVELOPES:
      */
     /* Flanger Envelope (peak) update by mono velocity (only on key down) */
+#if test_flanger_env_legato == 0
     if(m_event.m_mono.m_type == 1)
     {
         m_envelopes.setSegmentDest(0, 4, 1, m_event.m_mono.m_velocity);
         m_envelopes.startEnvelope(0, 4, 0.f, 0.f);
     }
+#elif test_flanger_env_legato == 1
+    if(m_event.m_mono.m_type == 1 && m_event.m_active == 0)
+    {
+        m_envelopes.setSegmentDest(0, 4, 1, m_event.m_mono.m_velocity);
+        m_envelopes.startEnvelope(0, 4, 0.f, 0.f);
+    }
+#endif
 #elif test_whichEnvelope == 1
     /*
      *      "NEW" ENVELOPES:
      */
+#if test_flanger_env_legato == 0
     if(m_event.m_mono.m_type == 1)
     {
         m_new_envelopes.m_env_f.setSegmentDest(0, 1, m_event.m_mono.m_velocity);
         m_new_envelopes.m_env_f.start(0);
     }
+#elif test_flanger_env_legato == 1
+    if(m_event.m_mono.m_type == 1 && m_event.m_active == 0)
+    {
+        m_new_envelopes.m_env_f.setSegmentDest(0, 1, m_event.m_mono.m_velocity);
+        m_new_envelopes.m_env_f.start(0);
+    }
+#endif
 #endif
 }
 
