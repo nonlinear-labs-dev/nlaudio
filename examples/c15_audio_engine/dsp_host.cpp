@@ -114,15 +114,16 @@ void dsp_host::tickMain()
 #if perf_post_processing == 0
         m_params.postProcessMono_slow(m_paramsignaldata[0]);
 #endif
-#if perf_poly_params == 0
         /* render slow poly parameters and perform poly slow post processing */
         for(v = 0; v < m_voices; v++)
         {
+#if perf_poly_params == 0
             for(p = 0; p < m_params.m_clockIds.m_data[3].m_data[1].m_length; p++)
             {
                 i = m_params.m_head[m_params.m_clockIds.m_data[3].m_data[1].m_data[p]].m_index + v;
                 m_params.tickItem(i);
             }
+#endif
 #if perf_post_processing == 0
             m_params.postProcessPoly_slow(m_paramsignaldata[v], v);
 
@@ -130,7 +131,7 @@ void dsp_host::tickMain()
             setPolySlowFilterCoeffs(m_paramsignaldata[v], v);
 #endif
         }
-#endif
+
         /* slow monophonic Trigger for Filter Coefficients */
 #if perf_post_processing == 0
         setMonoSlowFilterCoeffs(m_paramsignaldata[0]);
@@ -152,20 +153,20 @@ void dsp_host::tickMain()
 #if perf_post_processing == 0
         m_params.postProcessMono_fast(m_paramsignaldata[0]);
 #endif
-#if perf_poly_params == 0
         /* render fast poly parameters and perform poly fast post processing */
         for(v = 0; v < m_voices; v++)
         {
+#if perf_poly_params == 0
             for(p = 0; p < m_params.m_clockIds.m_data[2].m_data[1].m_length; p++)
             {
                 i = m_params.m_head[m_params.m_clockIds.m_data[2].m_data[1].m_data[p]].m_index + v;
                 m_params.tickItem(i);
             }
+#endif
 #if perf_post_processing == 0
             m_params.postProcessPoly_fast(m_paramsignaldata[v], v);
 #endif
         }
-#endif
 #if perf_post_processing == 0
         /* fast monophonic Trigger for Filter Coefficients */
         setMonoFastFilterCoeffs(m_paramsignaldata[0]);
