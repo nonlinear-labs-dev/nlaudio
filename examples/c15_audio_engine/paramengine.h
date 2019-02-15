@@ -112,7 +112,7 @@ struct paramengine
     const float m_flaNormPhase = 1.f / 360.f;
     stereo_lfo m_flangerLFO;
     float m_flangerRateToDecay = 0.55f;
-    float m_flangerEnv[10];
+    //float m_flangerEnv[10];
     NlToolbox::Curves::Shaper_1_BP m_revColorCurve1;
     NlToolbox::Curves::Shaper_1_BP m_revColorCurve2;
     float   m_unison_detune[dsp_number_of_voices][dsp_number_of_voices],

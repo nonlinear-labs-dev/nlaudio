@@ -29,7 +29,7 @@
 #define test_fast_fold_asym         1               // 0: slow clock (producing audible artifacts), 1: fast clock (recommended)
 #define test_preload_update         1               // 0: non-optimized preload update, 1: optimized preload update (recommended)
 #define test_flushModeFlag          1               // 0: flushes ONLY Buffers, 1: flushes Buffers AND Filter State Variables
-#define test_inputModeFlag          1               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
+#define test_inputModeFlag          0               // 0: receive TCD MIDI, 1: receive Remote MIDI (and produce TCD internally)
 #define test_whichEnvelope          1               // specify which env engine should be used: old (0) or new (1)
 
 #define test_reverbParams           1               // 0: fast rendering (like Reaktor), 1: slow rendering (experimental)
@@ -52,7 +52,7 @@
 
 #if test_inputModeFlag == 1
 
-    /* Test poly Key Parameters (in Remote Mode only) */
+    /* Test poly Key Parameters (in Remote Mode and Milestone 1.5 only) */
 
     #define test_unisonCluster      0               // 0: transmit only played note, 1: transmit played note and second one (one octave apart)
     #define par_unisono_phase       0               // instead of two separate phases (as used previously), only one Unisono Phase needs to be transmitted
