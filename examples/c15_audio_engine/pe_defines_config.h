@@ -12,6 +12,19 @@
 
 #include <stdint.h>
 
+/* Performance Measure (Skip) Flags                 LEAVE EVERYTHING AT ZERO for usual operation !!!
+                                                    intended for cpu measuring purposes, see tests/renderer_performance.cpp
+*/
+#define perf_measure                0               // skip the whole main tick function?
+#define perf_audio_params           0               // skip rendering of audio params?
+#define perf_fast_params            0               // skip rendering of fast params?
+#define perf_slow_params            0               // skip rendering of slow params?
+#define perf_poly_params            0               // skip rendering of poly params?
+#define perf_mono_params            0               // skip rendering of mono params?
+#define perf_post_processing        0               // skip post processing?
+#define perf_poly_engine            0               // skip rendering of poly audio engine component?
+#define perf_mono_engine            0               // skip rendering of mono audio engine component?
+
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
 #define test_milestone              155             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echo/reverb sends)
