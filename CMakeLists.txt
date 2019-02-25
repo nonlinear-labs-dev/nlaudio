@@ -62,6 +62,8 @@ if (${BUILD_EXAMPLES})
 	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples)
 endif()
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
 ###################
 # Doxygen
 

@@ -119,6 +119,9 @@ struct paramengine
             m_unison_phase[dsp_number_of_voices][dsp_number_of_voices],
             m_unison_pan[dsp_number_of_voices][dsp_number_of_voices],
             m_note_shift[dsp_number_of_voices];
+#if test_milestone == 156
+    uint32_t m_unison_index[dsp_number_of_voices] = {};
+#endif
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
     /* helper */
@@ -160,7 +163,7 @@ struct paramengine
     void postProcessMono_audio(float *_signal);                                                 // mono audio post processing
     /* temporary tests */
     void testLevelVelocity();
-    const float roundingValues[65] = {
+    const float roundingValues[65] = {                                                          // temporary array for testing purposes
         -8.f, -7.75f, -7.5f, -7.25f, -7.f, -6.75f, -6.5f, -6.25f,
         -6.f, -5.75f, -5.5f, -5.25f, -5.f, -4.75f, -4.5f, -4.25f,
         -4.f, -3.75f, -3.5f, -3.25f, -3.f, -2.75f, -2.5f, -2.25f,

@@ -326,6 +326,8 @@ const float param_definition[sig_number_of_params][10] = {
     {        416,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   },         // 194 KEY_BASE_PITCH
     {        417,    0,      1,      1,      0,      0,      -1,     0,      0,      1      },         // 195 KEY_UNISON_IDX
     {        418,    0,      1,      1,      0,      0,      -1,     0,      0,      1      }          // 196 KEY_VOICE_STEAL
+#elif test_milestone == 156
+    {        416,    0,      1,      1000,   0,      0,      -1,     0,      1,      1000   }          // 194 KEY_BASE_PITCH
 #endif
 
 };

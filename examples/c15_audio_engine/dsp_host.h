@@ -51,6 +51,9 @@ public:
     uint32_t m_clockPosition[dsp_clock_types] = {0, 0, 0, 0};           // sample clock data structure
     uint32_t m_clockDivision[dsp_clock_types] = {0, 1, 5, 120};         // clock division settings (defaults to 48000 Hz sampleRate)
     uint32_t m_upsampleFactor = 1;                                      // time conversion handle (sampleRate / 48000)
+#if test_milestone == 156
+    uint32_t m_stolen = 0;
+#endif
     /* hosting shared param signal array */
     float m_paramsignaldata[dsp_number_of_voices][sig_number_of_signal_items] = {};
     /* main signal output (left, right) */
@@ -76,6 +79,10 @@ public:
     void keyUp(uint32_t _voiceId, float _velocity);                     // key up event trigger
     void keyDown(uint32_t _voiceId, float _velocity);                   // key down event trigger
     void keyApply(uint32_t _voiceId);                                   // key application and distribution (to voice selection)
+#if test_milestone == 156
+    void keyDown156(const float _velocity); //
+    void keyUp156(const float _velocity); //
+#endif
     /* test stuff */
 #if test_inputModeFlag == 1
     uint32_t m_test_voiceId = 0;                                        // a rather sloppy voice allocation approach
@@ -94,6 +101,10 @@ public:
     void testNoteOff(uint32_t _pitch, uint32_t _velocity);              // testing note off messages
     void testNewNoteOn(uint32_t _pitch, uint32_t _velocity);            //
     void testNewNoteOff(uint32_t _pitch, uint32_t _velocity);           //
+#if test_milestone == 156
+    void testNoteOn156(uint32_t _pitch, uint32_t _velocity);            //
+    void testNoteOff156(uint32_t _pitch, uint32_t _velocity);           //
+#endif
     void testSetGlobalTime(uint32_t _value);                            // testing times
     void testSetReference(uint32_t _value);                             // testing reference tone
     void testSetToneFreq(uint32_t _value);                              // test tone frequency setter

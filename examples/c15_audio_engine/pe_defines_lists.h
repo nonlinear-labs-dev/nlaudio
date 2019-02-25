@@ -100,4 +100,10 @@ const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
     P_KEY_BP, P_KEY_IDX, P_KEY_STL
 };
 
+#elif test_milestone == 156
+
+const uint32_t paramIds_keyEvent[lst_keyEvent_length] = {
+    P_KEY_BP
+};
+
 #endif

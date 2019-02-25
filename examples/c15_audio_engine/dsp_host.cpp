@@ -360,6 +360,7 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         break;
     case 13:
         /* keyUp */
+#if test_milestone < 156
         f = static_cast<float>(m_decoder.unsigned14(_data0, _data1));
         keyUp(m_decoder.m_voiceFrom, f);
         /* now part of TCD specs: if the key list was specified by preload, voice automatically increases, further shortening TCD seuquences of Unison clusters */
@@ -368,9 +369,13 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
             m_decoder.m_voiceFrom = (m_decoder.m_voiceFrom + 1) % m_voices;
             voiceSelectionUpdate();
         }
+#elif test_milestone == 156
+        keyUp156(static_cast<float>(m_decoder.unsigned14(_data0, _data1)));
+#endif
         break;
     case 14:
         /* keyDown */
+#if test_milestone < 156
         f = static_cast<float>(m_decoder.unsigned14(_data0, _data1));
         keyDown(m_decoder.m_voiceFrom, f);
         /* now part of TCD specs: if the key list was specified by preload, voice automatically increases, further shortening TCD seuquences of Unison clusters */
@@ -379,6 +384,9 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
             m_decoder.m_voiceFrom = (m_decoder.m_voiceFrom + 1) % m_voices;
             voiceSelectionUpdate();
         }
+#elif test_milestone == 156
+        keyDown156(static_cast<float>(m_decoder.unsigned14(_data0, _data1)));
+#endif
         break;
     case 15:
         /* reset command (flush / env_stop / dsp_reset) */
@@ -393,6 +401,15 @@ void dsp_host::evalMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         f = static_cast<float>(m_decoder.signed14(_data0, _data1));
         utilityUpdate(f);
         break;
+#if test_milestone == 156
+    case 18:
+        /* 1.56: keyVoice */
+        uint32_t state = m_decoder.unsigned14(_data0, _data1);                          // retrieve state (encoding voice steal and starting voice)
+        m_stolen = state & 1;                                                           // decode voice steal
+        m_decoder.m_voiceFrom = state >> 1;                                             // decode starting voice
+        preloadUpdate(1, 2);                                                            // enable preloaded key event
+        break;
+#endif
     }
 }
 
@@ -695,7 +712,7 @@ void dsp_host::keyUp(uint32_t _voiceId, float _velocity)
         /* direct key apply */
         m_params.keyApplyMono();
         m_params.keyApply(_voiceId);
-        keyApply(_voiceId);
+        keyApply(_voiceId); // not really necessary...
     }
     else
     {
@@ -736,6 +753,7 @@ void dsp_host::keyApply(uint32_t _voiceId)
         m_combfilter[_voiceId].setDelaySmoother();
 
         /* determine note steal */
+#if test_milestone < 156
         if(static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_KEY_VS].m_index].m_signal) == 1)
         {
             /* AUDIO_ENGINE: trigger voice-steal */
@@ -744,6 +762,16 @@ void dsp_host::keyApply(uint32_t _voiceId)
         {
             /* AUDIO_ENGINE: trigger non-voice-steal */
         }
+#elif test_milestone == 156
+        if(m_stolen == 1)
+        {
+            /* AUDIO_ENGINE: trigger voice-steal */
+        }
+        else
+        {
+            /* AUDIO_ENGINE: trigger non-voice-steal */
+        }
+#endif
         /* OLD approach of phase reset - over shared array */
         /* update and reset oscillator phases */
         //m_paramsignaldata[_voiceId][OSC_A_PHS] = m_params.m_body[m_params.m_head[P_KEY_PA].m_index + _voiceId].m_signal;  // POLY PHASE_A -> OSC_A Phase
@@ -759,11 +787,53 @@ void dsp_host::keyApply(uint32_t _voiceId)
         const float startPhase = m_params.m_body[m_params.m_head[P_KEY_PH].m_index + _voiceId].m_signal;
 #elif test_milestone == 155
         const float startPhase = 0.f;
+#elif test_milestone == 156
+        const float startPhase = 0.f;
 #endif
         //m_soundgenerator[_voiceId].resetPhase(phaseA, phaseB);
         m_soundgenerator[_voiceId].resetPhase(startPhase);                                  // function could be reduced to one argument
     }
 }
+
+#if test_milestone == 156
+
+void dsp_host::keyUp156(const float _velocity)
+{
+    uint32_t voiceId = m_decoder.m_voiceFrom;
+    const uint32_t unisonVoices = 1 + static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_UN_V].m_index].m_signal);
+
+    for(uint32_t v = 0; v < unisonVoices; v++)
+    {
+        keyUp(voiceId, _velocity);
+        voiceId++;
+    }
+
+    preloadUpdate(2, 0);
+}
+
+void dsp_host::keyDown156(const float _velocity)
+{
+    uint32_t voiceId = m_decoder.m_voiceFrom;
+    const uint32_t unisonVoices = 1 + static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_UN_V].m_index].m_signal);
+    const uint32_t index = m_params.m_head[P_KEY_BP].m_index + voiceId;
+    const float pitch = m_params.m_body[index].m_dest;
+    //
+    for(uint32_t v = 0; v < unisonVoices; v++)
+    {
+        if(v > 0)
+        {
+            m_params.m_body[index + v].m_dest = pitch;
+            m_params.m_body[index + v].m_preload++;
+        }
+        m_params.m_unison_index[voiceId] = v;
+        keyDown(voiceId, _velocity);
+        voiceId++;
+    }
+
+    preloadUpdate(2, 0);
+}
+
+#endif
 
 /* End of Main Definition, Test functionality below:
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *
@@ -791,6 +861,8 @@ void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
         testNoteOff(_data0, _data1);
 #elif test_milestone == 155
         testNewNoteOff(_data0, _data1);
+#elif test_milestone == 156
+        testNoteOff156(_data0, _data1);
 #endif
         break;
     case 1:
@@ -801,6 +873,8 @@ void dsp_host::testMidi(uint32_t _status, uint32_t _data0, uint32_t _data1)
             testNoteOn(_data0, _data1);
 #elif test_milestone == 155
             testNewNoteOn(_data0, _data1);
+#elif test_milestone == 156
+        testNoteOn156(_data0, _data1);
 #endif
         }
         else
@@ -1147,6 +1221,25 @@ void dsp_host::testNewNoteOn(uint32_t _pitch, uint32_t _velocity)
     m_test_voiceId = (m_test_voiceId + m_test_unison_voices) % m_voices;
 }
 
+#if test_milestone == 156
+
+void dsp_host::testNoteOn156(uint32_t _pitch, uint32_t _velocity)
+{
+    m_test_noteId[_pitch] = m_test_voiceId + 1;             // (plus one in order to distinguish from zero)
+    /* prepare pitch, velocity und unison */
+    int32_t keyPos = static_cast<int32_t>(_pitch) - 60;
+    uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
+    m_test_unison_voices = static_cast<uint32_t>(m_params.m_body[m_params.m_head[P_UN_V].m_index].m_signal) + 1;
+    /* */
+    evalMidi(55, 0, (m_test_voiceId << 1) + 0);             // new keyVoice (current voice, no steal)
+    testParseDestination(keyPos * 1000);                    // base pitch (factor 1000 because of Scaling)
+    evalMidi(23, noteVel >> 7, noteVel & 127);              // key down: velocity
+    /* take current voiceId and increase it (wrapped around polyphony) - sloppy approach */
+    m_test_voiceId = (m_test_voiceId + m_test_unison_voices) % m_voices;
+}
+
+#endif
+
 /* test key up */
 void dsp_host::testNoteOff(uint32_t _pitch, uint32_t _velocity)
 {
@@ -1202,6 +1295,31 @@ void dsp_host::testNewNoteOff(uint32_t _pitch, uint32_t _velocity)
         evalMidi(47, 0, 2);                                                     // apply preloaded values
     }
 }
+
+#if test_milestone == 156
+
+void dsp_host::testNoteOff156(uint32_t _pitch, uint32_t _velocity)
+{
+    /* rigorous safety mechanism */
+    int32_t checkVoiceId = static_cast<int32_t>(m_test_noteId[_pitch]) - 1;     // (subtract one in order to get real id)
+    int32_t v = static_cast<int32_t>(m_voices);                                 // number of voices represented as signed integer (for correct comparisons)
+    if((checkVoiceId < 0) || (checkVoiceId >= v))
+    {
+        std::cout << "detected Note Off that shouldn't have happened..." << std::endl;
+    }
+    else
+    {
+        uint32_t usedVoiceId = static_cast<uint32_t>(checkVoiceId);             // copy valid voiceId
+        m_test_noteId[_pitch] = 0;                                              // clear voiceId assignment
+        /* prepare velocity */
+        uint32_t noteVel = static_cast<uint32_t>(static_cast<float>(_velocity) * m_test_normalizeMidi * utility_definition[0][0]);
+        /* key event sequence */
+        evalMidi(55, 0, (usedVoiceId << 1) + 0);                                // new keyVoice (current voice, no steal)
+        evalMidi(7, noteVel >> 7, noteVel & 127);                               // key up: velocity
+    }
+}
+
+#endif
 
 /* set transition time */
 void dsp_host::testSetGlobalTime(uint32_t _value)

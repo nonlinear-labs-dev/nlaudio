@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 /* Performance Measure (Skip) Flags                 LEAVE EVERYTHING AT ZERO for usual operation !!!
+                                                    this is currently rather clumsy and needs treatment...
                                                     intended for cpu measuring purposes, see tests/renderer_performance.cpp
 */
 #define perf_measure                0               // skip the whole main tick function?
@@ -27,7 +28,11 @@
 
 /* Test Flags                                       THINGS TO DEFINE, testing candidates and new functionalities */
 
-#define test_milestone              155             // Define Milestone: 150 (1.5), 155 (1.55, internal unison handling, echo/reverb sends)
+#define test_milestone              155             // Define Milestone:
+                                                    // - 150 (Reaktor quasi-clone with internal envelope rendering and different TCD Key sequence),
+                                                    // - 155 (internal unison handling, echo/reverb sends),
+                                                    // - 156 (simplified TCD key sequence by new KeyVoice command, automatic internal unison loop)
+
 #define test_key_update_pan         1               // (should pan values be updated on key? (probably yes)
 
 #define test_tone_initial_freq      500.0f          // Test Tone initial Frequency
@@ -102,9 +107,9 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 #elif test_milestone == 155
 
-/* Main Parameter Definition                        -> see Linux Engine LPC Status */
+/* Main Parameter Definition                        -> see Linux Engine 1.55 LPC Status */
 
-#define sig_number_of_params        197             // see Linux Engine LPC Status / Overview, Parameter List
+#define sig_number_of_params        197             // see Linux Engine 1.55 LPC Status / Overview, Parameter List
 #define sig_number_of_param_items   254             // number of required (single-voice) rendering items for all parameters
 #define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
 
@@ -112,6 +117,20 @@ const uint32_t dsp_clock_rates[2] = {               // sub-audio clocks are defi
 
 #define lst_recall_length           187             // preset-relevant parameters
 #define lst_keyEvent_length         3               // 3 key event parameters
+#define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
+
+#elif test_milestone == 156
+
+/* Main Parameter Definition                        -> see Linux Engine 1.56 LPC Status */
+
+#define sig_number_of_params        195             // see Linux Engine 1.56 LPC Status / Overview, Parameter List
+#define sig_number_of_param_items   214             // number of required (single-voice) rendering items for all parameters
+#define sig_number_of_signal_items  136             // signals shared between the parameter and audio engine
+
+/* TCD List Handling */
+
+#define lst_recall_length           187             // preset-relevant parameters
+#define lst_keyEvent_length         1               // 1 key event parameter
 #define lst_number_of_lists         2               // predefined paramId lists (simplifying recall and key event update TCD sequences)
 
 #endif

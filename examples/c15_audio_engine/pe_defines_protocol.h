@@ -29,15 +29,16 @@
 #define t_KD 14         // keyDown(unsigned14 velocity)
 
 // TCD_Command Candidates:
-#define t_FL 15         // flush(undefined value):              not preloadable, triggering fade point (sequence) !!! (value could later refer to layer?)
-#define t_U 16          // selectUtility(unsigned14 id):        selection of utility parameters that require update triggers
-#define t_UD 17         // setUtility(unsigned14 value):        actual utility parameter update, similar to setDestination
+#define t_RST 15        // reset(mode):                                 not preloadable, triggering reset (either flush, envelope stop or complete dsp reset)
+#define t_U 16          // selectUtility(unsigned14 id):                selection of utility parameters that require update triggers
+#define t_UD 17         // setUtility(unsigned14 value):                actual utility parameter update, similar to setDestination
+#define t_KV 18         // keyVoice(unsigned14 (voiceSteal, voiceId)    1.56 key update simplification command
 
 // later: select time? (can be realized by utilities)
 // later: select lists? (easing up list updates like preset recall (voice-parallel) or key event sequences (voice-serial))
 // later: MB, MP (the morphing thing...) ???
 
-/* TCD_Protocol Definition 1.5
+/* TCD_Protocol Definition 1.56
   MIDI_CHANNEL:    -       -       -       -       -       -       -       -       -       -       -       -       -       -
     0      1       2       3       4       5       6       7       8       9       A       B       C       D       E       F
     -      -       -       -       -       -       -       -       -       -       -       -       -       -       -       -      */
@@ -53,11 +54,11 @@ const uint32_t tcd_protocol[128] = {
 
     // (valid) POLY_AFTERTOUCH by Channel
 
-    0,     0,      t_TU,   0,      0,      t_DU,   0,      t_FL,   0,      0,      0,      0,      0,      0,      0,      t_PL,
+    0,     0,      t_TU,   0,      0,      t_DU,   0,      t_RST,  0,      0,      0,      0,      0,      0,      0,      t_PL,
 
     // (valid) CONTROL_CHANGE by Channel
 
-    0,     0,      t_TL,   0,      0,      t_DL,   0,      0,      0,      0,      0,      0,      0,      0,      0,      0,
+    0,     0,      t_TL,   0,      0,      t_DL,   0,      t_KV,   0,      0,      0,      0,      0,      0,      0,      0,
 
     // (invalid) PROGRAM_CHANGE by Channel
 

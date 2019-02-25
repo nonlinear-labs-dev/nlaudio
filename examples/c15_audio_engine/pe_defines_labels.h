@@ -247,7 +247,7 @@
 #define P_KEY_VP    196
 #define P_KEY_VS    197
 
-/* milestone 1.55 POLY KEY params */
+/* milestone 1.55 POLY KEY params / milestone 1.56 POLY basePitch param */
 #define P_KEY_BP    194
 #define P_KEY_IDX   195
 #define P_KEY_STL   196
