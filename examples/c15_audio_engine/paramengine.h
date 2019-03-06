@@ -85,6 +85,7 @@ struct paramengine
     /* access to envelope parameters */
     const uint32_t m_envIds[sig_number_of_env_events] = {P_EA, P_EB, P_EC};
     /* local data structures */
+    int32_t m_locate_params[500];
     clock_id_list m_clockIds;
     dual_clock_id_list m_postIds;
     param_head m_head[sig_number_of_params];
@@ -124,6 +125,8 @@ struct paramengine
 #endif
     /* proper init */
     void init(uint32_t _sampleRate, uint32_t _voices);
+    /* locating specific TCD parameters */
+    void locate_param(uint32_t _tcdId);
     /* helper */
     float evalNyquist(float _freq);
     /* TCD mechanism */

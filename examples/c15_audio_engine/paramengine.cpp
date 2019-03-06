@@ -33,6 +33,7 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     m_clockIds.reset();
     m_postIds.reset();
     m_convert.init();
+    std::fill(m_locate_params, m_locate_params + 500, -1);
     /* initialize control shapers */
     m_combDecayCurve.setCurve(0.f, 0.25, 1.f);                                  // initialize control shaper for the comb decay parameter
     m_svfLBH1Curve.setCurve(-1.f, -1.f, 1.f);                                   // initialize control shaper for the LBH parameter (upper crossmix)
@@ -68,6 +69,7 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
         if(param_definition[p][0] > -1)
         {
             obj->m_id = static_cast<uint32_t>(param_definition[p][0]);          // TCD id
+            m_locate_params[obj->m_id] = static_cast<int32_t>(p);               // fill locator array at TCD id with internal index
             /* declare parameter according to clock type - crucial for rendering */
             m_clockIds.add(obj->m_clockType, obj->m_polyType, p);
             if(param_definition[p][6] > -1)
@@ -168,6 +170,33 @@ void paramengine::init(uint32_t _sampleRate, uint32_t _voices)
     /* temporary testing */
     //testLevelVelocity();
     //testRounding();
+
+    /* param location by tcd id: proof of concept */
+    //locate_param(294);
+    //locate_param(295);
+    //locate_param(296);
+    //locate_param(1);
+}
+
+/* locating specific TCD parameters (currently just printing them to console) */
+void paramengine::locate_param(uint32_t _tcdId)
+{
+    int32_t index = m_locate_params[_tcdId];
+    if(index > -1)
+    {
+        /* succesful Retrieval: if index is greater -1 */
+        param_body* obj = &m_body[m_head[static_cast<uint32_t>(index)].m_index];
+        std::cout << "PARAM_BODY(" << _tcdId << ")[" << m_head[static_cast<uint32_t>(index)].m_index << "]:" << std::endl;
+        std::cout << "\tSIGNAL: " << obj->m_signal << std::endl;
+        std::cout << "\tDEST: " << obj->m_dest << std::endl;
+        std::cout << "\tSTART: " << obj->m_start << std::endl;
+        std::cout << "\tPROGRESS: " << obj->m_x << std::endl;
+    }
+    else
+    {
+        /* failed Retrieval: if index is -1 */
+        std::cout << "NOT_FOUND(" << _tcdId << ")" << std::endl;
+    }
 }
 
 /* helper - nyquist clip */
